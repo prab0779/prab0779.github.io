@@ -461,7 +461,7 @@ export const items: Item[] = [
   taxGem: 5625,
   category: 'Demon Slayer Crate',
   rarity: 0.12,
-  emoji: '/tengenattire.png'
+  emoji: '/tengen.png'
 },
 {
   id: '34',
@@ -475,7 +475,7 @@ export const items: Item[] = [
   taxGem: 5625,
   category: 'Demon Slayer Crate',
   rarity: 0.12,
-  emoji: '/giyuuattire.png'
+  emoji: '/giyuu.png'
 },
 {
   id: '35',
