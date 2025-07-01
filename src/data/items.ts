@@ -171,7 +171,7 @@ export const items: Item[] = [
 },
 {
   id: '13',
-  name: 'RosePetalAura',
+  name: 'RosePetal',
   value: 10,
   demand: 1,
   rateOfChange: 'Stable',
@@ -185,7 +185,7 @@ export const items: Item[] = [
 },
 {
   id: '14',
-  name: 'StarryNightAura',
+  name: 'StarryNight',
   value: 10,
   demand: 1,
   rateOfChange: 'Stable',
@@ -199,7 +199,7 @@ export const items: Item[] = [
 },
 {
   id: '15',
-  name: 'DemonGlazeAura',
+  name: 'DemonGlaze',
   value: 10,
   demand: 1,
   rateOfChange: 'Stable',
@@ -227,7 +227,7 @@ export const items: Item[] = [
 },
 {
   id: '17',
-  name: 'UlquiorraWings',
+  name: 'Ulquiorra Wings',
   value: 1500,
   demand: 9,
   rateOfChange: 'Overpriced',
@@ -241,7 +241,7 @@ export const items: Item[] = [
 },
 {
   id: '18',
-  name: 'PrimeraAttire',
+  name: 'Primera Attire',
   value: 850,
   demand: 9,
   rateOfChange: 'Rising',
