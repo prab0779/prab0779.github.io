@@ -87,6 +87,19 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       slot: 'w-full h-full'
     };
     
+    // Add null/undefined check before calling startsWith
+    if (!emoji || typeof emoji !== 'string') {
+      return (
+        <span className={
+          size === 'slot' 
+            ? 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-none' 
+            : sizeClasses[size].split(' ')[2]
+        }>
+          👹
+        </span>
+      );
+    }
+    
     if (emoji.startsWith('/')) {
       return (
         <div className={`flex items-center justify-center ${sizeClasses[size]}`}>

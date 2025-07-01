@@ -38,6 +38,11 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, isExpanded, onToggle }
   };
 
   const renderItemIcon = (emoji: string) => {
+    // Add null/undefined check before calling startsWith
+    if (!emoji || typeof emoji !== 'string') {
+      return <span className="text-2xl">👹</span>;
+    }
+    
     if (emoji.startsWith('/')) {
       return (
         <div className="w-8 h-8 flex items-center justify-center">
