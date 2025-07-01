@@ -21,7 +21,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
       {/* Item List */}
       <div>
-        <h2 className="text-2xl font-bold text-white mb-6">📋 Item Database</h2>
+        <h2 className="text-2xl font-bold text-white mb-6">Item Database</h2>
         <ItemList items={items} />
       </div>
     </div>
