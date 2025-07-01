@@ -324,13 +324,22 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             </div>
           </div>
           
-          <div className="mt-4 sm:mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gray-800 rounded-lg p-3 sm:p-4 hover:bg-gray-750 transition-colors duration-200">
-              <p className="text-gray-400 text-sm mb-1">Tax Difference</p>
-              <p className="text-lg sm:text-xl font-semibold text-purple-400">💰 {calculation.totalTaxGems}</p>
-              <p className="text-xs text-gray-500 mt-1">{calculation.whoPaysTax}</p>
+          <div className="bg-gray-800 rounded-lg p-3 sm:p-4 hover:bg-gray-750 transition-colors duration-200">
+            <p className="text-gray-400 text-sm mb-1">Tax You Pay</p>
+            <div className="flex items-center justify-center space-x-4 text-purple-300 font-semibold text-lg sm:text-xl">
+                {calculation.totalTaxGems > 0 && (
+                    <span>💎 {calculation.totalTaxGems}</span>
+                )}
+                {calculation.totalTaxGold > 0 && (
+                    <span>🪙 {calculation.totalTaxGold}</span>
+                )}
+                {(calculation.totalTaxGems === 0 && calculation.totalTaxGold === 0) && (
+                    <span className="text-gray-500">No tax</span>
+                )}
             </div>
-            
+            <p className="text-xs text-gray-500 mt-1">{calculation.whoPaysTax}</p>
+        </div>
+
             <div className="bg-gray-800 rounded-lg p-3 sm:p-4 hover:bg-gray-750 transition-colors duration-200">
               <p className="text-gray-400 text-sm mb-1">Net Gain/Loss</p>
               <p className={`text-lg sm:text-xl font-semibold ${
