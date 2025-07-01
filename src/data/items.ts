@@ -1281,6 +1281,6 @@ export const items: Item[] = [
   obtainedFrom: 'Anime All-Stars (JJK) Crate - Common (25%)',
   category: 'JJK Crate',
   rarity: 25,
-  emoji: ''
+  emoji: '/gojoglasses.png'
 }
 ];
