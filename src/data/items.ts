@@ -563,7 +563,7 @@ export const items: Item[] = [
 },
 {
   id: '41',
-  name: 'WaterBreathAura',
+  name: 'Water Breath',
   value: 1,
   demand: 1,
   rateOfChange: 'Stable',
@@ -577,7 +577,7 @@ export const items: Item[] = [
 },
 {
   id: '42',
-  name: 'TanjiroAttire',
+  name: 'Tanjiro Attire',
   value: 1,
   demand: 1,
   rateOfChange: 'Stable',
@@ -605,7 +605,7 @@ export const items: Item[] = [
 },
 {
   id: '44',
-  name: 'BloodArtAura',
+  name: 'Blood Art',
   value: 1,
   demand: 1,
   rateOfChange: 'Stable',
