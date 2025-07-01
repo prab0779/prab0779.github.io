@@ -39,15 +39,6 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
               Trade Calculator
             </button>
 
-            <button
-              onClick={() => onPageChange('value-changes')}
-              className={`text-sm font-medium transition-all duration-200 hover:text-blue-400 px-3 py-2 rounded-md hover:bg-gray-800 ${
-                currentPage === 'value-changes' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-              }`}
-            >
-              Value Changes
-            </button>
-
             <a
               href="https://discord.gg/aotr"
               target="_blank"
@@ -94,18 +85,6 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                 }`}
               >
                 🧮 Trade Calculator
-              </button>
-
-              <button
-                onClick={() => {
-                  onPageChange('value-changes');
-                  setIsMenuOpen(false);
-                }}
-                className={`text-left text-sm font-medium transition-colors hover:text-blue-400 px-3 py-2 rounded-md ${
-                  currentPage === 'value-changes' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-                }`}
-              >
-                📈 Value Changes
               </button>
 
               <a

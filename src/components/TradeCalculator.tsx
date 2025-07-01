@@ -77,21 +77,25 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     };
   }, [itemsSent, itemsReceived]);
 
-  const renderItemIcon = (emoji: string, itemName: string, size: 'small' | 'medium' | 'large' | 'xlarge' = 'medium') => {
+  const renderItemIcon = (emoji: string, itemName: string, size: 'small' | 'medium' | 'large' | 'slot' = 'medium') => {
     const sizeClasses = {
       small: 'w-6 h-6 text-xl',
       medium: 'w-8 h-8 text-2xl', 
       large: 'w-16 h-16 text-6xl',
-      xlarge: 'w-full h-full text-8xl'
+      slot: 'w-full h-full'
     };
     
     if (emoji.startsWith('/')) {
       return (
-        <div className={`flex items-center justify-center ${size === 'xlarge' ? 'w-full h-full' : sizeClasses[size].split(' ').slice(0, 2).join(' ')}`}>
+        <div className={`flex items-center justify-center ${sizeClasses[size]}`}>
           <img 
             src={emoji} 
             alt={itemName}
-            className={`object-contain pixelated ${size === 'xlarge' ? 'w-full h-full max-w-none max-h-none' : sizeClasses[size].split(' ').slice(0, 2).join(' ')}`}
+            className={`object-contain pixelated ${
+              size === 'slot' 
+                ? 'w-full h-full max-w-none max-h-none min-w-0 min-h-0' 
+                : sizeClasses[size].split(' ').slice(0, 2).join(' ')
+            }`}
             style={{ imageRendering: 'pixelated' }}
             onError={(e) => {
               const target = e.target as HTMLImageElement;
@@ -100,11 +104,23 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
               if (fallback) fallback.style.display = 'block';
             }}
           />
-          <span className={`hidden ${size === 'xlarge' ? 'text-8xl' : sizeClasses[size].split(' ')[2]}`}>👹</span>
+          <span className={`hidden ${
+            size === 'slot' 
+              ? 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl' 
+              : sizeClasses[size].split(' ')[2]
+          }`}>👹</span>
         </div>
       );
     }
-    return <span className={size === 'xlarge' ? 'text-8xl' : sizeClasses[size].split(' ')[2]}>{emoji}</span>;
+    return (
+      <span className={
+        size === 'slot' 
+          ? 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-none' 
+          : sizeClasses[size].split(' ')[2]
+      }>
+        {emoji}
+      </span>
+    );
   };
 
   const ItemModal: React.FC<{ 
@@ -171,14 +187,14 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     const icon = type === 'sent' ? '📤' : '📥';
 
     return (
-      <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
-        <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
+      <div className="bg-gray-900 rounded-lg p-4 sm:p-6 border border-gray-700">
+        <h2 className="text-lg sm:text-xl font-semibold text-white mb-4 flex items-center">
           <span className={`${color === 'red' ? 'text-red-400' : 'text-green-400'} mr-2`}>{icon}</span>
           {title}
         </h2>
         
         {/* Item Grid - 3x3 */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
           {/* Plus button in top-left */}
           <div
             className="aspect-square border-2 border-dashed border-blue-500 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-900 hover:bg-opacity-20 transition-all duration-200 group"
@@ -190,7 +206,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
               }
             }}
           >
-            <Plus className="w-8 h-8 text-blue-400 group-hover:text-blue-300 transition-colors" />
+            <Plus className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400 group-hover:text-blue-300 transition-colors" />
           </div>
 
           {/* Item slots - 8 remaining slots */}
@@ -207,22 +223,22 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                 } group relative`}
               >
                 {tradeItem ? (
-                  <div className="w-full h-full p-2 flex flex-col">
+                  <div className="w-full h-full p-1 sm:p-2 flex flex-col">
                     <button
                       onClick={() => removeItem(index, type)}
-                      className="absolute top-1 right-1 text-red-400 hover:text-red-300 transition-colors opacity-0 group-hover:opacity-100 z-10"
+                      className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 text-red-400 hover:text-red-300 transition-colors opacity-0 group-hover:opacity-100 z-10"
                     >
-                      <X className="w-3 h-3" />
+                      <X className="w-3 h-3 sm:w-4 sm:h-4" />
                     </button>
                     
                     {/* Icon container - takes most of the space */}
-                    <div className="flex-1 flex items-center justify-center min-h-0 mb-2">
-                      {renderItemIcon(tradeItem.item.emoji, tradeItem.item.name, 'xlarge')}
+                    <div className="flex-1 flex items-center justify-center min-h-0 mb-1 sm:mb-2 p-1">
+                      {renderItemIcon(tradeItem.item.emoji, tradeItem.item.name, 'slot')}
                     </div>
                     
                     {/* Name - small text at bottom */}
-                    <div className="text-xs text-gray-300 text-center leading-tight mb-1 px-1 h-8 flex items-center justify-center">
-                      <span className="break-words line-clamp-2" style={{ wordBreak: 'break-word' }}>
+                    <div className="text-xs text-gray-300 text-center leading-tight mb-1 px-0.5 sm:px-1 h-6 sm:h-8 flex items-center justify-center">
+                      <span className="break-words line-clamp-2 text-xs sm:text-xs" style={{ wordBreak: 'break-word' }}>
                         {tradeItem.item.name}
                       </span>
                     </div>
@@ -233,7 +249,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                       min="1"
                       value={tradeItem.quantity}
                       onChange={(e) => updateQuantity(index, parseInt(e.target.value) || 1, type)}
-                      className="w-full h-6 text-xs bg-gray-700 border border-gray-600 rounded text-white text-center flex-shrink-0"
+                      className="w-full h-5 sm:h-6 text-xs bg-gray-700 border border-gray-600 rounded text-white text-center flex-shrink-0"
                       onClick={(e) => e.stopPropagation()}
                     />
                   </div>
@@ -251,14 +267,14 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-slide-in">
+    <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 animate-slide-in">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-white mb-2">🧮 Trade Calculator</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">🧮 Trade Calculator</h1>
         <p className="text-gray-400">Calculate the value and tax of your trades</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
         <ItemGrid type="sent" />
         <ItemGrid type="received" />
       </div>
@@ -280,42 +296,42 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
 
       {/* Calculation Results */}
       {(itemsSent.length > 0 || itemsReceived.length > 0) && (
-        <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg p-6 border border-gray-700 animate-fade-in">
-          <h2 className="text-2xl font-semibold text-white mb-6 flex items-center">
-            <Calculator className="w-6 h-6 mr-2 text-blue-400" />
+        <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg p-4 sm:p-6 border border-gray-700 animate-fade-in">
+          <h2 className="text-xl sm:text-2xl font-semibold text-white mb-4 sm:mb-6 flex items-center">
+            <Calculator className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-400" />
             Trade Summary
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             <div className="text-center">
-              <div className="bg-red-900 bg-opacity-30 rounded-lg p-4 border border-red-700 transform hover:scale-105 transition-transform duration-200">
+              <div className="bg-red-900 bg-opacity-30 rounded-lg p-3 sm:p-4 border border-red-700 transform hover:scale-105 transition-transform duration-200">
                 <p className="text-red-300 text-sm mb-1">Total Value Sent</p>
-                <p className="text-2xl font-bold text-red-400">🔑 {calculation.totalValueSent}</p>
+                <p className="text-xl sm:text-2xl font-bold text-red-400">🔑 {calculation.totalValueSent}</p>
               </div>
             </div>
             
             <div className="flex items-center justify-center">
-              <ArrowLeftRight className="w-16 h-16 text-gray-400 animate-pulse" />
+              <ArrowLeftRight className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 animate-pulse" />
             </div>
             
             <div className="text-center">
-              <div className="bg-green-900 bg-opacity-30 rounded-lg p-4 border border-green-700 transform hover:scale-105 transition-transform duration-200">
+              <div className="bg-green-900 bg-opacity-30 rounded-lg p-3 sm:p-4 border border-green-700 transform hover:scale-105 transition-transform duration-200">
                 <p className="text-green-300 text-sm mb-1">Total Value Received</p>
-                <p className="text-2xl font-bold text-green-400">🔑 {calculation.totalValueReceived}</p>
+                <p className="text-xl sm:text-2xl font-bold text-green-400">🔑 {calculation.totalValueReceived}</p>
               </div>
             </div>
           </div>
           
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors duration-200">
+          <div className="mt-4 sm:mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-800 rounded-lg p-3 sm:p-4 hover:bg-gray-750 transition-colors duration-200">
               <p className="text-gray-400 text-sm mb-1">Tax Difference</p>
-              <p className="text-xl font-semibold text-purple-400">🔑 {calculation.totalTaxGems}</p>
+              <p className="text-lg sm:text-xl font-semibold text-purple-400">🔑 {calculation.totalTaxGems}</p>
               <p className="text-xs text-gray-500 mt-1">{calculation.whoPaysTax}</p>
             </div>
             
-            <div className="bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors duration-200">
+            <div className="bg-gray-800 rounded-lg p-3 sm:p-4 hover:bg-gray-750 transition-colors duration-200">
               <p className="text-gray-400 text-sm mb-1">Net Gain/Loss</p>
-              <p className={`text-xl font-semibold ${
+              <p className={`text-lg sm:text-xl font-semibold ${
                 calculation.netGainLoss > 0 ? 'text-green-400' : 
                 calculation.netGainLoss < 0 ? 'text-red-400' : 'text-gray-400'
               }`}>
@@ -325,7 +341,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
           </div>
           
           {calculation.netGainLoss !== 0 && (
-            <div className={`mt-4 p-4 rounded-lg animate-bounce-subtle ${
+            <div className={`mt-4 p-3 sm:p-4 rounded-lg animate-bounce-subtle ${
               calculation.netGainLoss > 0 
                 ? 'bg-green-900 bg-opacity-30 border border-green-700' 
                 : 'bg-red-900 bg-opacity-30 border border-red-700'

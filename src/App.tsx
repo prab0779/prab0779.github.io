@@ -2,20 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Home } from './components/Home';
 import { TradeCalculator } from './components/TradeCalculator';
-import { ValueChanges } from './components/ValueChanges';
 import { items as initialItems } from './data/items';
-import { Item, ValueChange, ItemHistory } from './types/Item';
+import { Item, ItemHistory } from './types/Item';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [items, setItems] = useState<Item[]>(initialItems);
-  const [valueChanges, setValueChanges] = useState<ValueChange[]>([]);
   const [itemHistory, setItemHistory] = useState<ItemHistory>({});
 
   // Initialize item history on first load
   useEffect(() => {
     const savedHistory = localStorage.getItem('itemHistory');
-    const savedChanges = localStorage.getItem('valueChanges');
     
     if (savedHistory) {
       setItemHistory(JSON.parse(savedHistory));
@@ -33,10 +30,6 @@ function App() {
       setItemHistory(initialHistory);
       localStorage.setItem('itemHistory', JSON.stringify(initialHistory));
     }
-
-    if (savedChanges) {
-      setValueChanges(JSON.parse(savedChanges));
-    }
   }, []);
 
   const renderPage = () => {
@@ -45,8 +38,6 @@ function App() {
         return <Home items={items} />;
       case 'calculator':
         return <TradeCalculator items={items} />;
-      case 'value-changes':
-        return <ValueChanges valueChanges={valueChanges} />;
       default:
         return <Home items={items} />;
     }
