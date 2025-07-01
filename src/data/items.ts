@@ -619,7 +619,7 @@ export const items: Item[] = [
 },
 {
   id: '45',
-  name: 'ShinobuAttire',
+  name: 'Shinobu Attire',
   value: 1,
   demand: 1,
   rateOfChange: 'Stable',
@@ -633,7 +633,7 @@ export const items: Item[] = [
 },
 {
   id: '46',
-  name: 'BikiniAttire',
+  name: 'Bikini Attire',
   value: 1,
   demand: 1,
   rateOfChange: 'Stable',
