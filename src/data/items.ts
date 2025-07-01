@@ -73,7 +73,7 @@ export const items: Item[] = [
 },
 {
   id: '6',
-  name: 'YoungReinerAttire',
+  name: 'Young Reiner Attire',
   value: 1,
   demand: 3,
   rateOfChange: 'Stable',
@@ -87,7 +87,7 @@ export const items: Item[] = [
 },
 {
   id: '7',
-  name: 'AzureFlamesAura',
+  name: 'Azure Flames Aura',
   value: 160,
   demand: 9,
   rateOfChange: 'Stable',
@@ -101,7 +101,7 @@ export const items: Item[] = [
 },
 {
   id: '8',
-  name: 'CosmicNovaAura',
+  name: 'Cosmic Nova Aura',
   value: 150,
   demand: 8,
   rateOfChange: 'Stable',
@@ -115,7 +115,7 @@ export const items: Item[] = [
 },
 {
   id: '9',
-  name: 'IgnitedAura',
+  name: 'Ignited Aura',
   value: 140,
   demand: 8,
   rateOfChange: 'Stable',
@@ -129,7 +129,7 @@ export const items: Item[] = [
 },
 {
   id: '10',
-  name: 'TitanstrikeAura',
+  name: 'Titanstrike',
   value: 110,
   demand: 7,
   rateOfChange: 'Stable',
