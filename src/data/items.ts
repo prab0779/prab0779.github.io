@@ -839,7 +839,7 @@ export const items: Item[] = [
   taxGem: 5625,
   category: 'Fate Crate',
   rarity: 0.17,
-  emoji: '/astolfoattire.png'
+  emoji: '/astolfo.png'
 },
 {
   id: '61',
@@ -853,7 +853,7 @@ export const items: Item[] = [
   taxGem: 5625,
   category: 'Fate Crate',
   rarity: 0.17,
-  emoji: '/gilgameshattire.png'
+  emoji: '/gilga.png'
 },
 {
   id: '62',
@@ -966,7 +966,7 @@ export const items: Item[] = [
   obtainedFrom: 'Scout Fashion Crate - Legendary (0.17%)',
   category: 'Scout Fashion Crate',
   rarity: 0.17,
-  emoji: ''
+  emoji: 'maidattire'
 },
 {
   id: '70',
