@@ -2064,5 +2064,7 @@ emoji: '/onyxgear.png'},
   status: 'Obtainable',
   obtainedFrom: 'Obtained as a drop from the Armored Titan Raid or can be bought for 24,999 Gems in the Progression section of the Shop',
   category: 'Raid Drop',
-  rarity
+  rarity: null,
+  emoji: '/attackshard.png'
+},
 ];
