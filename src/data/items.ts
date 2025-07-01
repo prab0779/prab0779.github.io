@@ -1075,7 +1075,7 @@ export const items: Item[] = [
 },
 {
   id: '77',
-  name: 'TojiAttire',
+  name: 'Toji Attire',
   demand: 10,
   value: 2300,
   rateOfChange: 'Overpriced',
