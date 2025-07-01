@@ -1453,7 +1453,7 @@ emoji: '/onyxgear.png'},
   emoji: '/onikirieren.png'
 },
 {
-  id: '104',
+  id: '103',
   name: 'Spirit Sheath',
   demand: 5,
   value: 40,
@@ -1468,7 +1468,7 @@ emoji: '/onyxgear.png'},
   emoji: '/spiritsheath.png'
 },
 {
-  id: '105',
+  id: '104',
   name: 'Spirit Gear',
   demand: 5,
   value: 40,
@@ -1483,7 +1483,7 @@ emoji: '/onyxgear.png'},
   emoji: '/spiritgear.png'
 },
 {
-  id: '106',
+  id: '105',
   name: 'Spirit Blade',
   demand: 5,
   value: 40,
@@ -1498,7 +1498,7 @@ emoji: '/onyxgear.png'},
   emoji: '/spiritblade.png'
 },
 {
-  id: '107',
+  id: '106',
   name: 'Jotunn',
   demand: 7,
   value: 120,
@@ -1513,22 +1513,7 @@ emoji: '/onyxgear.png'},
   emoji: '/jotunn.png'
 },
 {
-  id: '108',
-  name: 'Elderflame ODM',
-  demand: 7,
-  value: 75,
-  rateOfChange: 'Stable',
-  gemTax: 0,
-  goldTax: 174000,
-  prestige: 1,
-  status: 'Unobtainable',
-  obtainedFrom: 'Battle Pass (Season 2)',
-  category: 'Battle Pass (Season 2)',
-  rarity: null,
-  emoji: '/elderflameodm.png'
-},
-{
-  id: '110',
+  id: '107',
   name: 'Icarus Spear Equipment',
   demand: 7,
   value: 50,
@@ -1543,7 +1528,7 @@ emoji: '/onyxgear.png'},
   emoji: '/icarusspearequipment.png'
 },
 {
-  id: '111',
+  id: '108',
   name: 'Icarus Spear Gear',
   demand: 7,
   value: 50,
@@ -1558,7 +1543,7 @@ emoji: '/onyxgear.png'},
   emoji: '/icarusspeargear.png'
 },
 {
-  id: '112',
+  id: '109',
   name: 'Deus Ex Machina',
   demand: 7,
   value: 40,
