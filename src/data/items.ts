@@ -143,7 +143,7 @@ export const items: Item[] = [
 },
 {
   id: '11',
-  name: 'BloodlettingAura',
+  name: 'Blood letting',
   value: 10,
   demand: 1,
   rateOfChange: 'Stable',
@@ -157,7 +157,7 @@ export const items: Item[] = [
 },
 {
   id: '12',
-  name: 'DemonicGazeAura',
+  name: 'Demonic Gaze',
   value: 10,
   demand: 1,
   rateOfChange: 'Stable',
