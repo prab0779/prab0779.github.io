@@ -297,7 +297,7 @@ export const items: Item[] = [
 },
 {
   id: '22',
-  name: 'QuincyAttire',
+  name: 'Quincy Attire',
   value: 175,
   demand: 7,
   rateOfChange: 'Stable',
@@ -311,7 +311,7 @@ export const items: Item[] = [
 },
 {
   id: '23',
-  name: 'UlquiorraAttire',
+  name: 'Ulquiorra Attire',
   value: 80,
   demand: 7,
   rateOfChange: 'Stable',
@@ -325,7 +325,7 @@ export const items: Item[] = [
 },
 {
   id: '24',
-  name: 'SoulReaperAttire',
+  name: 'Soul Reaper Attire',
   value: 60,
   demand: 8,
   rateOfChange: 'Stable',
@@ -339,7 +339,7 @@ export const items: Item[] = [
 },
 {
   id: '25',
-  name: 'KisukeAttire',
+  name: 'Kisuke Attire',
   value: 50,
   demand: 7,
   rateOfChange: 'Stable',
@@ -353,7 +353,7 @@ export const items: Item[] = [
 },
 {
   id: '26',
-  name: 'ZangetsuM',
+  name: 'Zangetsu M',
   value: 30,
   demand: 5,
   rateOfChange: 'Stable',
@@ -423,7 +423,7 @@ export const items: Item[] = [
 },
 {
   id: '31',
-  name: 'QuincyHat',
+  name: 'Quincy Hat',
   value: 10,
   demand: 5,
   rateOfChange: 'Stable',
@@ -437,7 +437,7 @@ export const items: Item[] = [
 },
 {
   id: '32',
-  name: 'ExplosionArtAura',
+  name: 'Explosion Art',
   value: 135,
   demand: 7,
   rateOfChange: 'Stable',
@@ -451,7 +451,7 @@ export const items: Item[] = [
 },
 {
   id: '33',
-  name: 'TengenAttire',
+  name: 'Tengen Attire',
   value: 120,
   demand: 8,
   rateOfChange: 'Stable',
@@ -465,7 +465,7 @@ export const items: Item[] = [
 },
 {
   id: '34',
-  name: 'GiyuuAttire',
+  name: 'Giyuu Attire',
   value: 120,
   demand: 7,
   rateOfChange: 'Stable',
@@ -479,7 +479,7 @@ export const items: Item[] = [
 },
 {
   id: '35',
-  name: 'NichrinCleaver',
+  name: 'Nichrin Cleaver',
   value: 120,
   demand: 8,
   rateOfChange: 'Stable',
@@ -493,7 +493,7 @@ export const items: Item[] = [
 },
 {
   id: '36',
-  name: 'LightningBreathAura',
+  name: 'Lightning Breath',
   value: 10,
   demand: 1,
   rateOfChange: 'Stable',
