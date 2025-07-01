@@ -1120,7 +1120,7 @@ export const items: Item[] = [
 },
 {
   id: '80',
-  name: 'MahoragaWheel',
+  name: 'Mahoraga Wheel',
   demand: 10,
   value: 400,
   rateOfChange: 'Overpriced',
@@ -1135,7 +1135,7 @@ export const items: Item[] = [
 },
 {
   id: '81',
-  name: 'SoulSplitKatana',
+  name: 'Soul Split Katana',
   demand: 7,
   value: 200,
   rateOfChange: 'Stable',
@@ -1150,7 +1150,7 @@ export const items: Item[] = [
 },
 {
   id: '82',
-  name: 'GetoAttire',
+  name: 'Geto Attire',
   demand: 4,
   value: 175,
   rateOfChange: 'Stable',
@@ -1180,7 +1180,7 @@ export const items: Item[] = [
 },
 {
   id: '84',
-  name: 'CursedEnergyAura',
+  name: 'Cursed Energy Aura',
   demand: 4,
   value: 60,
   rateOfChange: 'Stable',
@@ -1195,7 +1195,7 @@ export const items: Item[] = [
 },
 {
   id: '85',
-  name: 'SorcererAttire',
+  name: 'Sorcerer Attire',
   demand: 4,
   value: 40,
   rateOfChange: 'Stable',
@@ -1210,7 +1210,7 @@ export const items: Item[] = [
 },
 {
   id: '86',
-  name: 'UtahimeAttire',
+  name: 'Utahime Attire',
   demand: 3,
   value: 30,
   rateOfChange: 'Stable',
@@ -1225,7 +1225,7 @@ export const items: Item[] = [
 },
 {
   id: '87',
-  name: 'GojoBlindfold',
+  name: 'Gojo Blindfold',
   demand: 3,
   value: 25,
   rateOfChange: 'Stable',
@@ -1255,7 +1255,7 @@ export const items: Item[] = [
 },
 {
   id: '89',
-  name: 'JetBlackSword',
+  name: 'JetBlack Sword',
   demand: 3,
   value: 10,
   rateOfChange: 'Stable',
@@ -1270,7 +1270,7 @@ export const items: Item[] = [
 },
 {
   id: '90',
-  name: 'GojoGlassess',
+  name: 'Gojo Glassess',
   demand: 1,
   value: 1,
   rateOfChange: 'Stable',
@@ -1284,7 +1284,7 @@ export const items: Item[] = [
   emoji: '/gojoglasses.png'
 },
   {id: '91',
-name: 'MilitaryAttire',
+name: 'Military Attire',
 demand: 1,
 value: 60,
 rateOfChange: 'Stable',
@@ -1298,7 +1298,7 @@ rarity: null,
 emoji: '/militaryattire.png'},
 
   {id: '92',
-name: 'NightfallAura',
+name: 'Nightfall Aura',
 demand: 3,
 value: 20,
 rateOfChange: 'Stable',
@@ -1326,7 +1326,7 @@ rarity: null,
 emoji: '/tiara.png'},
 
   {id: '94',
-name: 'BladedGauntlet',
+name: 'Bladed Gauntlet',
 demand: 1,
 value: 5,
 rateOfChange: 'Stable',
@@ -1382,7 +1382,7 @@ rarity: null,
 emoji: '/crown.png'},
 
   {id: '98',
-name: 'DripyyGlasses',
+name: 'Dripyy Glasses',
 demand: 1,
 value: 2,
 rateOfChange: 'Stable',
