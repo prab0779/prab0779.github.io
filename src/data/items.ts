@@ -996,7 +996,7 @@ export const items: Item[] = [
   obtainedFrom: 'Scout Fashion Crate - Epic (1.5%)',
   category: 'Scout Fashion Crate',
   rarity: 1.5,
-  emoji: ''
+  emoji: '/kenny.png'
 },
 {
   id: '72',
