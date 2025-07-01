@@ -325,7 +325,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
           <div className="mt-4 sm:mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-gray-800 rounded-lg p-3 sm:p-4 hover:bg-gray-750 transition-colors duration-200">
               <p className="text-gray-400 text-sm mb-1">Tax Difference</p>
-              <p className="text-lg sm:text-xl font-semibold text-purple-400">🔑 {calculation.totalTaxGems}</p>
+              <p className="text-lg sm:text-xl font-semibold text-purple-400">💰 {calculation.totalTaxGems}</p>
               <p className="text-xs text-gray-500 mt-1">{calculation.whoPaysTax}</p>
             </div>
             
