@@ -279,7 +279,7 @@ export const items: Item[] = [
   taxGem: 1500,
   category: 'Bleach Crate',
   rarity: 0.67,
-  emoji: '/captainattire.png'
+  emoji: '/captain.png'
 },
 {
   id: '21',
@@ -293,7 +293,7 @@ export const items: Item[] = [
   taxGem: 1500,
   category: 'Bleach Crate',
   rarity: 0.67,
-  emoji: '/katenkyokotsu.png'
+  emoji: '/katen.png'
 },
 {
   id: '22',
@@ -307,7 +307,7 @@ export const items: Item[] = [
   taxGem: 1500,
   category: 'Bleach Crate',
   rarity: 0.67,
-  emoji: '/quincyattire.png'
+  emoji: '/quincy.png'
 },
 {
   id: '23',
@@ -321,7 +321,7 @@ export const items: Item[] = [
   taxGem: 300,
   category: 'Bleach Crate',
   rarity: 4.17,
-  emoji: '/ulquiorraattire.png'
+  emoji: '/ulqattire.png'
 },
 {
   id: '24',
