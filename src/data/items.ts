@@ -115,7 +115,7 @@ export const items: Item[] = [
 },
 {
   id: '9',
-  name: 'Ignited Aura',
+  name: 'Ignited',
   value: 140,
   demand: 8,
   rateOfChange: 'Stable',
