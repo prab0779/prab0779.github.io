@@ -895,7 +895,7 @@ export const items: Item[] = [
   taxGem: 1500,
   category: 'Fate Crate',
   rarity: 0.67,
-  emoji: '/gaebolg.png'
+  emoji: '/gae.png'
 },
 {
   id: '65',
