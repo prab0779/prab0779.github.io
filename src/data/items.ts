@@ -1283,5 +1283,4 @@ export const items: Item[] = [
   rarity: 25,
   emoji: ''
 }
-
 ];
