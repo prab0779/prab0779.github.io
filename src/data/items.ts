@@ -84,7 +84,7 @@ export const items: Item[] = [
   category: 'Artifact',
   rarity: null,
   emoji: '/youngreinerattire.png'
-}
+},
 {
   id: '7',
   name: 'AzureFlamesAura',
@@ -211,6 +211,5 @@ export const items: Item[] = [
   rarity: 0.75,
   emoji: '/demonglazeaura.png'
 }
-
 
 ];
