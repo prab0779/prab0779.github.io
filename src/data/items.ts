@@ -237,7 +237,7 @@ export const items: Item[] = [
   taxGem: 5625,
   category: 'Bleach Crate',
   rarity: 0.12,
-  emoji: '/ulquiorrawings.png'
+  emoji: '/ulqwings.png'
 },
 {
   id: '18',
