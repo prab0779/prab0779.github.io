@@ -1090,7 +1090,7 @@ export const items: Item[] = [
 },
 {
   id: '78',
-  name: 'BlackFlashAura',
+  name: 'Black Flash Aura',
   demand: 9,
   value: 1000,
   rateOfChange: 'Stable',
