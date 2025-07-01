@@ -829,7 +829,7 @@ export const items: Item[] = [
 },
 {
   id: '60',
-  name: 'AstolfoAttire',
+  name: 'Astolfo Attire',
   value: 130,
   demand: 8,
   rateOfChange: 'Stable',
@@ -843,7 +843,7 @@ export const items: Item[] = [
 },
 {
   id: '61',
-  name: 'GilgameshAttire',
+  name: 'Gilgamesh Attire',
   value: 130,
   demand: 8,
   rateOfChange: 'Stable',
@@ -857,7 +857,7 @@ export const items: Item[] = [
 },
 {
   id: '62',
-  name: 'VulcanoCagligorante',
+  name: 'Vulcano Cagligorante',
   value: 90,
   demand: 6,
   rateOfChange: 'Stable',
@@ -871,7 +871,7 @@ export const items: Item[] = [
 },
 {
   id: '63',
-  name: 'ArcherAttire',
+  name: 'Archer Attire',
   value: 10,
   demand: 8,
   rateOfChange: 'Stable',
@@ -885,7 +885,7 @@ export const items: Item[] = [
 },
 {
   id: '64',
-  name: 'GaeBolg',
+  name: 'Gae Bolg',
   value: 10,
   demand: 2,
   rateOfChange: 'Stable',
@@ -899,7 +899,7 @@ export const items: Item[] = [
 },
 {
   id: '65',
-  name: 'SwordOfRupture',
+  name: 'Sword Of Rupture',
   value: 3,
   demand: 2,
   rateOfChange: 'Stable',
@@ -913,7 +913,7 @@ export const items: Item[] = [
 },
 {
   id: '66',
-  name: 'SaberAttire',
+  name: 'Saber Attire',
   value: 1,
   demand: 1,
   rateOfChange: 'Stable',
@@ -955,7 +955,7 @@ export const items: Item[] = [
 },
 {
   id: '69',
-  name: 'MaidAttire',
+  name: 'Maid Attire',
   demand: 8,
   value: 90,
   rateOfChange: 'Stable',
@@ -970,7 +970,7 @@ export const items: Item[] = [
 },
 {
   id: '70',
-  name: 'CatEars',
+  name: 'Cat Ears',
   demand: 7,
   value: 90,
   rateOfChange: 'Stable',
@@ -985,7 +985,7 @@ export const items: Item[] = [
 },
 {
   id: '71',
-  name: 'KennyAttire',
+  name: 'Kenny Attire',
   demand: 5,
   value: 5,
   rateOfChange: 'Stable',
@@ -1000,7 +1000,7 @@ export const items: Item[] = [
 },
 {
   id: '72',
-  name: 'KennyHat',
+  name: 'Kenny Hat',
   demand: 1,
   value: 1,
   rateOfChange: 'Stable',
@@ -1015,7 +1015,7 @@ export const items: Item[] = [
 },
 {
   id: '73',
-  name: 'PajamaAttire',
+  name: 'Pajama Attire',
   demand: 1,
   value: 1,
   rateOfChange: 'Stable',
@@ -1030,7 +1030,7 @@ export const items: Item[] = [
 },
 {
   id: '74',
-  name: 'PajamaHat',
+  name: 'Pajama Hat',
   demand: 1,
   value: 1,
   rateOfChange: 'Stable',
@@ -1045,7 +1045,7 @@ export const items: Item[] = [
 },
 {
   id: '75',
-  name: 'NinjaAttire',
+  name: 'Ninja Attire',
   demand: 1,
   value: 1,
   rateOfChange: 'Stable',
@@ -1060,7 +1060,7 @@ export const items: Item[] = [
 },
 {
   id: '76',
-  name: 'CleaningMask',
+  name: 'Cleaning Mask',
   demand: 1,
   value: 1,
   rateOfChange: 'Stable',
@@ -1105,7 +1105,7 @@ export const items: Item[] = [
 },
 {
   id: '79',
-  name: 'SukunaMarkings',
+  name: 'Cursed Markings',
   demand: 3,
   value: 500,
   rateOfChange: 'Stable',
