@@ -54,13 +54,15 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     );
     
     // Calculate tax difference - whoever has higher total tax pays the difference
-    const totalTaxSent = itemsSent.reduce((total, { item, quantity }) => 
-      total + (item.taxGem * quantity), 0
-    );
-    
-    const totalTaxReceived = itemsReceived.reduce((total, { item, quantity }) => 
-      total + (item.taxGem * quantity), 0
-    );
+  const getTax = (item: Item) => item.taxGem ?? item.taxGold ?? 0;
+
+  const totalTaxSent = itemsSent.reduce((total, { item, quantity }) => 
+    total + (getTax(item) * quantity), 0
+  );
+
+  const totalTaxReceived = itemsReceived.reduce((total, { item, quantity }) => 
+    total + (getTax(item) * quantity), 0
+  );
 
     const taxDifference = Math.abs(totalTaxSent - totalTaxReceived);
     const whoPaysTax = totalTaxSent > totalTaxReceived ? 'You pay' : 'They pay';
