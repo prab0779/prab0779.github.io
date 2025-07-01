@@ -395,7 +395,7 @@ export const items: Item[] = [
 },
 {
   id: '29',
-  name: 'ToshiroScarf',
+  name: 'Toshiro Scarf',
   value: 10,
   demand: 2,
   rateOfChange: 'Stable',
@@ -409,7 +409,7 @@ export const items: Item[] = [
 },
 {
   id: '30',
-  name: 'KisukeHat',
+  name: 'Kisuke Hat',
   value: 10,
   demand: 3,
   rateOfChange: 'Stable',
