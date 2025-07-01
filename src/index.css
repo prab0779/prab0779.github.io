@@ -78,3 +78,11 @@
   transform: translateX(-20px);
   transition: opacity 300ms, transform 300ms;
 }
+
+/* Text truncation utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

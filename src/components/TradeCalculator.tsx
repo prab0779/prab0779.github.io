@@ -82,16 +82,16 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       small: 'w-6 h-6 text-xl',
       medium: 'w-8 h-8 text-2xl', 
       large: 'w-16 h-16 text-6xl',
-      xlarge: 'w-20 h-20 text-8xl'
+      xlarge: 'w-full h-full text-8xl'
     };
     
     if (emoji.startsWith('/')) {
       return (
-        <div className={`flex items-center justify-center ${sizeClasses[size].split(' ').slice(0, 2).join(' ')}`}>
+        <div className={`flex items-center justify-center ${size === 'xlarge' ? 'w-full h-full' : sizeClasses[size].split(' ').slice(0, 2).join(' ')}`}>
           <img 
             src={emoji} 
             alt={itemName}
-            className={`object-contain pixelated ${sizeClasses[size].split(' ').slice(0, 2).join(' ')}`}
+            className={`object-contain pixelated ${size === 'xlarge' ? 'w-full h-full max-w-none max-h-none' : sizeClasses[size].split(' ').slice(0, 2).join(' ')}`}
             style={{ imageRendering: 'pixelated' }}
             onError={(e) => {
               const target = e.target as HTMLImageElement;
@@ -100,11 +100,11 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
               if (fallback) fallback.style.display = 'block';
             }}
           />
-          <span className={`hidden ${sizeClasses[size].split(' ')[2]}`}>👹</span>
+          <span className={`hidden ${size === 'xlarge' ? 'text-8xl' : sizeClasses[size].split(' ')[2]}`}>👹</span>
         </div>
       );
     }
-    return <span className={sizeClasses[size].split(' ')[2]}>{emoji}</span>;
+    return <span className={size === 'xlarge' ? 'text-8xl' : sizeClasses[size].split(' ')[2]}>{emoji}</span>;
   };
 
   const ItemModal: React.FC<{ 
@@ -200,39 +200,45 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             return (
               <div
                 key={index}
-                className={`aspect-square border-2 border-dashed rounded-lg flex flex-col items-center justify-center transition-all duration-200 ${
+                className={`aspect-square border-2 border-dashed rounded-lg flex flex-col transition-all duration-200 ${
                   tradeItem 
                     ? 'border-gray-600 bg-gray-800 hover:bg-gray-700' 
                     : 'border-gray-700 hover:border-gray-600 hover:bg-gray-800'
-                } group`}
+                } group relative`}
               >
                 {tradeItem ? (
-                  <div className="relative w-full h-full p-2 flex flex-col items-center justify-center">
+                  <div className="w-full h-full p-2 flex flex-col">
                     <button
                       onClick={() => removeItem(index, type)}
-                      className="absolute top-1 right-1 text-red-400 hover:text-red-300 transition-colors opacity-0 group-hover:opacity-100"
+                      className="absolute top-1 right-1 text-red-400 hover:text-red-300 transition-colors opacity-0 group-hover:opacity-100 z-10"
                     >
                       <X className="w-3 h-3" />
                     </button>
-                    <div className="mb-2 flex-shrink-0">
+                    
+                    {/* Icon container - takes most of the space */}
+                    <div className="flex-1 flex items-center justify-center min-h-0 mb-2">
                       {renderItemIcon(tradeItem.item.emoji, tradeItem.item.name, 'xlarge')}
                     </div>
-                    <div className="text-xs text-gray-300 text-center leading-tight mb-2 px-1 flex-grow flex items-center justify-center min-h-0">
-                      <span className="break-words hyphens-auto" style={{ wordBreak: 'break-word', hyphens: 'auto' }}>
+                    
+                    {/* Name - small text at bottom */}
+                    <div className="text-xs text-gray-300 text-center leading-tight mb-1 px-1 h-8 flex items-center justify-center">
+                      <span className="break-words line-clamp-2" style={{ wordBreak: 'break-word' }}>
                         {tradeItem.item.name}
                       </span>
                     </div>
+                    
+                    {/* Quantity input */}
                     <input
                       type="number"
                       min="1"
                       value={tradeItem.quantity}
                       onChange={(e) => updateQuantity(index, parseInt(e.target.value) || 1, type)}
-                      className="w-10 h-6 text-xs bg-gray-700 border border-gray-600 rounded text-white text-center flex-shrink-0"
+                      className="w-full h-6 text-xs bg-gray-700 border border-gray-600 rounded text-white text-center flex-shrink-0"
                       onClick={(e) => e.stopPropagation()}
                     />
                   </div>
                 ) : (
-                  <div className="text-gray-600 text-xl">
+                  <div className="w-full h-full flex items-center justify-center text-gray-600 text-xl">
                     {/* Empty slot */}
                   </div>
                 )}
