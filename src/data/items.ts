@@ -87,7 +87,7 @@ export const items: Item[] = [
 },
 {
   id: '7',
-  name: 'Azure Flames Aura',
+  name: 'Azure Flame',
   value: 160,
   demand: 9,
   rateOfChange: 'Stable',
