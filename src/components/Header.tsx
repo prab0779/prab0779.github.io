@@ -16,7 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onPageChange('home')}>
             <img src="/logo.png" alt="Logo" className="h-8 w-8 object-contain" />
-            <h1 className="text-xl font-bold text-white">⚔️AOT:R Value Hub</h1>
+            <h1 className="text-xl font-bold text-white">AOT:R Value Hub</h1>
           </div>
 
           {/* Desktop Navigation */}
