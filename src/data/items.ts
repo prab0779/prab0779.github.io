@@ -1558,7 +1558,7 @@ emoji: '/onyxgear.png'},
   emoji: '/deusexmachina.png'
 },
 {
-  id: '113',
+  id: '110',
   name: 'Elderflame Sheath',
   demand: 7,
   value: 25,
@@ -1573,7 +1573,7 @@ emoji: '/onyxgear.png'},
   emoji: '/elderflamesheath.png'
 },
 {
-  id: '114',
+  id: '111',
   name: 'Elderflame Gear',
   demand: 7,
   value: 25,
@@ -1588,7 +1588,7 @@ emoji: '/onyxgear.png'},
   emoji: '/elderflamegear.png'
 },
 {
-  id: '115',
+  id: '112',
   name: 'Elderflame Blade',
   demand: 7,
   value: 25,
@@ -1603,7 +1603,7 @@ emoji: '/onyxgear.png'},
   emoji: '/elderflameblade.png'
 },
 {
-  id: '116',
+  id: '113',
   name: 'Aincrad ODM',
   demand: 3,
   value: 45,
@@ -1618,7 +1618,7 @@ emoji: '/onyxgear.png'},
   emoji: '/aincradodm.png'
 },
 {
-  id: '117',
+  id: '114',
   name: 'Aincrad Blade',
   demand: 2,
   value: 15,
@@ -1633,7 +1633,7 @@ emoji: '/onyxgear.png'},
   emoji: '/aincradblade.png'
 },
 {
-  id: '118',
+  id: '115',
   name: 'Aincrad Sheath',
   demand: 2,
   value: 15,
@@ -1648,7 +1648,7 @@ emoji: '/onyxgear.png'},
   emoji: '/aincradsheath.png'
 },
 {
-  id: '119',
+  id: '116',
   name: 'Aincrad Gear',
   demand: 2,
   value: 15,
@@ -1663,7 +1663,7 @@ emoji: '/onyxgear.png'},
   emoji: '/aincradgear.png'
 },
 {
-  id: '122',
+  id: '117',
   name: 'Pulsar Spear Equipment',
   demand: 5,
   value: 15,
@@ -1678,7 +1678,7 @@ emoji: '/onyxgear.png'},
   emoji: '/pulsarspearequipment.png'
 },
 {
-  id: '123',
+  id: '118',
   name: 'Pulsar Spear Gear',
   demand: 5,
   value: 15,
@@ -1693,7 +1693,7 @@ emoji: '/onyxgear.png'},
   emoji: '/pulsarspeargear.png'
 },
 {
-  id: '126',
+  id: '119',
   name: 'Pulsar Gear',
   demand: 5,
   value: 10,
@@ -1708,7 +1708,7 @@ emoji: '/onyxgear.png'},
   emoji: '/pulsargear.png'
 },
 {
-  id: '127',
+  id: '120',
   name: 'Pulsar Blade',
   demand: 5,
   value: 10,
