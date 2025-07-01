@@ -283,7 +283,7 @@ export const items: Item[] = [
 },
 {
   id: '21',
-  name: 'KatenKyokotsu',
+  name: 'Katen Kyokotsu',
   value: 175,
   demand: 6,
   rateOfChange: 'Stable',
