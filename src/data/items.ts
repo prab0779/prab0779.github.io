@@ -237,6 +237,6 @@ export const items: Item[] = [
     taxGem: 5625,
     category: 'Demon Slayer Crate',
     rarity: 0.17,
-    emoji: '/Captura de pantalla 2025-04-14 155402.png'
+    emoji: '/bambi.png'
   }
 ];
