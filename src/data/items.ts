@@ -507,7 +507,7 @@ export const items: Item[] = [
 },
 {
   id: '37',
-  name: 'FlameBreathAura',
+  name: 'Flame Breath',
   value: 10,
   demand: 1,
   rateOfChange: 'Stable',
@@ -521,7 +521,7 @@ export const items: Item[] = [
 },
 {
   id: '38',
-  name: 'BoarMask',
+  name: 'Boar Mask',
   value: 10,
   demand: 1,
   rateOfChange: 'Stable',
@@ -549,7 +549,7 @@ export const items: Item[] = [
 },
 {
   id: '40',
-  name: 'RengokuAttire',
+  name: 'Rengoku Attire',
   value: 10,
   demand: 4,
   rateOfChange: 'Stable',
