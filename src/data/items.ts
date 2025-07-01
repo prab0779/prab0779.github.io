@@ -213,7 +213,7 @@ export const items: Item[] = [
 },
 {
   id: '16',
-  name: 'BambiettaWings',
+  name: 'Bambietta Wings',
   value: 1800,
   demand: 10,
   rateOfChange: 'Overpriced',
@@ -223,7 +223,7 @@ export const items: Item[] = [
   taxGem: 5625,
   category: 'Bleach Crate',
   rarity: 0.12,
-  emoji: '/bambiettawings.png'
+  emoji: '/bambi.png'
 },
 {
   id: '17',
