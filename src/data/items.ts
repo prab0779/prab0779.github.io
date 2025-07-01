@@ -101,7 +101,7 @@ export const items: Item[] = [
 },
 {
   id: '8',
-  name: 'Cosmic Nova Aura',
+  name: 'Cosmic Nova',
   value: 150,
   demand: 8,
   rateOfChange: 'Stable',
