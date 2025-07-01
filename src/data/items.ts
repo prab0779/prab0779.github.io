@@ -153,7 +153,7 @@ export const items: Item[] = [
   taxGem: 1500,
   category: 'Blade Burst Crate',
   rarity: 0.75,
-  emoji: '/bloodlettingaura.png'
+  emoji: '/blood.png'
 },
 {
   id: '12',
