@@ -155,7 +155,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, isExpanded, onToggle }
           
           <div className="mt-3 p-3 bg-blue-900 bg-opacity-30 rounded-lg border border-blue-700">
             <p className="text-blue-300 text-sm">
-              💡 <strong>Tip:</strong> To compare items, use emoji :for: emoji in chat (e.g., {item.name} :for: Ryujin)
+              💡 <strong>Tip:</strong> ⚠️ Values change fast — trade smart 💬 Ask in Discord 🔒 Avoid sketchy links 🪙 Overpay wisely
             </p>
           </div>
         </div>
