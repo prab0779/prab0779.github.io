@@ -69,7 +69,7 @@ export const items: Item[] = [
   taxGem: 0,
   category: 'Artifact',
   rarity: null,
-  emoji: '/hoddie.png'
+  emoji: '/cloak.png'
 },
 {
   id: '6',
