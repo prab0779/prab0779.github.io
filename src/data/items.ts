@@ -1450,7 +1450,7 @@ emoji: '/onyxgear.png'},
   obtainedFrom: 'Battlepass (Season 1) - Level 50 Slayer Ascension Reward: Onikiri (Attack Titan Skin)',
   category: 'Battle Pass (Season 1)',
   rarity: null,
-  emoji: '/onikirieren.png'
+  emoji: '/onieren.png'
 },
 {
   id: '103',
