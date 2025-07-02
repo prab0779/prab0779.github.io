@@ -55,19 +55,19 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     
     // Calculate separate gem and gold taxes for each side
     const sentGemTax = itemsSent.reduce((total, { item, quantity }) => 
-      total + ((item.taxGem || 0) * quantity), 0
+      total + ((item.gemTax || 0) * quantity), 0
     );
     
     const sentGoldTax = itemsSent.reduce((total, { item, quantity }) => 
-      total + ((item.taxGold || 0) * quantity), 0
+      total + ((item.goldTax || 0) * quantity), 0
     );
     
     const receivedGemTax = itemsReceived.reduce((total, { item, quantity }) => 
-      total + ((item.taxGem || 0) * quantity), 0
+      total + ((item.gemTax || 0) * quantity), 0
     );
     
     const receivedGoldTax = itemsReceived.reduce((total, { item, quantity }) => 
-      total + ((item.taxGold || 0) * quantity), 0
+      total + ((item.goldTax || 0) * quantity), 0
     );
 
     // Calculate net tax you need to pay (difference between what you send and receive)
@@ -79,8 +79,8 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       itemsReceived,
       totalValueSent,
       totalValueReceived,
-      totalTaxGems: netGemTax,
-      totalTaxGold: netGoldTax,
+      totalGemTax: netGemTax,
+      totalGoldTax: netGoldTax,
       netGainLoss: totalValueReceived - totalValueSent,
       sentGemTax,
       sentGoldTax,
@@ -384,13 +384,13 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400">Gem Tax:</span>
                   <span className="text-purple-400 font-medium">
-                    {calculation.totalTaxGems > 0 ? `💎 ${calculation.totalTaxGems}` : 'No gem tax'}
+                    {calculation.totalGemTax > 0 ? `💎 ${calculation.totalGemTax.toLocaleString()}` : 'No gem tax'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400">Gold Tax:</span>
                   <span className="text-yellow-400 font-medium">
-                    {calculation.totalTaxGold > 0 ? `🪙 ${calculation.totalTaxGold}` : 'No gold tax'}
+                    {calculation.totalGoldTax > 0 ? `🪙 ${calculation.totalGoldTax.toLocaleString()}` : 'No gold tax'}
                   </span>
                 </div>
               </div>

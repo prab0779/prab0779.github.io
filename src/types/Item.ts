@@ -7,10 +7,10 @@ export interface Item {
   prestige: number;
   status: 'Obtainable' | 'Unobtainable' | 'Limited';
   obtainedFrom: string;
-  taxGem: number;
-  taxGold?: number;
+  gemTax?: number;
+  goldTax?: number;
   category: string;
-  rarity: number;
+  rarity: number | null;
   emoji: string;
 }
 
@@ -24,14 +24,13 @@ export interface TradeCalculation {
   itemsReceived: TradeItem[];
   totalValueSent: number;
   totalValueReceived: number;
-  totalTaxGems: number;
-  totalTaxGold: number;
+  totalGemTax: number;
+  totalGoldTax: number;
   netGainLoss: number;
-  whoPaysTax?: string;
-  sentGemTax?: number;
-  sentGoldTax?: number;
-  receivedGemTax?: number;
-  receivedGoldTax?: number;
+  sentGemTax: number;
+  sentGoldTax: number;
+  receivedGemTax: number;
+  receivedGoldTax: number;
 }
 
 export interface ValueChange {

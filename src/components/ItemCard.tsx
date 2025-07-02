@@ -37,6 +37,15 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, isExpanded, onToggle }
     }
   };
 
+  const getTaxDisplay = (item: Item) => {
+    if (item.gemTax && item.gemTax > 0) {
+      return { emoji: '💎', value: item.gemTax, type: 'gem' };
+    } else if (item.goldTax && item.goldTax > 0) {
+      return { emoji: '🪙', value: item.goldTax, type: 'gold' };
+    }
+    return { emoji: '💎', value: 0, type: 'none' };
+  };
+
   const renderItemIcon = (emoji: string) => {
     // Add null/undefined check before calling startsWith
     if (!emoji || typeof emoji !== 'string') {
@@ -64,6 +73,8 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, isExpanded, onToggle }
     }
     return <span className="text-2xl">{emoji}</span>;
   };
+
+  const taxInfo = getTaxDisplay(item);
 
   return (
     <div className="bg-gray-900 rounded-lg border border-gray-700 hover:border-gray-600 transition-all duration-200 overflow-hidden">
@@ -143,13 +154,17 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, isExpanded, onToggle }
               
               <div className="flex items-center justify-between">
                 <span className="text-gray-400">💸 Tax:</span>
-                <span className="text-red-400 font-medium">💎 {item.taxGem}</span>
+                <span className={`font-medium ${taxInfo.type === 'gem' ? 'text-purple-400' : 'text-yellow-400'}`}>
+                  {taxInfo.value > 0 ? `${taxInfo.emoji} ${taxInfo.value.toLocaleString()}` : 'No tax'}
+                </span>
               </div>
               
-              <div className="flex items-center justify-between">
-                <span className="text-gray-400">🧪 Rarity:</span>
-                <span className="text-yellow-400 font-medium">{item.rarity}%</span>
-              </div>
+              {item.rarity !== null && (
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">🧪 Rarity:</span>
+                  <span className="text-yellow-400 font-medium">{item.rarity}%</span>
+                </div>
+              )}
             </div>
           </div>
           
