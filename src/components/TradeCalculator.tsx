@@ -53,7 +53,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       total + (item.value * quantity), 0
     );
     
-    // Calculate separate gem and gold taxes for each side
+    // Calculate total gem and gold taxes for items being sent
     const sentGemTax = itemsSent.reduce((total, { item, quantity }) => 
       total + ((item.gemTax || 0) * quantity), 0
     );
@@ -62,6 +62,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       total + ((item.goldTax || 0) * quantity), 0
     );
     
+    // Calculate total gem and gold taxes for items being received
     const receivedGemTax = itemsReceived.reduce((total, { item, quantity }) => 
       total + ((item.gemTax || 0) * quantity), 0
     );
@@ -70,7 +71,8 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       total + ((item.goldTax || 0) * quantity), 0
     );
 
-    // Calculate net tax you need to pay (difference between what you send and receive)
+    // Calculate NET tax you need to pay (what you send minus what you receive)
+    // If negative, it means you get tax back (but we'll show 0 since you can't get negative tax)
     const netGemTax = Math.max(0, sentGemTax - receivedGemTax);
     const netGoldTax = Math.max(0, sentGoldTax - receivedGoldTax);
 
@@ -373,27 +375,60 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             </div>
           </div>
           
-          {/* Tax You Will Pay */}
+          {/* Net Tax You Will Pay */}
           <div className="mt-6">
             <div className="bg-red-900 bg-opacity-20 rounded-lg p-4 border border-red-700">
               <h3 className="text-red-300 font-semibold mb-3 flex items-center">
                 <span className="mr-2">💸</span>
-                Tax You Will Pay
+                Net Tax You Will Pay
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Gem Tax:</span>
+                  <span className="text-gray-400">Net Gem Tax:</span>
                   <span className="text-purple-400 font-medium">
                     {calculation.totalGemTax > 0 ? `💎 ${calculation.totalGemTax.toLocaleString()}` : 'No gem tax'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Gold Tax:</span>
+                  <span className="text-gray-400">Net Gold Tax:</span>
                   <span className="text-yellow-400 font-medium">
                     {calculation.totalGoldTax > 0 ? `🪙 ${calculation.totalGoldTax.toLocaleString()}` : 'No gold tax'}
                   </span>
                 </div>
               </div>
+              
+              {/* Tax Breakdown */}
+              {(calculation.sentGemTax > 0 || calculation.sentGoldTax > 0 || calculation.receivedGemTax > 0 || calculation.receivedGoldTax > 0) && (
+                <div className="mt-4 pt-4 border-t border-red-600">
+                  <p className="text-xs text-gray-400 mb-2">Tax Breakdown:</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    <div className="space-y-1">
+                      <p className="text-red-300">Sending:</p>
+                      {calculation.sentGemTax > 0 && (
+                        <p className="text-purple-300">💎 {calculation.sentGemTax.toLocaleString()}</p>
+                      )}
+                      {calculation.sentGoldTax > 0 && (
+                        <p className="text-yellow-300">🪙 {calculation.sentGoldTax.toLocaleString()}</p>
+                      )}
+                      {calculation.sentGemTax === 0 && calculation.sentGoldTax === 0 && (
+                        <p className="text-gray-400">No tax</p>
+                      )}
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-green-300">Receiving:</p>
+                      {calculation.receivedGemTax > 0 && (
+                        <p className="text-purple-300">💎 -{calculation.receivedGemTax.toLocaleString()}</p>
+                      )}
+                      {calculation.receivedGoldTax > 0 && (
+                        <p className="text-yellow-300">🪙 -{calculation.receivedGoldTax.toLocaleString()}</p>
+                      )}
+                      {calculation.receivedGemTax === 0 && calculation.receivedGoldTax === 0 && (
+                        <p className="text-gray-400">No tax offset</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
