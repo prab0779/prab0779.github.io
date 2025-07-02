@@ -28,6 +28,10 @@ export interface TradeCalculation {
   totalTaxGold: number;
   netGainLoss: number;
   whoPaysTax?: string;
+  sentGemTax?: number;
+  sentGoldTax?: number;
+  receivedGemTax?: number;
+  receivedGoldTax?: number;
 }
 
 export interface ValueChange {

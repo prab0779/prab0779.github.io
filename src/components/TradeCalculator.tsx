@@ -53,29 +53,35 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       total + (item.value * quantity), 0
     );
     
-    // Calculate tax difference - whoever has higher total tax pays the difference
-  const getTax = (item: Item) => item.taxGem ?? item.taxGold ?? 0;
-
-  const totalTaxSent = itemsSent.reduce((total, { item, quantity }) => 
-    total + (getTax(item) * quantity), 0
-  );
-
-  const totalTaxReceived = itemsReceived.reduce((total, { item, quantity }) => 
-    total + (getTax(item) * quantity), 0
-  );
-
-    const taxDifference = Math.abs(totalTaxSent - totalTaxReceived);
-    const whoPaysTax = totalTaxSent > totalTaxReceived ? 'You pay' : 'They pay';
+    // Calculate separate gem and gold taxes for each side
+    const sentGemTax = itemsSent.reduce((total, { item, quantity }) => 
+      total + ((item.taxGem || 0) * quantity), 0
+    );
+    
+    const sentGoldTax = itemsSent.reduce((total, { item, quantity }) => 
+      total + ((item.taxGold || 0) * quantity), 0
+    );
+    
+    const receivedGemTax = itemsReceived.reduce((total, { item, quantity }) => 
+      total + ((item.taxGem || 0) * quantity), 0
+    );
+    
+    const receivedGoldTax = itemsReceived.reduce((total, { item, quantity }) => 
+      total + ((item.taxGold || 0) * quantity), 0
+    );
 
     return {
       itemsSent,
       itemsReceived,
       totalValueSent,
       totalValueReceived,
-      totalTaxGems: taxDifference,
-      totalTaxGold: 0,
+      totalTaxGems: 0, // Legacy field
+      totalTaxGold: 0, // Legacy field
       netGainLoss: totalValueReceived - totalValueSent,
-      whoPaysTax
+      sentGemTax,
+      sentGoldTax,
+      receivedGemTax,
+      receivedGoldTax
     };
   }, [itemsSent, itemsReceived]);
 
@@ -258,15 +264,41 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                       </span>
                     </div>
                     
-                    {/* Quantity input */}
-                    <input
-                      type="number"
-                      min="1"
-                      value={tradeItem.quantity}
-                      onChange={(e) => updateQuantity(index, parseInt(e.target.value) || 1, type)}
-                      className="w-full h-5 sm:h-6 text-xs bg-gray-700 border border-gray-600 rounded text-white text-center flex-shrink-0"
-                      onClick={(e) => e.stopPropagation()}
-                    />
+                    {/* Quantity input with better styling and controls */}
+                    <div className="flex items-center justify-center space-x-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          updateQuantity(index, tradeItem.quantity - 1, type);
+                        }}
+                        className="w-5 h-5 sm:w-6 sm:h-6 bg-gray-600 hover:bg-gray-500 text-white text-xs rounded flex items-center justify-center transition-colors"
+                        disabled={tradeItem.quantity <= 1}
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        min="1"
+                        max="999"
+                        value={tradeItem.quantity}
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value) || 1;
+                          updateQuantity(index, Math.min(999, Math.max(1, value)), type);
+                        }}
+                        className="w-8 sm:w-10 h-5 sm:h-6 text-xs bg-gray-700 border border-gray-600 rounded text-white text-center flex-shrink-0 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          updateQuantity(index, tradeItem.quantity + 1, type);
+                        }}
+                        className="w-5 h-5 sm:w-6 sm:h-6 bg-gray-600 hover:bg-gray-500 text-white text-xs rounded flex items-center justify-center transition-colors"
+                        disabled={tradeItem.quantity >= 999}
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-600 text-xl">
@@ -337,16 +369,64 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             </div>
           </div>
           
-          <div className="mt-4 sm:mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gray-800 rounded-lg p-3 sm:p-4 hover:bg-gray-750 transition-colors duration-200">
-              <p className="text-gray-400 text-sm mb-1">Tax Difference</p>
-              <p className="text-lg sm:text-xl font-semibold text-purple-400">💰 {calculation.totalTaxGems}</p>
-              <p className="text-xs text-gray-500 mt-1">{calculation.whoPaysTax}</p>
+          {/* Tax Breakdown */}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Your Tax */}
+            <div className="bg-red-900 bg-opacity-20 rounded-lg p-4 border border-red-700">
+              <h3 className="text-red-300 font-semibold mb-3 flex items-center">
+                <span className="mr-2">💸</span>
+                Tax You Pay
+              </h3>
+              <div className="space-y-2">
+                {calculation.sentGemTax > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Gems:</span>
+                    <span className="text-purple-400 font-medium">💎 {calculation.sentGemTax}</span>
+                  </div>
+                )}
+                {calculation.sentGoldTax > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Gold:</span>
+                    <span className="text-yellow-400 font-medium">🪙 {calculation.sentGoldTax}</span>
+                  </div>
+                )}
+                {calculation.sentGemTax === 0 && calculation.sentGoldTax === 0 && (
+                  <p className="text-gray-500 text-sm">No tax required</p>
+                )}
+              </div>
             </div>
 
-            <div className="bg-gray-800 rounded-lg p-3 sm:p-4 hover:bg-gray-750 transition-colors duration-200">
+            {/* Their Tax */}
+            <div className="bg-green-900 bg-opacity-20 rounded-lg p-4 border border-green-700">
+              <h3 className="text-green-300 font-semibold mb-3 flex items-center">
+                <span className="mr-2">💰</span>
+                Tax They Pay
+              </h3>
+              <div className="space-y-2">
+                {calculation.receivedGemTax > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Gems:</span>
+                    <span className="text-purple-400 font-medium">💎 {calculation.receivedGemTax}</span>
+                  </div>
+                )}
+                {calculation.receivedGoldTax > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400">Gold:</span>
+                    <span className="text-yellow-400 font-medium">🪙 {calculation.receivedGoldTax}</span>
+                  </div>
+                )}
+                {calculation.receivedGemTax === 0 && calculation.receivedGoldTax === 0 && (
+                  <p className="text-gray-500 text-sm">No tax required</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Net Gain/Loss */}
+          <div className="mt-6">
+            <div className="bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors duration-200">
               <p className="text-gray-400 text-sm mb-1">Net Gain/Loss</p>
-              <p className={`text-lg sm:text-xl font-semibold ${
+              <p className={`text-2xl font-bold ${
                 calculation.netGainLoss > 0 ? 'text-green-400' : 
                 calculation.netGainLoss < 0 ? 'text-red-400' : 'text-gray-400'
               }`}>
