@@ -12,7 +12,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
   return (
     <header className="bg-black border-b border-gray-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-25">
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onPageChange('home')}>
             <img src="/logo.aotr.png" alt="AOT:R Values Logo" className="h-20 w-auto object-contain hover:scale-105 transition-transform duration-200" />
