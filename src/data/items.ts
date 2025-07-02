@@ -10,8 +10,8 @@ export const items: Item[] = [
   prestige: 2,
   status: 'Obtainable',
   obtainedFrom: 'Obtained as a drop from the Attack Titan Raid Raids ',
-  gemTax: 15,
-  goldTax: 0,
+  gemTax: 0,
+  goldTax: 500000,
   category: 'Artifact',
   rarity: null,
   emoji: '/scarf.png'
