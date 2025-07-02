@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Home } from './components/Home';
 import { TradeCalculator } from './components/TradeCalculator';
+import { LoadingSpinner } from './components/LoadingSpinner';
 import { items as initialItems } from './data/items';
 import { Item, ItemHistory } from './types/Item';
 
@@ -9,28 +10,55 @@ function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [items, setItems] = useState<Item[]>(initialItems);
   const [itemHistory, setItemHistory] = useState<ItemHistory>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Initialize item history on first load
   useEffect(() => {
-    const savedHistory = localStorage.getItem('itemHistory');
-    
-    if (savedHistory) {
-      setItemHistory(JSON.parse(savedHistory));
-    } else {
-      // Initialize history with current values
-      const initialHistory: ItemHistory = {};
-      items.forEach(item => {
-        initialHistory[item.id] = {
-          previousValue: item.value,
-          previousDemand: item.demand,
-          previousRateOfChange: item.rateOfChange,
-          lastUpdated: new Date().toISOString()
-        };
-      });
-      setItemHistory(initialHistory);
-      localStorage.setItem('itemHistory', JSON.stringify(initialHistory));
-    }
+    const initializeApp = async () => {
+      // Simulate loading time for better UX
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      const savedHistory = localStorage.getItem('itemHistory');
+      
+      if (savedHistory) {
+        setItemHistory(JSON.parse(savedHistory));
+      } else {
+        // Initialize history with current values
+        const initialHistory: ItemHistory = {};
+        items.forEach(item => {
+          initialHistory[item.id] = {
+            previousValue: item.value,
+            previousDemand: item.demand,
+            previousRateOfChange: item.rateOfChange,
+            lastUpdated: new Date().toISOString()
+          };
+        });
+        setItemHistory(initialHistory);
+        localStorage.setItem('itemHistory', JSON.stringify(initialHistory));
+      }
+      
+      setIsLoading(false);
+    };
+
+    initializeApp();
   }, []);
+
+  const handlePageChange = async (newPage: string) => {
+    if (newPage === currentPage) return;
+    
+    setIsTransitioning(true);
+    
+    // Wait for exit animation
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    setCurrentPage(newPage);
+    
+    // Wait for enter animation
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    setIsTransitioning(false);
+  };
 
   const renderPage = () => {
     switch (currentPage) {
@@ -43,12 +71,18 @@ function App() {
     }
   };
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <div className="min-h-screen bg-black">
-      <Header currentPage={currentPage} onPageChange={setCurrentPage} />
+      <Header currentPage={currentPage} onPageChange={handlePageChange} />
       
       <main className="container mx-auto px-4 py-8">
-        {renderPage()}
+        <div className={`page-content ${isTransitioning ? 'page-transitioning' : ''}`}>
+          {renderPage()}
+        </div>
       </main>
       
       <footer className="bg-gray-900 border-t border-gray-800 py-8 mt-16">

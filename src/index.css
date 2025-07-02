@@ -33,6 +33,55 @@
   }
 }
 
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fade-in-out {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes page-exit {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
 .animate-fade-in {
   animation: fade-in 0.5s ease-out;
 }
@@ -43,6 +92,33 @@
 
 .animate-bounce-subtle {
   animation: bounce-subtle 2s infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
+}
+
+.animate-fade-in-out {
+  animation: fade-in-out 2s ease-in-out infinite;
+}
+
+.animate-bounce-delay-0 {
+  animation: bounce-subtle 1.4s infinite ease-in-out;
+  animation-delay: 0s;
+}
+
+.animate-bounce-delay-1 {
+  animation: bounce-subtle 1.4s infinite ease-in-out;
+  animation-delay: 0.2s;
+}
+
+.animate-bounce-delay-2 {
+  animation: bounce-subtle 1.4s infinite ease-in-out;
+  animation-delay: 0.4s;
 }
 
 .bg-gray-750 {
@@ -68,6 +144,14 @@
 }
 
 /* Page transition styles */
+.page-content {
+  animation: page-enter 0.4s ease-out;
+}
+
+.page-content.page-transitioning {
+  animation: page-exit 0.3s ease-in;
+}
+
 .page-transition-enter {
   opacity: 0;
   transform: translateX(20px);
@@ -96,4 +180,15 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
