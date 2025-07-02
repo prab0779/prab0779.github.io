@@ -15,7 +15,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
         <div className="flex justify-between items-center h-25">
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onPageChange('home')}>
-            <img src="/logo.aotr.png" alt="AOT:R Values Logo" className="h-23 w-auto object-contain hover:scale-105 transition-transform duration-200" />
+            <img src="/logo.aotr.png" alt="AOT:R Values Logo" className="h-20 w-auto object-contain hover:scale-105 transition-transform duration-200" />
           </div>
 
           {/* Desktop Navigation */}
