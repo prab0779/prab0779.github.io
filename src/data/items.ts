@@ -22,7 +22,7 @@ export const items: Item[] = [
   demand: 5,
   value: 15,
   rateOfChange: 'Stable',
-  gemTax: 15,
+  gemTax: 5000,
   goldTax: 0,
   prestige: 3,
   status: 'Obtainable',
