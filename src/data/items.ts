@@ -2244,7 +2244,7 @@ emoji: '/onyxgear.png'},
   obtainedFrom: 'Obtained through placing top 3 or above in any of monthly leaderboards.',
   category: 'LB Aura',
   rarity: null,
-  emoji: null
+  emoji: '/thirdeye.png'
 },
 {
   id: '168',
