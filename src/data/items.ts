@@ -22,11 +22,11 @@ export const items: Item[] = [
   demand: 5,
   value: 15,
   rateOfChange: 'Stable',
-  gemTax: 5000,
-  goldTax: 0,
   prestige: 3,
   status: 'Obtainable',
   obtainedFrom: 'Obtained as a drop from the Armored Titan Raid',
+  gemTax: 5000,
+  goldTax: 0,
   category: 'Raid Drop',
   rarity: null,
   emoji: '/armourserum.png'
