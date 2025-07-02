@@ -2258,7 +2258,7 @@ emoji: '/onyxgear.png'},
   obtainedFrom: 'Obtained through placing top 10 or above in any of monthly leaderboards.',
   category: 'LB Aura',
   rarity: null,
-  emoji: null
+  emoji: '/eclipse.png'
 },
 {
   id: '169',
@@ -2272,7 +2272,7 @@ emoji: '/onyxgear.png'},
   obtainedFrom: 'Obtained through placing top 25 or above in any of monthly leaderboards.',
   category: 'LB Aura',
   rarity: null,
-  emoji: null
+  emoji: '/sera.png'
 },
 {
   id: '170',
