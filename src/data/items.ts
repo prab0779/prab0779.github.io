@@ -69,7 +69,7 @@ export const items: Item[] = [
   taxGem: 0,
   category: 'Artifact',
   rarity: null,
-  emoji: '/cloak.png'
+  emoji: '/hoddie.png'
 },
 {
   id: '6',
@@ -391,7 +391,7 @@ export const items: Item[] = [
   taxGem: 300,
   category: 'Bleach Crate',
   rarity: 4.17,
-  emoji: '/kazeshini.png'
+  emoji: '/kaze.png'
 },
 {
   id: '29',
