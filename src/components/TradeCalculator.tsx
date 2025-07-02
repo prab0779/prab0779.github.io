@@ -70,13 +70,17 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       total + ((item.taxGold || 0) * quantity), 0
     );
 
+    // Calculate net tax you need to pay (difference between what you send and receive)
+    const netGemTax = Math.max(0, sentGemTax - receivedGemTax);
+    const netGoldTax = Math.max(0, sentGoldTax - receivedGoldTax);
+
     return {
       itemsSent,
       itemsReceived,
       totalValueSent,
       totalValueReceived,
-      totalTaxGems: 0, // Legacy field
-      totalTaxGold: 0, // Legacy field
+      totalTaxGems: netGemTax,
+      totalTaxGold: netGoldTax,
       netGainLoss: totalValueReceived - totalValueSent,
       sentGemTax,
       sentGoldTax,
@@ -271,7 +275,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                           e.stopPropagation();
                           updateQuantity(index, tradeItem.quantity - 1, type);
                         }}
-                        className="w-5 h-5 sm:w-6 sm:h-6 bg-gray-600 hover:bg-gray-500 text-white text-xs rounded flex items-center justify-center transition-colors"
+                        className="w-5 h-5 sm:w-6 sm:h-6 bg-gray-600 hover:bg-gray-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-xs rounded flex items-center justify-center transition-colors"
                         disabled={tradeItem.quantity <= 1}
                       >
                         -
@@ -285,7 +289,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                           const value = parseInt(e.target.value) || 1;
                           updateQuantity(index, Math.min(999, Math.max(1, value)), type);
                         }}
-                        className="w-8 sm:w-10 h-5 sm:h-6 text-xs bg-gray-700 border border-gray-600 rounded text-white text-center flex-shrink-0 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-8 sm:w-10 h-5 sm:h-6 text-xs bg-gray-700 border border-gray-600 rounded text-white text-center flex-shrink-0 focus:outline-none focus:ring-1 focus:ring-blue-500 no-arrows"
                         onClick={(e) => e.stopPropagation()}
                       />
                       <button
@@ -293,7 +297,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                           e.stopPropagation();
                           updateQuantity(index, tradeItem.quantity + 1, type);
                         }}
-                        className="w-5 h-5 sm:w-6 sm:h-6 bg-gray-600 hover:bg-gray-500 text-white text-xs rounded flex items-center justify-center transition-colors"
+                        className="w-5 h-5 sm:w-6 sm:h-6 bg-gray-600 hover:bg-gray-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-xs rounded flex items-center justify-center transition-colors"
                         disabled={tradeItem.quantity >= 999}
                       >
                         +
@@ -369,55 +373,26 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             </div>
           </div>
           
-          {/* Tax Breakdown */}
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Your Tax */}
+          {/* Tax You Will Pay */}
+          <div className="mt-6">
             <div className="bg-red-900 bg-opacity-20 rounded-lg p-4 border border-red-700">
               <h3 className="text-red-300 font-semibold mb-3 flex items-center">
                 <span className="mr-2">💸</span>
-                Tax You Pay
+                Tax You Will Pay
               </h3>
-              <div className="space-y-2">
-                {calculation.sentGemTax > 0 && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Gems:</span>
-                    <span className="text-purple-400 font-medium">💎 {calculation.sentGemTax}</span>
-                  </div>
-                )}
-                {calculation.sentGoldTax > 0 && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Gold:</span>
-                    <span className="text-yellow-400 font-medium">🪙 {calculation.sentGoldTax}</span>
-                  </div>
-                )}
-                {calculation.sentGemTax === 0 && calculation.sentGoldTax === 0 && (
-                  <p className="text-gray-500 text-sm">No tax required</p>
-                )}
-              </div>
-            </div>
-
-            {/* Their Tax */}
-            <div className="bg-green-900 bg-opacity-20 rounded-lg p-4 border border-green-700">
-              <h3 className="text-green-300 font-semibold mb-3 flex items-center">
-                <span className="mr-2">💰</span>
-                Tax They Pay
-              </h3>
-              <div className="space-y-2">
-                {calculation.receivedGemTax > 0 && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Gems:</span>
-                    <span className="text-purple-400 font-medium">💎 {calculation.receivedGemTax}</span>
-                  </div>
-                )}
-                {calculation.receivedGoldTax > 0 && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Gold:</span>
-                    <span className="text-yellow-400 font-medium">🪙 {calculation.receivedGoldTax}</span>
-                  </div>
-                )}
-                {calculation.receivedGemTax === 0 && calculation.receivedGoldTax === 0 && (
-                  <p className="text-gray-500 text-sm">No tax required</p>
-                )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400">Gem Tax:</span>
+                  <span className="text-purple-400 font-medium">
+                    {calculation.totalTaxGems > 0 ? `💎 ${calculation.totalTaxGems}` : 'No gem tax'}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400">Gold Tax:</span>
+                  <span className="text-yellow-400 font-medium">
+                    {calculation.totalTaxGold > 0 ? `🪙 ${calculation.totalTaxGold}` : 'No gold tax'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

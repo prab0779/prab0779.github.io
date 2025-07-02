@@ -56,6 +56,17 @@
   image-rendering: crisp-edges;
 }
 
+/* Remove number input arrows */
+.no-arrows::-webkit-outer-spin-button,
+.no-arrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-arrows[type=number] {
+  -moz-appearance: textfield;
+}
+
 /* Page transition styles */
 .page-transition-enter {
   opacity: 0;
