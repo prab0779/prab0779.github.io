@@ -375,58 +375,85 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             </div>
           </div>
           
-          {/* Net Tax You Will Pay */}
+          {/* Consolidated Tax Section */}
           <div className="mt-6">
-            <div className="bg-red-900 bg-opacity-20 rounded-lg p-4 border border-red-700">
-              <h3 className="text-red-300 font-semibold mb-3 flex items-center">
+            <div className="bg-orange-900 bg-opacity-20 rounded-lg p-4 border border-orange-700">
+              <h3 className="text-orange-300 font-semibold mb-4 flex items-center">
                 <span className="mr-2">💸</span>
-                Net Tax You Will Pay
+                Tax You Will Pay
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Net Gem Tax:</span>
-                  <span className="text-purple-400 font-medium">
-                    {calculation.totalGemTax > 0 ? `💎 ${calculation.totalGemTax.toLocaleString()}` : 'No gem tax'}
-                  </span>
+              
+              {/* Main Tax Display */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div className="bg-purple-900 bg-opacity-30 rounded-lg p-3 border border-purple-700">
+                  <div className="flex justify-between items-center">
+                    <span className="text-purple-300 font-medium">💎 Gem Tax:</span>
+                    <span className="text-purple-400 font-bold text-lg">
+                      {calculation.totalGemTax > 0 ? `${calculation.totalGemTax.toLocaleString()}` : '0'}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Net Gold Tax:</span>
-                  <span className="text-yellow-400 font-medium">
-                    {calculation.totalGoldTax > 0 ? `🪙 ${calculation.totalGoldTax.toLocaleString()}` : 'No gold tax'}
-                  </span>
+                
+                <div className="bg-yellow-900 bg-opacity-30 rounded-lg p-3 border border-yellow-700">
+                  <div className="flex justify-between items-center">
+                    <span className="text-yellow-300 font-medium">🪙 Gold Tax:</span>
+                    <span className="text-yellow-400 font-bold text-lg">
+                      {calculation.totalGoldTax > 0 ? `${calculation.totalGoldTax.toLocaleString()}` : '0'}
+                    </span>
+                  </div>
                 </div>
               </div>
               
-              {/* Tax Breakdown */}
+              {/* Tax Calculation Breakdown (only show if there are taxes involved) */}
               {(calculation.sentGemTax > 0 || calculation.sentGoldTax > 0 || calculation.receivedGemTax > 0 || calculation.receivedGoldTax > 0) && (
-                <div className="mt-4 pt-4 border-t border-red-600">
-                  <p className="text-xs text-gray-400 mb-2">Tax Breakdown:</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                    <div className="space-y-1">
-                      <p className="text-red-300">Sending:</p>
+                <div className="pt-4 border-t border-orange-600">
+                  <p className="text-xs text-orange-200 mb-3 font-medium">Tax Calculation:</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div className="space-y-2">
+                      <p className="text-red-300 font-medium">📤 Sending Tax:</p>
                       {calculation.sentGemTax > 0 && (
-                        <p className="text-purple-300">💎 {calculation.sentGemTax.toLocaleString()}</p>
+                        <div className="flex justify-between">
+                          <span className="text-purple-300">💎 Gems:</span>
+                          <span className="text-purple-400">+{calculation.sentGemTax.toLocaleString()}</span>
+                        </div>
                       )}
                       {calculation.sentGoldTax > 0 && (
-                        <p className="text-yellow-300">🪙 {calculation.sentGoldTax.toLocaleString()}</p>
+                        <div className="flex justify-between">
+                          <span className="text-yellow-300">🪙 Gold:</span>
+                          <span className="text-yellow-400">+{calculation.sentGoldTax.toLocaleString()}</span>
+                        </div>
                       )}
                       {calculation.sentGemTax === 0 && calculation.sentGoldTax === 0 && (
-                        <p className="text-gray-400">No tax</p>
+                        <p className="text-gray-400 text-xs">No tax</p>
                       )}
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-green-300">Receiving:</p>
+                    
+                    <div className="space-y-2">
+                      <p className="text-green-300 font-medium">📥 Receiving Tax Offset:</p>
                       {calculation.receivedGemTax > 0 && (
-                        <p className="text-purple-300">💎 -{calculation.receivedGemTax.toLocaleString()}</p>
+                        <div className="flex justify-between">
+                          <span className="text-purple-300">💎 Gems:</span>
+                          <span className="text-purple-400">-{calculation.receivedGemTax.toLocaleString()}</span>
+                        </div>
                       )}
                       {calculation.receivedGoldTax > 0 && (
-                        <p className="text-yellow-300">🪙 -{calculation.receivedGoldTax.toLocaleString()}</p>
+                        <div className="flex justify-between">
+                          <span className="text-yellow-300">🪙 Gold:</span>
+                          <span className="text-yellow-400">-{calculation.receivedGoldTax.toLocaleString()}</span>
+                        </div>
                       )}
                       {calculation.receivedGemTax === 0 && calculation.receivedGoldTax === 0 && (
-                        <p className="text-gray-400">No tax offset</p>
+                        <p className="text-gray-400 text-xs">No offset</p>
                       )}
                     </div>
                   </div>
+                </div>
+              )}
+              
+              {/* No Tax Message */}
+              {calculation.totalGemTax === 0 && calculation.totalGoldTax === 0 && (
+                <div className="text-center py-2">
+                  <p className="text-green-400 font-medium">🎉 No tax required for this trade!</p>
                 </div>
               )}
             </div>
