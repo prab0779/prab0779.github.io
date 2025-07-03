@@ -375,7 +375,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             </div>
           </div>
           
-          {/* Consolidated Tax Section */}
+          {/* Tax You Will Pay */}
           <div className="mt-6">
             <div className="bg-orange-900 bg-opacity-20 rounded-lg p-4 border border-orange-700">
               <h3 className="text-orange-300 font-semibold mb-4 flex items-center">
@@ -384,7 +384,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
               </h3>
               
               {/* Main Tax Display */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-purple-900 bg-opacity-30 rounded-lg p-3 border border-purple-700">
                   <div className="flex justify-between items-center">
                     <span className="text-purple-300 font-medium">💎 Gem Tax:</span>
@@ -404,55 +404,9 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                 </div>
               </div>
               
-              {/* Tax Calculation Breakdown (only show if there are taxes involved) */}
-              {(calculation.sentGemTax > 0 || calculation.sentGoldTax > 0 || calculation.receivedGemTax > 0 || calculation.receivedGoldTax > 0) && (
-                <div className="pt-4 border-t border-orange-600">
-                  <p className="text-xs text-orange-200 mb-3 font-medium">Tax Calculation:</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                    <div className="space-y-2">
-                      <p className="text-red-300 font-medium">📤 Sending Tax:</p>
-                      {calculation.sentGemTax > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-purple-300">💎 Gems:</span>
-                          <span className="text-purple-400">+{calculation.sentGemTax.toLocaleString()}</span>
-                        </div>
-                      )}
-                      {calculation.sentGoldTax > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-yellow-300">🪙 Gold:</span>
-                          <span className="text-yellow-400">+{calculation.sentGoldTax.toLocaleString()}</span>
-                        </div>
-                      )}
-                      {calculation.sentGemTax === 0 && calculation.sentGoldTax === 0 && (
-                        <p className="text-gray-400 text-xs">No tax</p>
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <p className="text-green-300 font-medium">📥 Receiving Tax Offset:</p>
-                      {calculation.receivedGemTax > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-purple-300">💎 Gems:</span>
-                          <span className="text-purple-400">-{calculation.receivedGemTax.toLocaleString()}</span>
-                        </div>
-                      )}
-                      {calculation.receivedGoldTax > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-yellow-300">🪙 Gold:</span>
-                          <span className="text-yellow-400">-{calculation.receivedGoldTax.toLocaleString()}</span>
-                        </div>
-                      )}
-                      {calculation.receivedGemTax === 0 && calculation.receivedGoldTax === 0 && (
-                        <p className="text-gray-400 text-xs">No offset</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-              
               {/* No Tax Message */}
               {calculation.totalGemTax === 0 && calculation.totalGoldTax === 0 && (
-                <div className="text-center py-2">
+                <div className="text-center py-3 mt-4">
                   <p className="text-green-400 font-medium">🎉 No tax required for this trade!</p>
                 </div>
               )}
