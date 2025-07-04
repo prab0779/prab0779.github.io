@@ -44,6 +44,23 @@ export const useValueChanges = () => {
     }
   };
 
+  const deleteValueChange = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('value_changes')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      await fetchValueChanges(); // Refresh the list
+      return { error: null };
+    } catch (err) {
+      const error = err instanceof Error ? err.message : 'Failed to delete value change';
+      return { error };
+    }
+  };
+
   useEffect(() => {
     fetchValueChanges();
   }, []);
@@ -53,5 +70,6 @@ export const useValueChanges = () => {
     loading,
     error,
     fetchValueChanges,
+    deleteValueChange,
   };
 };
