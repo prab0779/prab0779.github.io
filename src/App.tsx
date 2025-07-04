@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Header } from './components/Header';
 import { Home } from './components/Home';
 import { TradeCalculator } from './components/TradeCalculator';
+import { ValueChangesPage } from './components/ValueChangesPage';
 import { AdminPage } from './components/AdminPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { useItems } from './hooks/useItems';
@@ -71,6 +72,8 @@ function App() {
         return <Home items={items} />;
       case 'calculator':
         return <TradeCalculator items={items} />;
+      case 'value-changes':
+        return <ValueChangesPage />;
       default:
         return <Home items={items} />;
     }
@@ -124,12 +127,12 @@ function App() {
                     >
                       Discord Community
                     </a>
-                    <a
-                      href="#"
+                    <button
+                      onClick={() => handlePageChange('value-changes')}
                       className="text-gray-400 hover:text-blue-400 transition-colors"
                     >
-                      Game Guide
-                    </a>
+                      Value Changes
+                    </button>
                     <a
                       href="#"
                       className="text-gray-400 hover:text-blue-400 transition-colors"
