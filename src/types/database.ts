@@ -3,21 +3,24 @@ export interface Database {
     Tables: {
       items: {
         Row: {
-          id: string;
-          name: string;
-          value: number;
-          demand: number;
-          rate_of_change: 'Rising' | 'Falling' | 'Stable' | 'Overpriced';
-          prestige: number;
-          status: 'Obtainable' | 'Unobtainable' | 'Limited';
-          obtained_from: string;
-          gem_tax: number | null;
-          gold_tax: number | null;
-          category: string;
-          rarity: number | null;
-          emoji: string;
-          created_at: string;
-          updated_at: string;
+         
+  id: '1',
+  name: 'Scarf',
+  value: 13,
+  demand: 5,
+  rate_of_change: 'Rising',
+  prestige: 2,
+  status: 'Obtainable',
+  obtained_from: 'Obtained as a drop from the Attack Titan Raid Raids',
+  gem_tax: 0,
+  gold_tax: null,
+  category: 'Artifact',
+  rarity: null,
+  emoji: '/scarf.png',
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString()
+
+
         };
         Insert: {
           id: string;
