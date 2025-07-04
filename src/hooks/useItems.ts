@@ -80,6 +80,16 @@ export const useItems = () => {
 
   const updateItem = async (id: string, updates: Partial<Item>) => {
     try {
+      // First, get the current item to track changes
+      const { data: currentItem, error: fetchError } = await supabase
+        .from('items')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Update the item
       const { data, error } = await supabase
         .from('items')
         .update({
@@ -101,6 +111,45 @@ export const useItems = () => {
         .single();
 
       if (error) throw error;
+
+      // Check if there are significant changes to track
+      const hasValueChange = currentItem.value !== updates.value;
+      const hasDemandChange = currentItem.demand !== updates.demand;
+      const hasRateChange = currentItem.rate_of_change !== updates.rateOfChange;
+
+      if (hasValueChange || hasDemandChange || hasRateChange) {
+        // Calculate change type and percentage
+        let changeType: 'increase' | 'decrease' | 'stable' = 'stable';
+        let percentageChange = 0;
+
+        if (hasValueChange && updates.value !== undefined) {
+          if (updates.value > currentItem.value) {
+            changeType = 'increase';
+          } else if (updates.value < currentItem.value) {
+            changeType = 'decrease';
+          }
+          percentageChange = ((updates.value - currentItem.value) / currentItem.value) * 100;
+        }
+
+        // Record the change
+        await supabase
+          .from('value_changes')
+          .insert([{
+            id: `change_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            item_id: id,
+            item_name: updates.name || currentItem.name,
+            emoji: updates.emoji || currentItem.emoji,
+            old_value: currentItem.value,
+            new_value: updates.value || currentItem.value,
+            old_demand: currentItem.demand,
+            new_demand: updates.demand || currentItem.demand,
+            old_rate_of_change: currentItem.rate_of_change,
+            new_rate_of_change: updates.rateOfChange || currentItem.rate_of_change,
+            change_date: new Date().toISOString(),
+            change_type: changeType,
+            percentage_change: percentageChange,
+          }]);
+      }
 
       await fetchItems(); // Refresh the list
       return { data, error: null };

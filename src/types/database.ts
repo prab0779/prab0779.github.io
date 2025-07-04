@@ -54,6 +54,56 @@ export interface Database {
           updated_at?: string;
         };
       };
+      value_changes: {
+        Row: {
+          id: string;
+          item_id: string;
+          item_name: string;
+          emoji: string;
+          old_value: number;
+          new_value: number;
+          old_demand: number;
+          new_demand: number;
+          old_rate_of_change: 'Rising' | 'Falling' | 'Stable' | 'Overpriced';
+          new_rate_of_change: 'Rising' | 'Falling' | 'Stable' | 'Overpriced';
+          change_date: string;
+          change_type: 'increase' | 'decrease' | 'stable';
+          percentage_change: number;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          item_id: string;
+          item_name: string;
+          emoji?: string;
+          old_value: number;
+          new_value: number;
+          old_demand: number;
+          new_demand: number;
+          old_rate_of_change: 'Rising' | 'Falling' | 'Stable' | 'Overpriced';
+          new_rate_of_change: 'Rising' | 'Falling' | 'Stable' | 'Overpriced';
+          change_date?: string;
+          change_type?: 'increase' | 'decrease' | 'stable';
+          percentage_change?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          item_id?: string;
+          item_name?: string;
+          emoji?: string;
+          old_value?: number;
+          new_value?: number;
+          old_demand?: number;
+          new_demand?: number;
+          old_rate_of_change?: 'Rising' | 'Falling' | 'Stable' | 'Overpriced';
+          new_rate_of_change?: 'Rising' | 'Falling' | 'Stable' | 'Overpriced';
+          change_date?: string;
+          change_type?: 'increase' | 'decrease' | 'stable';
+          percentage_change?: number;
+          created_at?: string;
+        };
+      };
     };
   };
 }
