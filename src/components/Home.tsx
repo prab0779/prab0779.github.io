@@ -114,7 +114,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             <h3 className="text-lg font-semibold text-blue-400 mb-2">📊 Value Analysis</h3>
             <p className="text-gray-300 text-sm">
               Use our <strong>AOTR value tracker</strong> to monitor price fluctuations and identify 
-              profitable trading opportunities. Items marked as "Rising" often continue to increase in value.
+              profitable trading opportunities. Items marked as "Rising\" often continue to increase in value.
             </p>
           </div>
           <div className="bg-gray-800 rounded-lg p-4">
