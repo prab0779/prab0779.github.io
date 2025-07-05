@@ -23,108 +23,6 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           <strong className="text-blue-400"> AOTR trading list</strong>. Calculate trades, track market trends, 
           and dominate the AOT Revolution economy with real-time data.
         </p>
-        
-        {/* Key Features with Keywords */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 mb-8">
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-700 hover:border-blue-500 transition-colors">
-            <div className="text-3xl mb-3">📊</div>
-            <h3 className="text-lg font-semibold text-white mb-2">AOTR Value Database</h3>
-            <p className="text-gray-400 text-sm">
-              Complete Attack on Titan Revolution item values with real-time updates and accurate pricing data
-            </p>
-          </div>
-          
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-700 hover:border-green-500 transition-colors">
-            <div className="text-3xl mb-3">🧮</div>
-            <h3 className="text-lg font-semibold text-white mb-2">AOTR Trade Calculator</h3>
-            <p className="text-gray-400 text-sm">
-              Advanced AOTR trading calculator with tax computation and profit analysis for smart trading
-            </p>
-          </div>
-          
-          <div className="bg-gray-900 rounded-lg p-6 border border-gray-700 hover:border-purple-500 transition-colors">
-            <div className="text-3xl mb-3">📈</div>
-            <h3 className="text-lg font-semibold text-white mb-2">Market Insights</h3>
-            <p className="text-gray-400 text-sm">
-              Track AOTR value changes, market trends, and trading opportunities in real-time
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* SEO Content Section */}
-      <div className="bg-gradient-to-r from-blue-900 to-purple-900 rounded-lg p-8 border border-blue-700 mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">
-          🎮 About AOTR Value Hub - Your Premier Attack on Titan Revolution Trading Resource
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-300">
-          <div>
-            <p className="mb-4">
-              <strong className="text-blue-400">AOTR Value Hub</strong> is the most comprehensive 
-              <strong> Attack on Titan Revolution value list</strong> available online. Our platform provides 
-              accurate <strong>AOTR trading values</strong> for over 200+ items, helping players make 
-              informed trading decisions in the AOT Revolution economy.
-            </p>
-            <p className="mb-4">
-              Whether you're looking for <strong>AOTR item values</strong>, need an 
-              <strong> AOTR trade calculator</strong>, or want to track market trends, our platform 
-              offers everything you need for successful trading in Attack on Titan Revolution.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-white mb-3">🔥 Key Features:</h3>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                Real-time AOTR value updates
-              </li>
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                Advanced AOTR trading calculator
-              </li>
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                Complete Attack on Titan Revolution item database
-              </li>
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                AOTR market trend analysis
-              </li>
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                Tax calculation for AOTR trades
-              </li>
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                Mobile-friendly AOTR value list
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Trading Tips Section */}
-      <div className="bg-gray-900 rounded-lg p-6 border border-gray-700 mb-8">
-        <h2 className="text-xl font-bold text-white mb-4 flex items-center">
-          <span className="mr-2">💡</span>
-          AOTR Trading Tips & Strategies
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gray-800 rounded-lg p-4">
-            <h3 className="text-lg font-semibold text-blue-400 mb-2">📊 Value Analysis</h3>
-            <p className="text-gray-300 text-sm">
-              Use our <strong>AOTR value tracker</strong> to monitor price fluctuations and identify 
-              profitable trading opportunities. Items marked as "Rising\" often continue to increase in value.
-            </p>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-4">
-            <h3 className="text-lg font-semibold text-green-400 mb-2">🧮 Smart Trading</h3>
-            <p className="text-gray-300 text-sm">
-              Always use our <strong>AOTR trade calculator</strong> before making trades. Factor in 
-              gem and gold taxes to ensure profitable exchanges in Attack on Titan Revolution.
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Item Database Section */}
@@ -147,7 +45,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
         <ItemList items={items} />
       </div>
 
-      {/* FAQ Section for SEO */}
+      {/* Expanded FAQ Section for SEO */}
       <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
         <h2 className="text-xl font-bold text-white mb-6">
           ❓ Frequently Asked Questions - AOTR Values
@@ -185,7 +83,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             </p>
           </div>
           
-          <div>
+          <div className="border-b border-gray-700 pb-4">
             <h3 className="text-lg font-semibold text-blue-400 mb-2">
               How often are AOTR values updated?
             </h3>
@@ -193,6 +91,72 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
               We update our AOTR trading values daily to reflect current market conditions. 
               Major value changes are tracked and displayed in our value changes section for 
               transparency and market analysis.
+            </p>
+          </div>
+
+          <div className="border-b border-gray-700 pb-4">
+            <h3 className="text-lg font-semibold text-blue-400 mb-2">
+              What items are included in the AOTR value list?
+            </h3>
+            <p className="text-gray-300 text-sm">
+              Our comprehensive AOTR item database includes over 200+ items from Attack on Titan Revolution, 
+              covering weapons, accessories, clothing, consumables, and rare collectibles. Each item includes 
+              detailed information about value, demand, rarity, and how to obtain it.
+            </p>
+          </div>
+
+          <div className="border-b border-gray-700 pb-4">
+            <h3 className="text-lg font-semibold text-blue-400 mb-2">
+              How does the AOTR trade calculator work?
+            </h3>
+            <p className="text-gray-300 text-sm">
+              Our AOTR trade calculator allows you to add items you're sending and receiving, automatically 
+              calculating total values, tax costs (gem and gold), and net profit/loss. It helps ensure 
+              fair trades and prevents you from losing value in Attack on Titan Revolution exchanges.
+            </p>
+          </div>
+
+          <div className="border-b border-gray-700 pb-4">
+            <h3 className="text-lg font-semibold text-blue-400 mb-2">
+              What do the demand ratings mean in AOTR?
+            </h3>
+            <p className="text-gray-300 text-sm">
+              Demand ratings (1-10) indicate how much players want specific items in Attack on Titan Revolution. 
+              Higher demand (8-10) means items are highly sought after and may be harder to trade for. 
+              Lower demand (1-3) items are easier to obtain but may have less trading value.
+            </p>
+          </div>
+
+          <div className="border-b border-gray-700 pb-4">
+            <h3 className="text-lg font-semibold text-blue-400 mb-2">
+              What does "Rate of Change" mean for AOTR items?
+            </h3>
+            <p className="text-gray-300 text-sm">
+              Rate of Change indicates market trends for AOTR items: "Rising" means values are increasing, 
+              "Falling" means decreasing, "Stable" means consistent pricing, and "Overpriced" suggests 
+              the item may be valued higher than market demand warrants.
+            </p>
+          </div>
+
+          <div className="border-b border-gray-700 pb-4">
+            <h3 className="text-lg font-semibold text-blue-400 mb-2">
+              How do taxes work in AOTR trading?
+            </h3>
+            <p className="text-gray-300 text-sm">
+              Some AOTR items require gem or gold taxes when trading. Our calculator automatically computes 
+              these costs so you know exactly what you'll pay. Tax amounts vary by item rarity and type, 
+              with rarer items typically having higher tax requirements.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-blue-400 mb-2">
+              Can I suggest updates to AOTR item values?
+            </h3>
+            <p className="text-gray-300 text-sm">
+              Yes! We welcome community feedback on AOTR item values. Join our Discord community to report 
+              value changes, suggest corrections, or discuss market trends with other Attack on Titan Revolution 
+              traders. Community input helps keep our database accurate and up-to-date.
             </p>
           </div>
         </div>
