@@ -13,8 +13,9 @@ export const ItemList: React.FC<ItemListProps> = ({ items }) => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
 
+  // Get unique categories in alphabetical order
   const categories = useMemo(() => {
-    return Array.from(new Set(items.map(item => item.category)));
+    return Array.from(new Set(items.map(item => item.category))).sort();
   }, [items]);
 
   const filteredItems = useMemo(() => {
