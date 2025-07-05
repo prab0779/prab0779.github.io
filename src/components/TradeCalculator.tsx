@@ -53,7 +53,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       total + (item.value * quantity), 0
     );
     
-    // Calculate total gem and gold taxes for items being sent
+    // Calculate total gem and gold taxes for items being sent (what YOU need to pay)
     const sentGemTax = itemsSent.reduce((total, { item, quantity }) => 
       total + ((item.gemTax || 0) * quantity), 0
     );
@@ -62,7 +62,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       total + ((item.goldTax || 0) * quantity), 0
     );
     
-    // Calculate total gem and gold taxes for items being received
+    // Calculate total gem and gold taxes for items being received (what THEY need to pay)
     const receivedGemTax = itemsReceived.reduce((total, { item, quantity }) => 
       total + ((item.gemTax || 0) * quantity), 0
     );
@@ -71,18 +71,20 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       total + ((item.goldTax || 0) * quantity), 0
     );
 
-    // Calculate NET tax you need to pay (what you send minus what you receive)
-    // If negative, it means you get tax back (but we'll show 0 since you can't get negative tax)
-    const netGemTax = Math.max(0, sentGemTax - receivedGemTax);
-    const netGoldTax = Math.max(0, sentGoldTax - receivedGoldTax);
+    // Calculate the ACTUAL tax you need to pay
+    // In AOTR trading: You pay tax for items you're RECEIVING, not sending
+    // So if you're receiving items with 30k gem tax total, YOU pay 30k gems
+    // The tax calculation should be: tax for items you're receiving
+    const totalGemTax = receivedGemTax;
+    const totalGoldTax = receivedGoldTax;
 
     return {
       itemsSent,
       itemsReceived,
       totalValueSent,
       totalValueReceived,
-      totalGemTax: netGemTax,
-      totalGoldTax: netGoldTax,
+      totalGemTax,
+      totalGoldTax,
       netGainLoss: totalValueReceived - totalValueSent,
       sentGemTax,
       sentGoldTax,
@@ -375,12 +377,12 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             </div>
           </div>
           
-          {/* Tax You Will Pay */}
+          {/* Tax You Will Pay - FIXED LOGIC */}
           <div className="mt-6">
             <div className="bg-orange-900 bg-opacity-20 rounded-lg p-4 border border-orange-700">
               <h3 className="text-orange-300 font-semibold mb-4 flex items-center">
                 <span className="mr-2">💸</span>
-                Tax You Will Pay
+                Tax You Will Pay (for items you're receiving)
               </h3>
               
               {/* Main Tax Display */}
@@ -404,6 +406,25 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                 </div>
               </div>
               
+              {/* Tax Breakdown */}
+              {(calculation.receivedGemTax > 0 || calculation.receivedGoldTax > 0) && (
+                <div className="mt-4 bg-gray-800 rounded-lg p-3">
+                  <p className="text-gray-400 text-sm mb-2">Tax Breakdown:</p>
+                  <div className="space-y-1 text-sm">
+                    {calculation.receivedGemTax > 0 && (
+                      <p className="text-purple-300">
+                        💎 {calculation.receivedGemTax.toLocaleString()} gems (for items you're receiving)
+                      </p>
+                    )}
+                    {calculation.receivedGoldTax > 0 && (
+                      <p className="text-yellow-300">
+                        🪙 {calculation.receivedGoldTax.toLocaleString()} gold (for items you're receiving)
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+              
               {/* No Tax Message */}
               {calculation.totalGemTax === 0 && calculation.totalGoldTax === 0 && (
                 <div className="text-center py-3 mt-4">
@@ -416,12 +437,15 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
           {/* Net Gain/Loss */}
           <div className="mt-6">
             <div className="bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors duration-200">
-              <p className="text-gray-400 text-sm mb-1">Net Gain/Loss</p>
+              <p className="text-gray-400 text-sm mb-1">Net Gain/Loss (Value Only)</p>
               <p className={`text-2xl font-bold ${
                 calculation.netGainLoss > 0 ? 'text-green-400' : 
                 calculation.netGainLoss < 0 ? 'text-red-400' : 'text-gray-400'
               }`}>
                 {calculation.netGainLoss > 0 ? '+' : ''}🔑 {calculation.netGainLoss}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                (This doesn't include tax costs - factor in the tax above for total cost)
               </p>
             </div>
           </div>
@@ -436,8 +460,8 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                 calculation.netGainLoss > 0 ? 'text-green-300' : 'text-red-300'
               }`}>
                 {calculation.netGainLoss > 0 
-                  ? '📈 This trade is profitable for you!' 
-                  : '📉 You would lose value in this trade.'}
+                  ? '📈 This trade is profitable for you (excluding tax)!' 
+                  : '📉 You would lose value in this trade (excluding tax).'}
               </p>
             </div>
           )}
