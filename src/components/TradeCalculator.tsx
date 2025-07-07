@@ -53,7 +53,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       total + (item.value * quantity), 0
     );
     
-    // Calculate total gem and gold taxes for items being sent (what YOU need to pay)
+    // Calculate total gem and gold taxes for items being sent
     const sentGemTax = itemsSent.reduce((total, { item, quantity }) => 
       total + ((item.gemTax || 0) * quantity), 0
     );
@@ -62,7 +62,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       total + ((item.goldTax || 0) * quantity), 0
     );
     
-    // Calculate total gem and gold taxes for items being received (what THEY need to pay)
+    // Calculate total gem and gold taxes for items being received
     const receivedGemTax = itemsReceived.reduce((total, { item, quantity }) => 
       total + ((item.gemTax || 0) * quantity), 0
     );
@@ -71,12 +71,11 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       total + ((item.goldTax || 0) * quantity), 0
     );
 
-    // Calculate the ACTUAL tax you need to pay
-    // In AOTR trading: You pay tax for items you're RECEIVING, not sending
-    // So if you're receiving items with 30k gem tax total, YOU pay 30k gems
-    // The tax calculation should be: tax for items you're receiving
-    const totalGemTax = receivedGemTax;
-    const totalGoldTax = receivedGoldTax;
+    // Calculate the NET tax you need to pay (can be negative)
+    // If you're receiving 30k gem tax items and sending 20k gem tax items, you pay 10k
+    // If you're receiving 20k gem tax items and sending 30k gem tax items, you get -10k (they owe you)
+    const totalGemTax = receivedGemTax - sentGemTax;
+    const totalGoldTax = receivedGoldTax - sentGoldTax;
 
     return {
       itemsSent,
@@ -382,7 +381,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             <div className="bg-orange-900 bg-opacity-20 rounded-lg p-4 border border-orange-700">
               <h3 className="text-orange-300 font-semibold mb-4 flex items-center">
                 <span className="mr-2">💸</span>
-                Tax You Will Pay (for items you're receiving)
+                Tax You Will Pay (net difference)
               </h3>
               
               {/* Main Tax Display */}
@@ -390,45 +389,42 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                 <div className="bg-purple-900 bg-opacity-30 rounded-lg p-3 border border-purple-700">
                   <div className="flex justify-between items-center">
                     <span className="text-purple-300 font-medium">💎 Gem Tax:</span>
-                    <span className="text-purple-400 font-bold text-lg">
-                      {calculation.totalGemTax > 0 ? `${calculation.totalGemTax.toLocaleString()}` : '0'}
+                    <span className={`font-bold text-lg ${
+                      calculation.totalGemTax >= 0 ? 'text-purple-400' : 'text-green-400'
+                    }`}>
+                      {calculation.totalGemTax >= 0 
+                        ? calculation.totalGemTax.toLocaleString()
+                        : `+${Math.abs(calculation.totalGemTax).toLocaleString()}`
+                      }
                     </span>
                   </div>
+                  {calculation.totalGemTax < 0 && (
+                    <p className="text-xs text-green-300 mt-1">They owe you gems!</p>
+                  )}
                 </div>
                 
                 <div className="bg-yellow-900 bg-opacity-30 rounded-lg p-3 border border-yellow-700">
                   <div className="flex justify-between items-center">
                     <span className="text-yellow-300 font-medium">🪙 Gold Tax:</span>
-                    <span className="text-yellow-400 font-bold text-lg">
-                      {calculation.totalGoldTax > 0 ? `${calculation.totalGoldTax.toLocaleString()}` : '0'}
+                    <span className={`font-bold text-lg ${
+                      calculation.totalGoldTax >= 0 ? 'text-yellow-400' : 'text-green-400'
+                    }`}>
+                      {calculation.totalGoldTax >= 0 
+                        ? calculation.totalGoldTax.toLocaleString()
+                        : `+${Math.abs(calculation.totalGoldTax).toLocaleString()}`
+                      }
                     </span>
                   </div>
+                  {calculation.totalGoldTax < 0 && (
+                    <p className="text-xs text-green-300 mt-1">They owe you gold!</p>
+                  )}
                 </div>
               </div>
-              
-              {/* Tax Breakdown */}
-              {(calculation.receivedGemTax > 0 || calculation.receivedGoldTax > 0) && (
-                <div className="mt-4 bg-gray-800 rounded-lg p-3">
-                  <p className="text-gray-400 text-sm mb-2">Tax Breakdown:</p>
-                  <div className="space-y-1 text-sm">
-                    {calculation.receivedGemTax > 0 && (
-                      <p className="text-purple-300">
-                        💎 {calculation.receivedGemTax.toLocaleString()} gems (for items you're receiving)
-                      </p>
-                    )}
-                    {calculation.receivedGoldTax > 0 && (
-                      <p className="text-yellow-300">
-                        🪙 {calculation.receivedGoldTax.toLocaleString()} gold (for items you're receiving)
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
               
               {/* No Tax Message */}
               {calculation.totalGemTax === 0 && calculation.totalGoldTax === 0 && (
                 <div className="text-center py-3 mt-4">
-                  <p className="text-green-400 font-medium">🎉 No tax required for this trade!</p>
+                  <p className="text-green-400 font-medium">🎉 No net tax for this trade!</p>
                 </div>
               )}
             </div>
