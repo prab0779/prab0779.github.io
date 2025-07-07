@@ -15,7 +15,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           Attack on Titan Revolution (AOTR) Value List
         </h1>
         <p className="text-xl text-gray-400 mb-6">
-          Welcome to the official AOTR value tracker — updated daily with accurate trading values
+          Welcome to the Attack on Titan Revolution (AOTR) Value List — updated daily with accurate trading values
         </p>
         <p className="text-lg text-gray-300 mb-8 max-w-4xl mx-auto">
           Your ultimate resource for <strong className="text-blue-400">AOTR trading values</strong>, 
