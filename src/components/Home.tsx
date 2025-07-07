@@ -12,10 +12,10 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       {/* Hero Section with SEO Keywords */}
       <div className="text-center py-12">
         <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-          Attack on Titan Revolution (AOTR) Value List
+          Attack on Titan Revolution (UPDATED) Value List
         </h1>
         <p className="text-xl text-gray-400 mb-6">
-          Welcome to the Attack on Titan Revolution (AOTR) Value List — updated daily with accurate trading values
+          The #1 most trusted Attack on Titan Revolution Value List is maintained by experienced players worldwide, providing an accurate and reliable value list that is frequently updated
         </p>
         <p className="text-lg text-gray-300 mb-8 max-w-4xl mx-auto">
           Your ultimate resource for <strong className="text-blue-400">AOTR trading values</strong>, 

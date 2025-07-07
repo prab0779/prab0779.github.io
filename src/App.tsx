@@ -116,7 +116,7 @@ function App() {
                     <span className="text-xl font-bold text-white">AOT:R Value Hub</span>
                   </div>
                   <p className="text-gray-400 mb-4">
-                     Attack on Titan Revolution Values (UPDATED)
+                    Attack on Titan Revolution Values (UPDATED)
                   </p>
                   <div className="flex justify-center space-x-6">
                     <a
