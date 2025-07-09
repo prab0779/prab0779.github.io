@@ -17,12 +17,6 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
         <p className="text-xl text-gray-400 mb-6">
           The #1 most trusted Attack on Titan Revolution Value List is maintained by experienced players worldwide, providing an accurate and reliable value list that is frequently updated
         </p>
-        <p className="text-lg text-gray-300 mb-8 max-w-4xl mx-auto">
-          Your ultimate resource for <strong className="text-blue-400">AOTR trading values</strong>, 
-          <strong className="text-blue-400"> Attack on Titan Revolution item values</strong>, and comprehensive 
-          <strong className="text-blue-400"> AOTR trading list</strong>. Calculate trades, track market trends, 
-          and dominate the AOT Revolution economy with real-time data.
-        </p>
       </div>
 
       {/* Item Database Section */}
