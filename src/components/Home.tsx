@@ -24,7 +24,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold text-white">
-              Complete AOTR Item Database
+              Item Database
             </h2>
             <p className="text-gray-400 mt-2">
               Browse our comprehensive Attack on Titan Revolution value list with {items.length}+ items
