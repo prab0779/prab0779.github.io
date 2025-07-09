@@ -399,7 +399,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                     </span>
                   </div>
                   {calculation.totalGemTax < 0 && (
-                    <p className="text-xs text-green-300 mt-1">They owe you gems!</p>
+                    <p className="text-xs text-green-300 mt-1">They owe gems!</p>
                   )}
                 </div>
                 
