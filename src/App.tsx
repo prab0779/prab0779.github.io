@@ -4,6 +4,7 @@ import { Header } from './components/Header';
 import { Home } from './components/Home';
 import { TradeCalculator } from './components/TradeCalculator';
 import { ValueChangesPage } from './components/ValueChangesPage';
+import { SpinWheel } from './components/SpinWheel';
 import { AdminPage } from './components/AdminPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { useItems } from './hooks/useItems';
@@ -74,6 +75,8 @@ function App() {
         return <TradeCalculator items={items} />;
       case 'value-changes':
         return <ValueChangesPage />;
+      case 'spin-wheel':
+        return <SpinWheel />;
       default:
         return <Home items={items} />;
     }
@@ -132,6 +135,12 @@ function App() {
                       className="text-gray-400 hover:text-blue-400 transition-colors"
                     >
                       Value Changes
+                    </button>
+                    <button
+                      onClick={() => handlePageChange('spin-wheel')}
+                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                    >
+                      Spin Wheel
                     </button>
                     <a
                       href="#"

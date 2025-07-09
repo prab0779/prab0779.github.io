@@ -45,6 +45,10 @@
   animation: bounce-subtle 2s infinite;
 }
 
+.duration-3000 {
+  transition-duration: 3000ms;
+}
+
 .bg-gray-750 {
   background-color: rgb(55, 65, 81);
 }
