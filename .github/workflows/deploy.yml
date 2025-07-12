@@ -3,13 +3,16 @@ name: Deploy Vite Site to GitHub Pages
 on:
   push:
     branches:
-      - main  # or 'master' if that's your default branch
+      - main
 
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # ✅ THIS LINE FIXES THE 403 ERROR
 
     steps:
       - name: Checkout code
@@ -31,4 +34,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-
