@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  base: '/aotr/', // ✅ This is CRITICAL for GitHub Pages to load assets correctly
+  base: process.env.NODE_ENV === 'production' ? '/aotr/' : '/',
   plugins: [react()],
   optimizeDeps: {
     exclude: ['lucide-react'],
