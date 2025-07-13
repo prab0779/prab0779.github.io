@@ -113,11 +113,11 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       );
     }
     
-    if (emoji.startsWith('/')) {
+    if (emoji.startsWith('/') || emoji.startsWith('./')) {
       return (
         <div className={`flex items-center justify-center ${sizeClasses[size]}`}>
           <img 
-            src={emoji} 
+            src={emoji.startsWith('./') ? emoji.slice(2) : emoji.slice(1)} 
             alt={itemName}
             className={`object-contain pixelated ${
               size === 'slot' 

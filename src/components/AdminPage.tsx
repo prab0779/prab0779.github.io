@@ -112,11 +112,11 @@ export const AdminPage: React.FC = () => {
       return <span className="text-xl sm:text-2xl">👹</span>;
     }
     
-    if (emoji.startsWith('/')) {
+    if (emoji.startsWith('/') || emoji.startsWith('./')) {
       return (
         <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
           <img 
-            src={emoji} 
+            src={emoji.startsWith('./') ? emoji.slice(2) : emoji.slice(1)} 
             alt={itemName}
             className="w-6 h-6 sm:w-8 sm:h-8 object-contain pixelated"
             style={{ imageRendering: 'pixelated' }}

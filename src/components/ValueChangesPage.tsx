@@ -13,11 +13,11 @@ export const ValueChangesPage: React.FC = () => {
       return <span className="text-2xl">👹</span>;
     }
     
-    if (emoji.startsWith('/')) {
+    if (emoji.startsWith('/') || emoji.startsWith('./')) {
       return (
         <div className="w-8 h-8 flex items-center justify-center">
           <img 
-            src={emoji} 
+            src={emoji.startsWith('./') ? emoji.slice(2) : emoji.slice(1)} 
             alt={itemName}
             className="w-8 h-8 object-contain pixelated"
             style={{ imageRendering: 'pixelated' }}
