@@ -256,22 +256,19 @@ export const ValueChangesPage: React.FC = () => {
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {filteredChanges.map((change) => {
-            const changeDescriptions = getChangeDescription(change);
-            
             return (
-              <div key={change.id} className="bg-gray-900 rounded-lg border border-gray-700 p-4 sm:p-6 hover:border-gray-600 transition-all duration-200 hover:shadow-lg">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                  <div className="flex items-center space-x-4">
+              <div key={change.id} className="bg-gray-900 rounded-lg border border-gray-700 p-4 hover:border-gray-600 transition-all duration-200 hover:shadow-lg transform hover:scale-105">
+                {/* Header with item info */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
                     {renderItemIcon(change.emoji, change.itemName)}
                     <div>
-                      <h3 className="text-lg font-semibold text-white">{change.itemName}</h3>
-                      <div className="flex items-center space-x-2 text-sm text-gray-400">
-                        <span>{getRelativeTime(change.changeDate)}</span>
-                        <span>•</span>
-                        <span>{new Date(change.changeDate).toLocaleDateString()}</span>
-                      </div>
+                      <h3 className="text-sm font-semibold text-white truncate max-w-[120px]" title={change.itemName}>
+                        {change.itemName}
+                      </h3>
+                      <p className="text-xs text-gray-400">{getRelativeTime(change.changeDate)}</p>
                     </div>
                   </div>
                   
@@ -280,72 +277,35 @@ export const ValueChangesPage: React.FC = () => {
                     change.changeType === 'decrease' ? 'bg-red-900 text-red-200' :
                     'bg-gray-700 text-gray-300'
                   }`}>
-                    {change.changeType === 'increase' ? '📈 Increased' :
-                     change.changeType === 'decrease' ? '📉 Decreased' : '➡️ Updated'}
+                    {change.changeType === 'increase' ? '📈' :
+                     change.changeType === 'decrease' ? '📉' : '➡️'}
                   </div>
                 </div>
                 
-                {/* What Changed Section */}
-                <div className="mt-4 bg-gray-800 rounded-lg p-4">
-                  <p className="text-sm text-gray-400 mb-2">What Changed:</p>
-                  <div className="space-y-1">
-                    {changeDescriptions.map((description, index) => (
-                      <p key={index} className="text-sm text-white">{description}</p>
-                    ))}
+                {/* Value Change - Main Focus */}
+                <div className="bg-gray-800 rounded-lg p-3 mb-3">
+                  <p className="text-xs text-gray-400 mb-2 text-center">Value Change</p>
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className="text-blue-400 text-sm">🔑 {change.oldValue}</span>
+                    <span className="text-gray-400 text-sm">→</span>
+                    <span className="text-blue-400 font-bold text-lg">🔑 {change.newValue}</span>
                   </div>
+                  {change.oldValue !== change.newValue && (
+                    <div className="text-center mt-2">
+                      <span className={`text-sm font-bold ${change.newValue > change.oldValue ? 'text-green-400' : 'text-red-400'}`}>
+                        {change.newValue > change.oldValue ? '+' : ''}{change.newValue - change.oldValue}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 
-                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="bg-gray-800 rounded-lg p-3">
-                    <p className="text-sm text-gray-400 mb-1">Value Change</p>
-                    <div className="flex items-center space-x-2 flex-wrap">
-                      <span className="text-blue-400">🔑 {change.oldValue}</span>
-                      <span className="text-gray-400">→</span>
-                      <span className="text-blue-400 font-medium">🔑 {change.newValue}</span>
-                      {change.oldValue !== change.newValue && (
-                        <span className={`text-sm ${change.newValue > change.oldValue ? 'text-green-400' : 'text-red-400'}`}>
-                          ({change.newValue > change.oldValue ? '+' : ''}{change.newValue - change.oldValue})
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-800 rounded-lg p-3">
-                    <p className="text-sm text-gray-400 mb-1">Demand Change</p>
-                    <div className="flex items-center space-x-2 flex-wrap">
-                      <span className="text-white">{change.oldDemand}/10</span>
-                      <span className="text-gray-400">→</span>
-                      <span className="text-white font-medium">{change.newDemand}/10</span>
-                      {change.oldDemand !== change.newDemand && (
-                        <span className={`text-sm ${change.newDemand > change.oldDemand ? 'text-green-400' : 'text-red-400'}`}>
-                          ({change.newDemand > change.oldDemand ? '+' : ''}{change.newDemand - change.oldDemand})
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-800 rounded-lg p-3 sm:col-span-2 lg:col-span-1">
-                    <p className="text-sm text-gray-400 mb-1">Rate Change</p>
-                    <div className="flex items-center space-x-2 flex-wrap">
-                      <div className="flex items-center space-x-1">
-                        {getRateIcon(change.oldRateOfChange)}
-                        <span className="text-white text-sm">{change.oldRateOfChange}</span>
-                      </div>
-                      <span className="text-gray-400">→</span>
-                      <div className="flex items-center space-x-1">
-                        {getRateIcon(change.newRateOfChange)}
-                        <span className="text-white font-medium text-sm">{change.newRateOfChange}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
+                {/* Percentage Change */}
                 {change.percentageChange !== 0 && (
-                  <div className="mt-3 text-center">
-                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                  <div className="text-center">
+                    <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
                       change.percentageChange > 0 ? 'bg-green-900 bg-opacity-30 text-green-400' : 'bg-red-900 bg-opacity-30 text-red-400'
                     }`}>
-                      {change.percentageChange > 0 ? '+' : ''}{change.percentageChange.toFixed(1)}% value change
+                      {change.percentageChange > 0 ? '+' : ''}{change.percentageChange.toFixed(1)}%
                     </span>
                   </div>
                 )}
