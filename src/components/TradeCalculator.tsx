@@ -97,7 +97,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       small: 'w-6 h-6 text-xl',
       medium: 'w-8 h-8 text-2xl', 
       large: 'w-16 h-16 text-6xl',
-      slot: 'w-full h-full'
+      slot: 'w-full h-full object-cover'
     };
     
     // Add null/undefined check before calling startsWith
@@ -115,13 +115,13 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     
     if (emoji.startsWith('/') || emoji.startsWith('./')) {
       return (
-        <div className={`flex items-center justify-center ${sizeClasses[size]}`}>
+        <div className={`flex items-center justify-center ${size === 'slot' ? 'w-full h-full' : sizeClasses[size]}`}>
           <img 
             src={emoji.startsWith('./') ? emoji.slice(2) : emoji.slice(1)} 
             alt={itemName}
             className={`object-contain pixelated ${
               size === 'slot' 
-                ? 'w-full h-full max-w-none max-h-none min-w-0 min-h-0' 
+                ? 'w-full h-full max-w-none max-h-none min-w-0 min-h-0 object-cover' 
                 : sizeClasses[size].split(' ').slice(0, 2).join(' ')
             }`}
             style={{ imageRendering: 'pixelated' }}
@@ -134,7 +134,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
           />
           <span className={`hidden ${
             size === 'slot' 
-              ? 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl' 
+              ? 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl' 
               : sizeClasses[size].split(' ')[2]
           }`}>👹</span>
         </div>
@@ -143,7 +143,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     return (
       <span className={
         size === 'slot' 
-          ? 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-none' 
+          ? 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-none' 
           : sizeClasses[size].split(' ')[2]
       }>
         {emoji}
@@ -260,7 +260,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                     </button>
                     
                     {/* Icon container - takes most of the space */}
-                    <div className="flex-1 flex items-center justify-center min-h-0 mb-1 sm:mb-2 p-1">
+                    <div className="flex-1 flex items-center justify-center min-h-0 mb-1 sm:mb-2 overflow-hidden">
                       {renderItemIcon(tradeItem.item.emoji, tradeItem.item.name, 'slot')}
                     </div>
                     
