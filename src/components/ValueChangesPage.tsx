@@ -264,7 +264,7 @@ export const ValueChangesPage: React.FC = () => {
                 <div className="flex items-center space-x-3 mb-4">
                     {renderItemIcon(change.emoji, change.itemName)}
                     <div>
-                      <h3 className="text-base font-semibold text-white truncate max-w-[140px]" title={change.itemName}>
+                    <h3 className="text-sm font-semibold text-white truncate" title={change.itemName}>
                         {change.itemName}
                       </h3>
                     </div>
@@ -276,6 +276,14 @@ export const ValueChangesPage: React.FC = () => {
                     <span className="text-gray-400 text-sm">🔑 {change.oldValue}</span>
                     <span className="text-gray-400 text-sm">→</span>
                     <span className="text-blue-400 font-bold text-base">🔑 {change.newValue}</span>
+                    {/* Percentage Change Indicator */}
+                    {change.percentageChange !== 0 && (
+                      <div className={`text-xs font-medium mt-1 ${
+                        change.percentageChange > 0 ? 'text-green-400' : 'text-red-400'
+                      }`}>
+                        {change.percentageChange > 0 ? '📈' : '📉'} {change.percentageChange > 0 ? '+' : ''}{change.percentageChange.toFixed(1)}%
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
