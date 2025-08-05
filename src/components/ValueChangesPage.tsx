@@ -260,55 +260,24 @@ export const ValueChangesPage: React.FC = () => {
           {filteredChanges.map((change) => {
             return (
               <div key={change.id} className="bg-gray-900 rounded-lg border border-gray-700 p-4 hover:border-gray-600 transition-all duration-200 hover:shadow-lg transform hover:scale-105">
-                {/* Header with item info */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
+                {/* Item info */}
+                <div className="flex items-center space-x-3 mb-4">
                     {renderItemIcon(change.emoji, change.itemName)}
                     <div>
-                      <h3 className="text-sm font-semibold text-white truncate max-w-[120px]" title={change.itemName}>
+                      <h3 className="text-base font-semibold text-white truncate max-w-[140px]" title={change.itemName}>
                         {change.itemName}
                       </h3>
-                      <p className="text-xs text-gray-400">{getRelativeTime(change.changeDate)}</p>
                     </div>
-                  </div>
-                  
-                  <div className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
-                    change.changeType === 'increase' ? 'bg-green-900 text-green-200' :
-                    change.changeType === 'decrease' ? 'bg-red-900 text-red-200' :
-                    'bg-gray-700 text-gray-300'
-                  }`}>
-                    {change.changeType === 'increase' ? '📈' :
-                     change.changeType === 'decrease' ? '📉' : '➡️'}
-                  </div>
                 </div>
                 
-                {/* Value Change - Main Focus */}
-                <div className="bg-gray-800 rounded-lg p-3 mb-3">
-                  <p className="text-xs text-gray-400 mb-2 text-center">Value Change</p>
+                {/* Value Change */}
+                <div className="bg-gray-800 rounded-lg p-3">
                   <div className="flex items-center justify-center space-x-2">
-                    <span className="text-blue-400 text-sm">🔑 {change.oldValue}</span>
+                    <span className="text-gray-400 text-sm">🔑 {change.oldValue}</span>
                     <span className="text-gray-400 text-sm">→</span>
-                    <span className="text-blue-400 font-bold text-lg">🔑 {change.newValue}</span>
+                    <span className="text-blue-400 font-bold text-base">🔑 {change.newValue}</span>
                   </div>
-                  {change.oldValue !== change.newValue && (
-                    <div className="text-center mt-2">
-                      <span className={`text-sm font-bold ${change.newValue > change.oldValue ? 'text-green-400' : 'text-red-400'}`}>
-                        {change.newValue > change.oldValue ? '+' : ''}{change.newValue - change.oldValue}
-                      </span>
-                    </div>
-                  )}
                 </div>
-                
-                {/* Percentage Change */}
-                {change.percentageChange !== 0 && (
-                  <div className="text-center">
-                    <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                      change.percentageChange > 0 ? 'bg-green-900 bg-opacity-30 text-green-400' : 'bg-red-900 bg-opacity-30 text-red-400'
-                    }`}>
-                      {change.percentageChange > 0 ? '+' : ''}{change.percentageChange.toFixed(1)}%
-                    </span>
-                  </div>
-                )}
               </div>
             );
           })}
