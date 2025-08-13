@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { TrendingUp, TrendingDown, Minus, Calendar, Filter, Search, Grid3X3, List } from 'lucide-react';
 import { useValueChanges } from '../hooks/useValueChanges';
 import { ItemGridCard } from './ItemGridCard';
+import { ItemGridCard } from './ItemGridCard';
 
 export const ValueChangesPage: React.FC = () => {
   const { valueChanges, loading, error } = useValueChanges();
@@ -289,19 +290,19 @@ export const ValueChangesPage: React.FC = () => {
       ) : (
         <>
           {viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {filteredChanges.map((change) => {
-                // Create a mock item object for ItemGridCard
+                // Create a mock item object for ItemGridCard with updated values
                 const mockItem = {
                   id: change.itemId,
                   name: change.itemName,
                   value: change.newValue,
-                  demand: 5, // Default values since we don't track these in changes
-                  rateOfChange: 'Stable' as const,
-                  prestige: 0,
+                  demand: change.newDemand,
+                  rateOfChange: change.newRateOfChange as 'Rising' | 'Falling' | 'Stable' | 'Overpriced',
+                  prestige: 1,
                   status: 'Obtainable' as const,
-                  obtainedFrom: 'Unknown',
-                  category: 'Unknown',
+                  obtainedFrom: 'Check main item list for details',
+                  category: 'Item',
                   rarity: null,
                   emoji: change.emoji,
                   gemTax: null,
@@ -311,13 +312,28 @@ export const ValueChangesPage: React.FC = () => {
                 return (
                   <div key={change.id} className="relative">
                     <ItemGridCard item={mockItem} />
-                    {/* Value change overlay */}
-                    <div className="absolute top-2 right-2 bg-black bg-opacity-75 rounded-lg px-2 py-1">
-                      <div className="flex items-center space-x-1 text-xs">
-                        <span className="text-gray-400">🔑{change.oldValue}</span>
-                        <span className="text-gray-400">→</span>
-                        <span className="text-blue-400 font-bold">🔑{change.newValue}</span>
+                    {/* Value change overlay - more prominent */}
+                    <div className="absolute top-2 right-2 bg-black bg-opacity-90 rounded-lg px-2 py-1 border border-gray-600">
+                      <div className="flex flex-col items-center text-xs">
+                        <div className="flex items-center space-x-1">
+                          <span className="text-gray-400">🔑{change.oldValue}</span>
+                          <span className="text-gray-400">→</span>
+                          <span className="text-blue-400 font-bold">🔑{change.newValue}</span>
+                        </div>
+                        {change.oldValue !== change.newValue && (
+                          <span className={`text-xs font-bold ${
+                            change.newValue > change.oldValue ? 'text-green-400' : 'text-red-400'
+                          }`}>
+                            {change.newValue > change.oldValue ? '+' : ''}{change.newValue - change.oldValue}
+                          </span>
+                        )}
                       </div>
+                    </div>
+                    {/* Time indicator */}
+                    <div className="absolute top-2 left-2 bg-black bg-opacity-75 rounded-lg px-2 py-1">
+                      <span className="text-xs text-gray-300">
+                        {getRelativeTime(change.changeDate)}
+                      </span>
                     </div>
                   </div>
                 );
