@@ -1,12 +1,17 @@
 import React, { useState, useMemo } from 'react';
-import { TrendingUp, TrendingDown, Minus, Calendar, Filter, Search } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Calendar, Filter, Search, Grid3X3, List } from 'lucide-react';
 import { useValueChanges } from '../hooks/useValueChanges';
+import { ItemGridCard } from './ItemGridCard';
 
 export const ValueChangesPage: React.FC = () => {
   const { valueChanges, loading, error } = useValueChanges();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedChangeType, setSelectedChangeType] = useState<string>('');
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>('all');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>(() => {
+    // Default to grid for desktop, list for mobile
+    return window.innerWidth >= 1024 ? 'grid' : 'list';
+  });
 
   const renderItemIcon = (emoji: string, itemName: string) => {
     if (!emoji || typeof emoji !== 'string') {
@@ -204,6 +209,32 @@ export const ValueChangesPage: React.FC = () => {
               <option value="30d">Last 30 Days</option>
             </select>
           </div>
+
+          {/* View Mode Toggle */}
+          <div className="flex items-center bg-gray-800 rounded-lg border border-gray-600 overflow-hidden">
+            <button
+              onClick={() => setViewMode('list')}
+              className={`flex items-center space-x-2 px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                viewMode === 'list'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-300 hover:text-white hover:bg-gray-700'
+              }`}
+            >
+              <List className="w-4 h-4" />
+              <span className="hidden sm:inline">List</span>
+            </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`flex items-center space-x-2 px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                viewMode === 'grid'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-300 hover:text-white hover:bg-gray-700'
+              }`}
+            >
+              <Grid3X3 className="w-4 h-4" />
+              <span className="hidden sm:inline">Grid</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -256,32 +287,82 @@ export const ValueChangesPage: React.FC = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          {filteredChanges.map((change) => {
-            return (
-              <div key={change.id} className="bg-gray-900 rounded-lg border border-gray-700 p-4 hover:border-gray-600 transition-all duration-200 hover:shadow-lg transform hover:scale-105">
-                {/* Item info */}
-                <div className="flex items-center space-x-3 mb-4">
-                    {renderItemIcon(change.emoji, change.itemName)}
-                    <div>
-                      <h3 className="text-base font-semibold text-white truncate max-w-[140px]" title={change.itemName}>
-                        {change.itemName}
-                      </h3>
+        <>
+          {viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+              {filteredChanges.map((change) => {
+                // Create a mock item object for ItemGridCard
+                const mockItem = {
+                  id: change.itemId,
+                  name: change.itemName,
+                  value: change.newValue,
+                  demand: 5, // Default values since we don't track these in changes
+                  rateOfChange: 'Stable' as const,
+                  prestige: 0,
+                  status: 'Obtainable' as const,
+                  obtainedFrom: 'Unknown',
+                  category: 'Unknown',
+                  rarity: null,
+                  emoji: change.emoji,
+                  gemTax: null,
+                  goldTax: null
+                };
+
+                return (
+                  <div key={change.id} className="relative">
+                    <ItemGridCard item={mockItem} />
+                    {/* Value change overlay */}
+                    <div className="absolute top-2 right-2 bg-black bg-opacity-75 rounded-lg px-2 py-1">
+                      <div className="flex items-center space-x-1 text-xs">
+                        <span className="text-gray-400">🔑{change.oldValue}</span>
+                        <span className="text-gray-400">→</span>
+                        <span className="text-blue-400 font-bold">🔑{change.newValue}</span>
+                      </div>
                     </div>
-                </div>
-                
-                {/* Value Change */}
-                <div className="bg-gray-800 rounded-lg p-3">
-                  <div className="flex items-center justify-center space-x-2">
-                    <span className="text-gray-400 text-sm">🔑 {change.oldValue}</span>
-                    <span className="text-gray-400 text-sm">→</span>
-                    <span className="text-blue-400 font-bold text-base">🔑 {change.newValue}</span>
                   </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredChanges.map((change) => {
+                return (
+                  <div key={change.id} className="bg-gray-900 rounded-lg border border-gray-700 p-4 hover:border-gray-600 transition-all duration-200">
+                    <div className="flex items-center justify-between">
+                      {/* Item info */}
+                      <div className="flex items-center space-x-3">
+                        {renderItemIcon(change.emoji, change.itemName)}
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">
+                            {change.itemName}
+                          </h3>
+                          <p className="text-sm text-gray-400">
+                            {getRelativeTime(change.changeDate)}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Value Change */}
+                      <div className="bg-gray-800 rounded-lg p-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="text-center">
+                            <p className="text-xs text-gray-400 mb-1">Old Value</p>
+                            <p className="text-gray-400 font-medium">🔑 {change.oldValue}</p>
+                          </div>
+                          <span className="text-gray-400 text-xl">→</span>
+                          <div className="text-center">
+                            <p className="text-xs text-gray-400 mb-1">New Value</p>
+                            <p className="text-blue-400 font-bold text-lg">🔑 {change.newValue}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
 
       {/* Market Insights */}
