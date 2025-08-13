@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { TrendingUp, TrendingDown, Minus, Calendar, Filter, Search, Grid3X3, List } from 'lucide-react';
 import { useValueChanges } from '../hooks/useValueChanges';
 import { ItemGridCard } from './ItemGridCard';
-import { ItemGridCard } from './ItemGridCard';
 
 export const ValueChangesPage: React.FC = () => {
   const { valueChanges, loading, error } = useValueChanges();
