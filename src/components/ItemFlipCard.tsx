@@ -183,7 +183,15 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
                   </span>
                 </div>
               </div>
-      
+
+              {item.rarity !== null && (
+                <div className="bg-yellow-900 bg-opacity-30 rounded-lg p-2 border border-yellow-700">
+                  <div className="flex items-center justify-between">
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* How to Obtain */}
             <div className="flex-1 min-h-0 mb-3">
               <div className="bg-gray-700 rounded-lg p-2 border border-gray-600 h-full">
