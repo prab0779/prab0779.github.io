@@ -183,7 +183,16 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
                   </span>
                 </div>
               </div>
-          </div>
+
+              {item.rarity !== null && (
+                <div className="bg-yellow-900 bg-opacity-30 rounded-lg p-2 border border-yellow-700">
+                  <div className="flex items-center justify-between">
+                    <span className="text-yellow-300 text-xs font-medium">🧪 Rarity</span>
+                    <span className="text-yellow-400 font-bold text-xs">{item.rarity}%</span>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* How to Obtain */}
             <div className="flex-1 min-h-0 mb-3">
@@ -194,6 +203,14 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
                 </div>
               </div>
             </div>
+
+            {/* Footer */}
+            <div className="text-center flex-shrink-0">
+              <p className="text-xs text-gray-500">Click to flip back</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <style jsx>{`
         .flip-card {
