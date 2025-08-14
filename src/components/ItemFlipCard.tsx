@@ -203,7 +203,7 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
       <style jsx>{`
         .flip-card {
           background-color: transparent;
-          perspective: 1000px;
+          perspective: 10000px;
         }
 
         .flip-card-inner {
