@@ -232,6 +232,6 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
         .flip-card-back {
           transform: rotateY(180deg);
         }
-      `}</style>
+      
   );
 };
