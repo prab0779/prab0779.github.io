@@ -183,6 +183,7 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
                   </span>
                 </div>
               </div>
+            </div>
 
             {/* How to Obtain */}
             <div className="flex-1 min-h-0 mb-3">
@@ -232,6 +233,7 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
         .flip-card-back {
           transform: rotateY(180deg);
         }
-      
+      `}</style>
+    </div>
   );
 };
