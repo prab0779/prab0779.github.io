@@ -164,12 +164,6 @@ export const ItemGridCard: React.FC<ItemGridCardProps> = ({ item }) => {
             </div>
           </div>
 
-          {/* Status Badge */}
-          <div className="text-center mb-4 flex-shrink-0">
-            <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(item.status)}`}>
-              {item.status}
-            </span>
-          </div>
 
           {/* Click to View Indicator - Pushed to bottom */}
           <div className="mt-auto text-center">
