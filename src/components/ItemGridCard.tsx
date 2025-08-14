@@ -219,7 +219,7 @@ export const ItemGridCard: React.FC<ItemGridCardProps> = ({ item }) => {
               </div>
 
               {/* Detailed Stats */}
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              <div className="grid grid-cols-2 gap-4 sm:gap-5">
                 <div className="bg-gray-800 rounded-lg p-3 sm:p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-gray-400 text-sm">🔸 Demand</span>
