@@ -92,7 +92,7 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
             </div>
 
             {/* Item Name */}
-            <div className="text-center mb-4 flex-shrink-0">
+            <div className="text-center mb-3 flex-shrink-0">
               <h3 className="text-lg font-bold text-white line-clamp-2 min-h-[3rem] flex items-center justify-center px-2">
                 {item.name}
               </h3>
