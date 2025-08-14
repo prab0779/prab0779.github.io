@@ -123,11 +123,6 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
                 <p className="text-xs text-gray-400">Rate</p>
               </div>
             </div>
-
-            {/* Click to flip indicator */}
-            <div className="mt-auto text-center">
-              <p className="text-xs text-gray-400">Click to flip for details</p>
-            </div>
           </div>
         </div>
 
