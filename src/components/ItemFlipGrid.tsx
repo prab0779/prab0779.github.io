@@ -52,8 +52,7 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items }) => {
           <p className="text-gray-500">Try adjusting your search terms or filters</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-12">
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-14">
           {filteredItems.map(item => (
             <ItemFlipCard key={item.id} item={item} />
           ))}
