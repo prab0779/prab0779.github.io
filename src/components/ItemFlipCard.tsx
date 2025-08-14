@@ -108,7 +108,7 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
             </div>
 
             {/* Demand and Rate of Change */}
-            <div className="grid grid-cols-2 gap-3 mb-4 flex-shrink-0">
+            <div className="grid grid-cols-2 gap-2 mb-4 flex-shrink-0">
               <div className="bg-gray-800 rounded-lg p-3 text-center">
                 <p className={`text-lg font-bold ${getDemandColor(item.demand)}`}>
                   {item.demand}/10
@@ -116,9 +116,9 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
                 <p className="text-xs text-gray-400">Demand</p>
               </div>
               <div className="bg-gray-800 rounded-lg p-3 text-center">
-                <div className="flex items-center justify-center space-x-1 mb-1">
+                <div className="flex items-center justify-center space-x-1 mb-1 min-h-[20px]">
                   {getRateIcon(item.rateOfChange)}
-                  <span className="text-white text-xs font-medium">{item.rateOfChange}</span>
+                  <span className="text-white text-xs font-medium truncate">{item.rateOfChange}</span>
                 </div>
                 <p className="text-xs text-gray-400">Rate</p>
               </div>
@@ -133,85 +133,73 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
 
         {/* Back of Card */}
         <div className="flip-card-back bg-gray-800 rounded-xl border border-gray-600 cursor-pointer">
-          <div className="p-6 flex flex-col h-full">
-            {/* Header */}
-            <div className="text-center mb-4 flex-shrink-0">
-              <div className="flex justify-center mb-2">
+          <div className="p-4 flex flex-col h-full">
+            {/* All Details List */}
+            <div className="space-y-3 flex-grow">
+              {/* Item Name with Image */}
+              <div className="flex items-center space-x-3 mb-4">
                 {renderItemIcon(item.emoji, 'small')}
+                <span className="text-white font-bold text-lg">🔹 {item.name}</span>
               </div>
-              <h3 className="text-lg font-bold text-white">{item.name}</h3>
-              <p className="text-sm text-gray-400">{item.category}</p>
-            </div>
-
-            {/* Detailed Stats */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="bg-gray-700 rounded-lg p-3">
-                <div className="text-center">
-                  <p className="text-blue-400 font-bold text-lg">🔑 {item.value}</p>
-                  <p className="text-xs text-gray-400">Value</p>
+              
+              {/* Value */}
+              <div className="flex items-center space-x-2">
+                <span className="text-blue-400 font-medium">💰 Value:</span>
+                <span className="text-blue-400 font-bold">🔑 {item.value}</span>
+              </div>
+              
+              {/* Demand */}
+              <div className="flex items-center space-x-2">
+                <span className="text-gray-300 font-medium">🔸 Demand:</span>
+                <span className={`font-bold ${getDemandColor(item.demand)}`}>{item.demand}/10</span>
+              </div>
+              
+              {/* Rate of Change */}
+              <div className="flex items-center space-x-2">
+                <span className="text-gray-300 font-medium">📈 Rate of Change:</span>
+                <div className="flex items-center space-x-1">
+                  {getRateIcon(item.rateOfChange)}
+                  <span className="text-white font-bold">{item.rateOfChange}</span>
                 </div>
               </div>
               
-              <div className="bg-gray-700 rounded-lg p-3">
-                <div className="text-center">
-                  <p className={`font-bold text-lg ${getDemandColor(item.demand)}`}>
-                    {item.demand}/10
-                  </p>
-                  <p className="text-xs text-gray-400">Demand</p>
-                </div>
+              {/* Prestige */}
+              <div className="flex items-center space-x-2">
+                <span className="text-gray-300 font-medium">🏅 Prestige:</span>
+                <span className="text-purple-400 font-bold">{item.prestige}</span>
               </div>
               
-              <div className="bg-gray-700 rounded-lg p-3">
-                <div className="text-center">
-                  <div className="flex items-center justify-center space-x-1 mb-1">
-                    {getRateIcon(item.rateOfChange)}
-                  </div>
-                  <p className="text-xs text-gray-400">Rate</p>
-                </div>
+              {/* Status */}
+              <div className="flex items-center space-x-2">
+                <span className="text-gray-300 font-medium">📋 Status:</span>
+                <span className="text-white font-bold">{item.status}</span>
               </div>
               
-              <div className="bg-gray-700 rounded-lg p-3">
-                <div className="text-center">
-                  <p className="text-purple-400 font-bold text-lg">{item.prestige}</p>
-                  <p className="text-xs text-gray-400">Prestige</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Additional Details */}
-            <div className="space-y-3 mb-4">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-sm">📋 Status:</span>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(item.status)}`}>
-                  {item.status}
-                </span>
+              {/* Obtained From */}
+              <div className="flex items-start space-x-2">
+                <span className="text-gray-300 font-medium flex-shrink-0">📦 Obtained:</span>
+                <span className="text-white text-sm leading-relaxed">{item.obtainedFrom}</span>
               </div>
               
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-sm">💸 Tax:</span>
-                <span className={`font-medium text-sm ${taxInfo.type === 'gem' ? 'text-purple-400' : 'text-yellow-400'}`}>
+              {/* Tax */}
+              <div className="flex items-center space-x-2">
+                <span className="text-gray-300 font-medium">💸 Tax:</span>
+                <span className={`font-bold ${taxInfo.type === 'gem' ? 'text-purple-400' : taxInfo.type === 'gold' ? 'text-yellow-400' : 'text-gray-400'}`}>
                   {taxInfo.value > 0 ? `${taxInfo.emoji} ${taxInfo.value.toLocaleString()}` : 'None'}
                 </span>
               </div>
               
+              {/* Rarity (if available) */}
               {item.rarity !== null && (
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-sm">🧪 Rarity:</span>
-                  <span className="text-yellow-400 font-medium text-sm">{item.rarity}%</span>
+                <div className="flex items-center space-x-2">
+                  <span className="text-gray-300 font-medium">🧪 Rarity:</span>
+                  <span className="text-yellow-400 font-bold">{item.rarity}%</span>
                 </div>
               )}
             </div>
 
-            {/* Obtained From */}
-            <div className="bg-gray-700 rounded-lg p-3 mb-4 flex-grow">
-              <p className="text-gray-400 text-xs font-medium mb-2">📦 How to Obtain:</p>
-              <div className="max-h-16 overflow-y-auto">
-                <p className="text-white text-xs leading-relaxed">{item.obtainedFrom}</p>
-              </div>
-            </div>
-
-            {/* Click to flip back */}
-            <div className="text-center flex-shrink-0">
+            {/* Click to flip back indicator */}
+            <div className="text-center mt-4 flex-shrink-0">
               <p className="text-xs text-gray-400">Click to flip back</p>
             </div>
           </div>
