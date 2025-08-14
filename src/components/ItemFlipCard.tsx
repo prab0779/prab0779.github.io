@@ -127,78 +127,87 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
         </div>
 
         {/* Back of Card */}
-        <div className="flip-card-back bg-gray-800 rounded-xl border border-gray-600 cursor-pointer overflow-hidden flex flex-col h-full">
-          <div className="p-4 flex flex-col h-full overflow-hidden">
-            {/* Header */}
-            <div className="flex items-center space-x-3 mb-4 flex-shrink-0">
-              <div className="flex-shrink-0">
-                {renderItemIcon(item.emoji, 'small')}
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-white font-bold text-base truncate">🔹 {item.name}</h3>
-                <p className="text-gray-400 text-sm truncate">{item.category}</p>
-              </div>
-            </div>
+<div className="flip-card-back bg-gray-800 rounded-xl border border-gray-600 cursor-pointer overflow-hidden flex flex-col h-full">
+  <div className="p-4 flex flex-col h-full">
 
-            {/* Main Stats */}
-            <div className="grid grid-cols-2 gap-2 mb-4 flex-shrink-0">
-              <div className="bg-blue-900 bg-opacity-40 rounded-lg p-2 border border-blue-700">
-                <div className="text-xs text-blue-300 mb-1">💰 Value</div>
-                <div className="text-blue-400 font-bold text-sm">🔑 {item.value}</div>
-              </div>
+    {/* Top Header */}
+    <div className="flex items-start mb-4">
+      {/* Image */}
+      <div className="flex-shrink-0 mr-3">
+        {renderItemIcon(item.emoji, 'small')}
+      </div>
 
-              <div className="bg-gray-700 rounded-lg p-2 border border-gray-600">
-                <div className="text-xs text-gray-300 mb-1">🔸 Demand</div>
-                <div className={`font-bold text-sm ${getDemandColor(item.demand)}`}>{item.demand}/10</div>
-              </div>
+      {/* Name + Category + Status */}
+      <div className="flex flex-col">
+        <h3 className="text-white font-bold text-base">{item.name}</h3>
+        <p className="text-gray-400 text-sm">{item.category}</p>
+        <span
+          className={`mt-2 px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(item.status)}`}
+        >
+          📋 {item.status}
+        </span>
+      </div>
+    </div>
 
-              <div className="bg-gray-700 rounded-lg p-2 border border-gray-600">
-                <div className="text-xs text-gray-300 mb-1">📈 Rate</div>
-                <div className="flex items-center space-x-1">
-                  {getRateIcon(item.rateOfChange)}
-                  <span className="text-white font-bold text-xs truncate">{item.rateOfChange}</span>
-                </div>
-              </div>
+    {/* Stats */}
+    <div className="grid grid-cols-2 gap-2 mb-4">
+      <div className="bg-blue-900 bg-opacity-40 rounded-lg p-2 border border-blue-700">
+        <div className="text-xs text-blue-300 mb-1">💰 Value</div>
+        <div className="text-blue-400 font-bold text-sm">🔑 {item.value}</div>
+      </div>
 
-              <div className="bg-purple-900 bg-opacity-40 rounded-lg p-2 border border-purple-700">
-                <div className="text-xs text-purple-300 mb-1">🏅 Prestige</div>
-                <div className="text-purple-400 font-bold text-sm">{item.prestige}</div>
-              </div>
-            </div>
+      <div className="bg-gray-700 rounded-lg p-2 border border-gray-600">
+        <div className="text-xs text-gray-300 mb-1">🔸 Demand</div>
+        <div className={`font-bold text-sm ${getDemandColor(item.demand)}`}>{item.demand}/10</div>
+      </div>
 
-            {/* Status */}
-            <div className="text-center mb-3 flex-shrink-0">
-              <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(item.status)}`}>
-                📋 {item.status}
-              </span>
-            </div>
-
-            {/* Additional Info */}
-            <div className="space-y-2 flex-shrink-0 mb-3">
-              <div className="bg-orange-900 bg-opacity-30 rounded-lg p-2 border border-orange-700">
-                <div className="flex items-center justify-between">
-                  <span className="text-orange-300 text-xs font-medium">💸 Tax</span>
-                  <span className={`font-bold text-xs ${taxInfo.type === 'gem' ? 'text-purple-400' : taxInfo.type === 'gold' ? 'text-yellow-400' : 'text-gray-400'}`}>
-                    {taxInfo.value > 0 ? `${taxInfo.emoji} ${taxInfo.value.toLocaleString()}` : 'None'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* How to Obtain */}
-            <div className="flex-1 min-h-0 mb-3">
-              <div className="bg-gray-700 rounded-lg p-2 border border-gray-600 h-full">
-                <div className="text-xs text-gray-300 font-medium mb-1">📦 How to Obtain</div>
-                <div className="text-white text-xs leading-relaxed overflow-y-auto h-full max-h-16">
-                  {item.obtainedFrom}
-                </div>
-              </div>
-            </div>
-
-            {/* Footer */}
-          </div>
+      <div className="bg-gray-700 rounded-lg p-2 border border-gray-600">
+        <div className="text-xs text-gray-300 mb-1">📈 Rate</div>
+        <div className="flex items-center space-x-1">
+          {getRateIcon(item.rateOfChange)}
+          <span className="text-white font-bold text-xs truncate">{item.rateOfChange}</span>
         </div>
       </div>
+
+      <div className="bg-purple-900 bg-opacity-40 rounded-lg p-2 border border-purple-700">
+        <div className="text-xs text-purple-300 mb-1">🏅 Prestige</div>
+        <div className="text-purple-400 font-bold text-sm">{item.prestige}</div>
+      </div>
+    </div>
+
+    {/* Tax */}
+    <div className="bg-orange-900 bg-opacity-30 rounded-lg p-2 border border-orange-700 mb-4">
+      <div className="flex items-center justify-between">
+        <span className="text-orange-300 text-xs font-medium">💸 Tax</span>
+        <span
+          className={`font-bold text-xs ${
+            taxInfo.type === 'gem'
+              ? 'text-purple-400'
+              : taxInfo.type === 'gold'
+              ? 'text-yellow-400'
+              : 'text-gray-400'
+          }`}
+        >
+          {taxInfo.value > 0 ? `${taxInfo.emoji} ${taxInfo.value.toLocaleString()}` : 'None'}
+        </span>
+      </div>
+    </div>
+
+    {/* How to Obtain */}
+    <div className="bg-gray-700 rounded-lg p-2 border border-gray-600">
+      <div className="text-xs text-gray-300 font-medium mb-1">📦 How to Obtain</div>
+      <div className="text-white text-xs leading-relaxed">
+        {item.obtainedFrom}
+      </div>
+    </div>
+
+    {/* Footer */}
+    <div className="text-center mt-3">
+      <p className="text-xs text-gray-500">Click to flip back</p>
+    </div>
+  </div>
+</div>
+
 
       <style jsx>{`
         .flip-card {
