@@ -208,7 +208,7 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
 
         .flip-card-inner {
           position: relative;
-          width: 1000%;
+          width: 110%;
           height: 100%;
           text-align: center;
           transition: transform 0.6s;
