@@ -233,6 +233,5 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
           transform: rotateY(180deg);
         }
       `}</style>
-    </div>
   );
 };
