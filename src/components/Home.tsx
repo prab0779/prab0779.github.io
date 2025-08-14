@@ -1,5 +1,5 @@
 import React from 'react';
-import { ItemList } from './ItemList';
+import { ItemFlipGrid } from './ItemFlipGrid';
 import { Item } from '../types/Item';
 
 interface HomeProps {
@@ -36,7 +36,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             </p>
           </div>
         </div>
-        <ItemList items={items} />
+        <ItemFlipGrid items={items} />
       </div>
 
       {/* Expanded FAQ Section for SEO */}
