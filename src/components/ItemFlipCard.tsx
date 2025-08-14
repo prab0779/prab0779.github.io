@@ -135,7 +135,7 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
                 {renderItemIcon(item.emoji, 'small')}
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="text-white font-bold text-base truncate">🔹 {item.name}</h3>
+                <h3 className="text-white font-bold text-base truncate">{item.name}</h3>
                 <p className="text-gray-400 text-sm truncate">{item.category}</p>
               </div>
             </div>
