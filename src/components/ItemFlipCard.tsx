@@ -196,9 +196,6 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
             </div>
 
             {/* Footer */}
-            <div className="text-center flex-shrink-0">
-              <p className="text-xs text-gray-500">Click to flip back</p>
-            </div>
           </div>
         </div>
       </div>
