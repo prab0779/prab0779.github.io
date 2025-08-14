@@ -184,10 +184,6 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
                 </div>
               </div>
 
-              {item.rarity !== null && (
-              )}
-            </div>
-
             {/* How to Obtain */}
             <div className="flex-1 min-h-0 mb-3">
               <div className="bg-gray-700 rounded-lg p-2 border border-gray-600 h-full">
