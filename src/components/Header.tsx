@@ -48,12 +48,12 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
             </button>
 
             <button
-              onClick={() => onPageChange('spin-wheel')}
+              onClick={() => onPageChange('value-guesser')}
               className={`text-sm font-medium transition-all duration-200 hover:text-blue-400 px-3 py-2 rounded-md hover:bg-gray-800 ${
-                currentPage === 'spin-wheel' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
+                currentPage === 'value-guesser' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
               }`}
             >
-              Spin Wheel
+              Value Guesser
             </button>
 
             <a
@@ -118,14 +118,14 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
 
               <button
                 onClick={() => {
-                  onPageChange('spin-wheel');
+                  onPageChange('value-guesser');
                   setIsMenuOpen(false);
                 }}
                 className={`text-left text-sm font-medium transition-colors hover:text-blue-400 px-3 py-2 rounded-md ${
-                  currentPage === 'spin-wheel' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
+                  currentPage === 'value-guesser' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
                 }`}
               >
-                🎰 Spin Wheel
+                🎯 Value Guesser
               </button>
 
               <a
