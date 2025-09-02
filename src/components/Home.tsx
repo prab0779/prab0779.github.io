@@ -52,7 +52,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             <p className="text-gray-300 text-sm">
               AOTR Value Hub is the ultimate resource for Attack on Titan Revolution item values, 
               featuring a comprehensive trade calculator, real-time market data, and an extensive 
-              item database to help players make informed trading decisions.
+              item database to help players make informed trading decisions. AOTR Value Hub is a fan-made resource and is not affiliated with, sponsored by, or endorsed by Attack on Titan, its creators, or the Roblox game Attack on Titan Revolution
             </p>
           </div>
           
