@@ -135,16 +135,16 @@ export const ValueGuesser: React.FC<ValueGuesserProps> = ({ items }) => {
 
   const renderItemIcon = (emoji: string, itemName: string) => {
     if (!emoji || typeof emoji !== 'string') {
-      return <span className="text-6xl">👹</span>;
+      return <span className="text-8xl">👹</span>;
     }
     
     if (emoji.startsWith('/')) {
       return (
-        <div className="w-24 h-24 flex items-center justify-center">
+        <div className="w-32 h-32 flex items-center justify-center">
           <img 
             src={emoji} 
             alt={itemName}
-            className="w-24 h-24 object-contain pixelated"
+            className="w-32 h-32 object-contain pixelated"
             style={{ imageRendering: 'pixelated' }}
             onError={(e) => {
               const target = e.target as HTMLImageElement;
@@ -153,11 +153,11 @@ export const ValueGuesser: React.FC<ValueGuesserProps> = ({ items }) => {
               if (fallback) fallback.style.display = 'block';
             }}
           />
-          <span className="text-6xl hidden">👹</span>
+          <span className="text-8xl hidden">👹</span>
         </div>
       );
     }
-    return <span className="text-6xl">{emoji}</span>;
+    return <span className="text-8xl">{emoji}</span>;
   };
 
   const getAccuracyColor = (accuracy: number) => {
@@ -300,31 +300,69 @@ export const ValueGuesser: React.FC<ValueGuesserProps> = ({ items }) => {
             <h2 className="text-lg font-semibold text-white mb-6">Guess the value of this item:</h2>
             
             {/* Item Card */}
-            <div className="bg-gray-800 rounded-lg p-6 border border-gray-600 inline-block">
-              <div className="mb-4">
+            <div className="bg-gray-800 rounded-xl p-8 border border-gray-600 inline-block min-w-[300px]">
+              <div className="mb-6 flex items-center justify-center h-32">
                 {renderItemIcon(currentItem.emoji, currentItem.name)}
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">{currentItem.name}</h3>
-              <p className="text-gray-400">{currentItem.category}</p>
+              <h3 className="text-2xl font-bold text-white mb-3 text-center">{currentItem.name}</h3>
+              <p className="text-gray-400 text-center text-lg">{currentItem.category}</p>
             </div>
 
             {/* Guess Input */}
             {!showResult && (
-              <div className="mt-8 space-y-4">
-                <div className="flex items-center justify-center space-x-4">
-                  <span className="text-white font-medium">🔑</span>
-                  <input
-                    type="number"
-                    min="1"
-                    max="100000"
-                    value={userGuess}
-                    onChange={(e) => setUserGuess(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSubmitGuess()}
-                    placeholder="Enter your guess..."
-                    className="w-48 px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white text-center text-xl font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    autoFocus
-                  />
-                  <span className="text-gray-400">keys</span>
+              <div className="mt-8 space-y-6">
+                {/* Value Slider */}
+                <div className="bg-gray-800 rounded-xl p-6 border border-gray-600">
+                  <div className="text-center mb-4">
+                    <p className="text-gray-400 text-sm mb-2">Drag the slider or type your guess</p>
+                    <div className="flex items-center justify-center space-x-3">
+                      <span className="text-2xl">🔑</span>
+                      <span className="text-3xl font-bold text-blue-400">{userGuess || '0'}</span>
+                      <span className="text-gray-400 text-lg">keys</span>
+                    </div>
+                  </div>
+                  
+                  {/* Custom Slider */}
+                  <div className="space-y-4">
+                    <input
+                      type="range"
+                      min="1"
+                      max="10000"
+                      value={userGuess || '1'}
+                      onChange={(e) => setUserGuess(e.target.value)}
+                      className="w-full h-3 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                      style={{
+                        background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${((parseInt(userGuess) || 1) / 10000) * 100}%, #374151 ${((parseInt(userGuess) || 1) / 10000) * 100}%, #374151 100%)`
+                      }}
+                    />
+                    
+                    {/* Quick Value Buttons */}
+                    <div className="grid grid-cols-5 gap-2">
+                      {[10, 50, 100, 500, 1000].map(value => (
+                        <button
+                          key={value}
+                          onClick={() => setUserGuess(value.toString())}
+                          className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105"
+                        >
+                          {value}
+                        </button>
+                      ))}
+                    </div>
+                    
+                    {/* Manual Input */}
+                    <div className="flex items-center justify-center">
+                      <input
+                        type="number"
+                        min="1"
+                        max="100000"
+                        value={userGuess}
+                        onChange={(e) => setUserGuess(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleSubmitGuess()}
+                        placeholder="Type exact value..."
+                        className="w-48 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-center font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="flex justify-center space-x-3">

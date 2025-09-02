@@ -109,3 +109,36 @@
 .flip-card-back {
   transform: rotateY(180deg);
 }
+
+/* Custom slider styles */
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #3B82F6;
+  cursor: pointer;
+  border: 2px solid #1E40AF;
+  box-shadow: 0 0 0 1px #1E40AF, 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.slider::-webkit-slider-thumb:hover {
+  background: #2563EB;
+  transform: scale(1.1);
+}
+
+.slider::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #3B82F6;
+  cursor: pointer;
+  border: 2px solid #1E40AF;
+  box-shadow: 0 0 0 1px #1E40AF, 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.slider::-moz-range-track {
+  height: 12px;
+  background: #374151;
+  border-radius: 6px;
+}
