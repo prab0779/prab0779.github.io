@@ -50,8 +50,7 @@ export const MaintenancePopup: React.FC = () => {
           </h2>
           
           <p className="text-gray-300">
-            Our team is working hard to bring you the most accurate and up-to-date AOTR values. 
-            We'll be back online shortly with improved features and data.
+            
           </p>
           
           <div className="bg-gray-800 rounded-lg p-4 border border-gray-600">
