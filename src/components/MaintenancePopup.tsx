@@ -59,7 +59,7 @@ export const MaintenancePopup: React.FC = () => {
           </div>
           
           <p className="text-gray-400 text-sm">
-            Thank you for your patience while we improve your experience.
+            
           </p>
         </div>
 
