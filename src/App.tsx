@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Header } from './components/Header';
+import { MaintenancePopup } from './components/MaintenancePopup';
 import { Home } from './components/Home';
 import { TradeCalculator } from './components/TradeCalculator';
 import { ValueChangesPage } from './components/ValueChangesPage';
@@ -12,6 +13,7 @@ import { ItemHistory } from './types/Item';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
+  const [maintenanceMode, setMaintenanceMode] = useState(true);
   const { items, loading } = useItems();
   const [itemHistory, setItemHistory] = useState<ItemHistory>({});
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -84,6 +86,7 @@ function App() {
 
   return (
     <Router>
+      {maintenanceMode && <MaintenancePopup />}
       <Routes>
         {/* Admin Route - Protected */}
         <Route 
