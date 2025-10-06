@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Header } from './components/Header';
 import { MaintenancePopup } from './components/MaintenancePopup';
 import { Home } from './components/Home';
@@ -11,12 +11,25 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { useItems } from './hooks/useItems';
 import { ItemHistory } from './types/Item';
 
-function App() {
+// Component that has access to location
+const AppContent: React.FC = () => {
+  const location = useLocation();
   const [currentPage, setCurrentPage] = useState('home');
-  const [maintenanceMode, setMaintenanceMode] = useState(true);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
   const { items, loading } = useItems();
   const [itemHistory, setItemHistory] = useState<ItemHistory>({});
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Load maintenance mode from localStorage on component mount
+  useEffect(() => {
+    const saved = localStorage.getItem('maintenanceMode');
+    if (saved) {
+      setMaintenanceMode(JSON.parse(saved));
+    }
+  }, []);
+
+  // Check if current page is admin
+  const isAdminPage = location.pathname === '/admin';
 
   // Initialize item history on first load
   useEffect(() => {
@@ -41,6 +54,12 @@ function App() {
       localStorage.setItem('itemHistory', JSON.stringify(initialHistory));
     }
   }, [items]);
+
+  // Function to toggle maintenance mode (will be passed to AdminPage)
+  const toggleMaintenanceMode = (enabled: boolean) => {
+    setMaintenanceMode(enabled);
+    localStorage.setItem('maintenanceMode', JSON.stringify(enabled));
+  };
 
   const handlePageChange = async (newPage: string) => {
     if (newPage === currentPage || isTransitioning) return;
@@ -85,15 +104,20 @@ function App() {
   };
 
   return (
-    <Router>
-      {maintenanceMode && <MaintenancePopup />}
+    <>
+      {/* Show maintenance popup only if maintenance is enabled AND not on admin page */}
+      {maintenanceMode && !isAdminPage && <MaintenancePopup />}
+      
       <Routes>
         {/* Admin Route - Protected */}
         <Route 
           path="/admin" 
           element={
             <ProtectedRoute>
-              <AdminPage />
+              <AdminPage 
+                maintenanceMode={maintenanceMode}
+                onToggleMaintenanceMode={toggleMaintenanceMode}
+              />
             </ProtectedRoute>
           } 
         />
@@ -163,6 +187,14 @@ function App() {
           } 
         />
       </Routes>
+    </>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

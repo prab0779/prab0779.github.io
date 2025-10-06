@@ -490,15 +490,13 @@ export const AdminPage: React.FC = () => {
             </button>
             <button
               onClick={() => setCurrentView('settings')}
-              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors flex items-center space-x-2 ${
+              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors ${
                 currentView === 'settings'
                   ? 'border-blue-500 text-blue-400'
                   : 'border-transparent text-gray-400 hover:text-gray-300'
               }`}
             >
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Settings</span>
-              <span className="sm:hidden">Settings</span>
+              Settings
             </button>
           </div>
         </div>
@@ -522,7 +520,88 @@ export const AdminPage: React.FC = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        {currentView === 'items' ? (
+        {currentView === 'settings' ? (
+          /* Settings View */
+          <div>
+            <div className="mb-6 sm:mb-8">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white">Site Settings</h1>
+              <p className="text-gray-400 mt-1 sm:mt-2 text-sm sm:text-base">Manage site-wide settings and maintenance mode</p>
+            </div>
+
+            {/* Maintenance Mode Setting */}
+            <div className="bg-gray-900 rounded-lg p-6 border border-gray-700 mb-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-2">Maintenance Mode</h3>
+                  <p className="text-gray-400 text-sm">
+                    When enabled, shows a maintenance popup to all users except admins. 
+                    Users cannot interact with the site during maintenance.
+                  </p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <span className={`text-sm font-medium ${maintenanceMode ? 'text-red-400' : 'text-green-400'}`}>
+                    {maintenanceMode ? 'Enabled' : 'Disabled'}
+                  </span>
+                  <button
+                    onClick={() => onMaintenanceModeChange(!maintenanceMode)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 ${
+                      maintenanceMode ? 'bg-red-600' : 'bg-green-600'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        maintenanceMode ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+              
+              {maintenanceMode && (
+                <div className="mt-4 p-3 bg-red-900 bg-opacity-30 border border-red-700 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <AlertCircle className="w-4 h-4 text-red-400" />
+                    <span className="text-red-300 text-sm font-medium">Maintenance Mode Active</span>
+                  </div>
+                  <p className="text-red-200 text-sm mt-1">
+                    All users (except admins) will see the maintenance popup and cannot access the site.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Site Statistics */}
+            <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
+              <h3 className="text-lg font-semibold text-white mb-4">Site Statistics</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400 text-sm">Total Items</span>
+                    <span className="text-white font-bold text-lg">{items.length}</span>
+                  </div>
+                </div>
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400 text-sm">Value Changes</span>
+                    <span className="text-white font-bold text-lg">{valueChanges.length}</span>
+                  </div>
+                </div>
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400 text-sm">Online Users</span>
+                    <span className="text-green-400 font-bold text-lg">{usersLoading ? '...' : onlineCount}</span>
+                  </div>
+                </div>
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400 text-sm">Categories</span>
+                    <span className="text-white font-bold text-lg">{categories.length}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : currentView === 'items' ? (
           <>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
               <div>
