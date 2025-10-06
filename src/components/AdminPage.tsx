@@ -488,6 +488,18 @@ export const AdminPage: React.FC = () => {
               <span className="hidden sm:inline">Value Changes</span>
               <span className="sm:hidden">Changes</span>
             </button>
+            <button
+              onClick={() => setCurrentView('settings')}
+              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors flex items-center space-x-2 ${
+                currentView === 'settings'
+                  ? 'border-blue-500 text-blue-400'
+                  : 'border-transparent text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              <Settings className="w-4 h-4" />
+              <span className="hidden sm:inline">Settings</span>
+              <span className="sm:hidden">Settings</span>
+            </button>
           </div>
         </div>
       </div>
