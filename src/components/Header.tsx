@@ -57,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
             </button>
 
             <a
-              href="https://discord.gg/aotrvalues"
+              href="https://discord.gg/tradingcorps"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-1 text-sm font-medium text-gray-300 hover:text-blue-400 transition-all duration-200 px-3 py-2 rounded-md hover:bg-gray-800"
