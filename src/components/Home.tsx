@@ -42,15 +42,15 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       {/* Expanded FAQ Section for SEO */}
       <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
         <h2 className="text-xl font-bold text-white mb-6">
-          ❓ Frequently Asked Questions - AOTR Values
+          ❓ Frequently Asked Questions - Trading Corps.
         </h2>
         <div className="space-y-4">
           <div className="border-b border-gray-700 pb-4">
             <h3 className="text-lg font-semibold text-blue-400 mb-2">
-              What is AOTR Value Hub?
+              What is Trading Corps.?
             </h3>
             <p className="text-gray-300 text-sm">
-              AOTR Value Hub is the ultimate resource for Attack on Titan Revolution item values, 
+              Trading Corps. is the ultimate resource for Attack on Titan Revolution item values, 
               featuring a comprehensive trade calculator, real-time market data, and an extensive 
               item database to help players make informed trading decisions. AOTR Value Hub is a fan-made resource and is not affiliated with, sponsored by, or endorsed by Attack on Titan, its creators, or the Roblox game Attack on Titan Revolution
             </p>
@@ -69,17 +69,17 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           
           <div className="border-b border-gray-700 pb-4">
             <h3 className="text-lg font-semibold text-blue-400 mb-2">
-              Is the AOTR trade calculator free?
+              Is the Trading Corps. calculator free?
             </h3>
             <p className="text-gray-300 text-sm">
-              Yes! AOTR Value Hub is completely free to use. Our trade calculator, item database, 
+              Yes! Trading Corps. is completely free to use. Our trade calculator, item database, 
               and all features are available at no cost to help the Attack on Titan Revolution community.
             </p>
           </div>
           
           <div className="border-b border-gray-700 pb-4">
             <h3 className="text-lg font-semibold text-blue-400 mb-2">
-              How often are AOTR values updated?
+              How often are values updated?
             </h3>
             <p className="text-gray-300 text-sm">
               We update our AOTR trading values daily to reflect current market conditions. 
