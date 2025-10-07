@@ -153,7 +153,7 @@ export const ValueChangesPage: React.FC = () => {
       {/* Header */}
       <div className="text-center py-8">
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
-          📊 Value Changes History
+          Value Changes History
         </h1>
         <p className="text-xl text-gray-400 mb-8">
           Track real-time item value fluctuations and market trends
