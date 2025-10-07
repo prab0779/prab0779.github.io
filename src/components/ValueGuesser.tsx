@@ -181,7 +181,7 @@ export const ValueGuesser: React.FC<ValueGuesserProps> = ({ items }) => {
         {/* Header */}
         <div className="text-center py-8">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            🎯 Value Guesser
+            Value Guesser
           </h1>
           <p className="text-xl text-gray-400 mb-8">
             Test your knowledge of AOTR item values!
