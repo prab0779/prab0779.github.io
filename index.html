@@ -345,12 +345,12 @@
     <div id="root"></div>
     <script>
       // GitHub Pages SPA redirect handler
-      // Store the current path for the 404.html redirect
+      // Restore the URL from the 404.html redirect
       (function() {
-        if (location.search.slice(1)) {
-          var redirect = location.pathname + location.search + location.hash;
-          sessionStorage.redirect = redirect;
-          location.replace(location.pathname.split('/').slice(0, -1).join('/') + '/?p=' + redirect);
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect != location.href) {
+          history.replaceState(null, null, redirect);
         }
       })();
     </script>
