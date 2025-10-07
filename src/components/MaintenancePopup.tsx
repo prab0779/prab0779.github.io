@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { AlertTriangle, Wrench } from 'lucide-react';
+import { AlertTriangle, Wrench, MessageCircle, ExternalLink } from 'lucide-react';
 
 export const MaintenancePopup: React.FC = () => {
   useEffect(() => {
@@ -63,6 +63,22 @@ export const MaintenancePopup: React.FC = () => {
           </p>
         </div>
 
+        {/* Discord Button */}
+        <div className="mt-6 text-center">
+          <a
+            href="https://discord.gg/tradingcorps"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center space-x-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+            <MessageCircle className="w-5 h-5" />
+            <span className="font-medium">Join Our Discord Community</span>
+            <ExternalLink className="w-4 h-4" />
+          </a>
+          <p className="text-gray-400 text-xs mt-2">
+            Stay updated and connect with other traders
+          </p>
+        </div>
         {/* Footer */}
         <div className="mt-6 pt-4 border-t border-gray-700 text-center">
           <p className="text-gray-500 text-xs">
