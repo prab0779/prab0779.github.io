@@ -169,6 +169,12 @@ const AppContent: React.FC = () => {
                     >
                       Value Guesser
                     </button>
+                    <button
+                      onClick={() => handlePageChange('trade-ads')}
+                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                    >
+                      Trade Ads
+                    </button>
                     <a
                       href="#"
                       className="text-gray-400 hover:text-blue-400 transition-colors"
