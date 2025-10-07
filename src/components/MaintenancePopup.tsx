@@ -21,7 +21,7 @@ export const MaintenancePopup: React.FC = () => {
         <div className="text-center mb-6">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Wrench className="w-8 h-8 text-orange-400 animate-bounce" />
-            <span className="text-2xl font-bold text-white">Important Notice</span>
+            <span className="text-2xl font-bold text-white">Notice</span>
             <AlertTriangle className="w-8 h-8 text-orange-400 animate-pulse" />
           </div>
           
