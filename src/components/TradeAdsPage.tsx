@@ -466,7 +466,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       {/* Header */}
       <div className="text-center py-8">
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
-          🤝 Trade Ads
+          Trade Ads
         </h1>
         <p className="text-xl text-gray-400 mb-8">
           Post and browse community trade offers
