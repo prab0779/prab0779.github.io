@@ -200,7 +200,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                     <p className="text-white font-medium">{item.name}</p>
                     <p className="text-sm text-gray-400">{item.category}</p>
                   </div>
-                  <span className="text-blue-400 font-medium">🔑 {item.value}</span>
                 </button>
               ))}
             </div>
@@ -470,7 +469,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
           🤝 Trade Ads
         </h1>
         <p className="text-xl text-gray-400 mb-8">
-          Post what you're offering and what you want - connect with other traders
+          Post and browse community trade offers
         </p>
         
         <button
@@ -567,10 +566,10 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 {/* Offering */}
                 <div className="bg-gray-800 rounded-lg p-3">
-                  <h4 className="text-blue-400 font-medium mb-2 text-sm">📤 Offering</h4>
+                  <h4 className="text-blue-400 font-medium mb-2 text-sm">💎 Offering</h4>
                   <div className="space-y-1">
                     {ad.itemsOffering.length === 0 ? (
-                      <p className="text-gray-500 text-xs">Nothing specified</p>
+                      <p className="text-gray-500 text-xs">Open to offers</p>
                     ) : (
                       ad.itemsOffering.map((item, index) => (
                         <div key={index} className="flex items-center space-x-2">
@@ -587,10 +586,10 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
                 {/* Wanting */}
                 <div className="bg-gray-800 rounded-lg p-3">
-                  <h4 className="text-green-400 font-medium mb-2 text-sm">📥 Wanting</h4>
+                  <h4 className="text-green-400 font-medium mb-2 text-sm">🔍 Looking For</h4>
                   <div className="space-y-1">
                     {ad.itemsWanted.length === 0 ? (
-                      <p className="text-gray-500 text-xs">Nothing specified</p>
+                      <p className="text-gray-500 text-xs">Open to offers</p>
                     ) : (
                       ad.itemsWanted.map((item, index) => (
                         <div key={index} className="flex items-center space-x-2">
