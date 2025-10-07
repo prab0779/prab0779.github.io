@@ -139,6 +139,18 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                 🎯 Value Guesser
               </button>
 
+              <button
+                onClick={() => {
+                  onPageChange('trade-ads');
+                  setIsMenuOpen(false);
+                }}
+                className={`text-left text-sm font-medium transition-colors hover:text-blue-400 px-3 py-2 rounded-md ${
+                  currentPage === 'trade-ads' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
+                }`}
+              >
+                🤝 Trade Ads
+              </button>
+
               <a
                 href="https://discord.gg/tradingcorps"
                 target="_blank"

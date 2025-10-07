@@ -6,6 +6,7 @@ import { Home } from './components/Home';
 import { TradeCalculator } from './components/TradeCalculator';
 import { ValueChangesPage } from './components/ValueChangesPage';
 import { ValueGuesser } from './components/ValueGuesser';
+import { TradeAdsPage } from './components/TradeAdsPage';
 import { AdminPage } from './components/AdminPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { useItems } from './hooks/useItems';
@@ -98,6 +99,8 @@ const AppContent: React.FC = () => {
         return <ValueChangesPage />;
       case 'value-guesser':
         return <ValueGuesser items={items} />;
+      case 'trade-ads':
+        return <TradeAdsPage items={items} />;
       default:
         return <Home items={items} />;
     }
