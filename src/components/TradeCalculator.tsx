@@ -456,8 +456,8 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                 calculation.netGainLoss > 0 ? 'text-green-300' : 'text-red-300'
               }`}>
                 {calculation.netGainLoss > 0 
-                  ? '📈 This trade is profitable for you (excluding tax)!' 
-                  : '📉 You would lose value in this trade (excluding tax).'}
+                  ? 'This trade is profitable for you (excluding tax)!' 
+                  : 'You would lose value in this trade (excluding tax).'}
               </p>
             </div>
           )}
