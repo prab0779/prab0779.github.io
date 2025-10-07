@@ -64,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                 currentPage === 'trade-ads' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
               }`}
             >
-              🤝 Trade Ads
+              Trade Ads
             </button>
 
             <a
