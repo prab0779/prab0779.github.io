@@ -52,16 +52,16 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             <p className="text-gray-300 text-sm">
               Trading Corps. is the ultimate resource for Attack on Titan Revolution item values, 
               featuring a comprehensive trade calculator, real-time market data, and an extensive 
-              item database to help players make informed trading decisions. AOTR Value Hub is a fan-made resource and is not affiliated with, sponsored by, or endorsed by Attack on Titan, its creators, or the Roblox game Attack on Titan Revolution
+              item database to help players make informed trading decisions. Trading Corps. is a fan-made resource and is not affiliated with, sponsored by, or endorsed by Attack on Titan, its creators, or the Roblox game Attack on Titan Revolution
             </p>
           </div>
           
           <div className="border-b border-gray-700 pb-4">
             <h3 className="text-lg font-semibold text-blue-400 mb-2">
-              How accurate are the AOTR values?
+              How accurate are the values?
             </h3>
             <p className="text-gray-300 text-sm">
-              Our AOTR item values are updated regularly based on market trends, community feedback, 
+              Our item values are updated regularly based on market trends, community feedback, 
               and trading data to ensure the most accurate and current pricing information for 
               Attack on Titan Revolution items.
             </p>
