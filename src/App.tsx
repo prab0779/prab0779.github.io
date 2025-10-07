@@ -116,7 +116,7 @@ const AppContent: React.FC = () => {
             <ProtectedRoute>
               <AdminPage 
                 maintenanceMode={maintenanceMode}
-                onToggleMaintenanceMode={toggleMaintenanceMode}
+                onMaintenanceModeChange={toggleMaintenanceMode}
               />
             </ProtectedRoute>
           } 
