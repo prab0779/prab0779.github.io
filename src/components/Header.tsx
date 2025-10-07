@@ -100,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                   currentPage === 'home' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
                 }`}
               >
-                🏠 Home
+                Home
               </button>
               
               <button
@@ -112,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                   currentPage === 'calculator' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
                 }`}
               >
-                🧮 Trade Calculator
+                Trade Calculator
               </button>
 
               <button
@@ -124,7 +124,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                   currentPage === 'value-changes' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
                 }`}
               >
-                📊 Value Changes
+                Value Changes
               </button>
 
               <button
@@ -136,7 +136,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                   currentPage === 'value-guesser' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
                 }`}
               >
-                🎯 Value Guesser
+                Value Guesser
               </button>
 
               <button
@@ -148,7 +148,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                   currentPage === 'trade-ads' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
                 }`}
               >
-                🤝 Trade Ads
+                Trade Ads
               </button>
 
               <a
@@ -157,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 text-sm font-medium text-gray-300 hover:text-blue-400 transition-colors px-3 py-2"
               >
-                <span>💬</span>
+                <span></span>
                 <span>Discord</span>
                 <ExternalLink className="w-4 h-4" />
               </a>
