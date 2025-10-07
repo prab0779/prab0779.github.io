@@ -470,7 +470,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
           🤝 Trade Ads
         </h1>
         <p className="text-xl text-gray-400 mb-8">
-          Post and browse community trade offers
+          Post what you're offering and what you want - connect with other traders
         </p>
         
         <button

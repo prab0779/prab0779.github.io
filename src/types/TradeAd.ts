@@ -2,7 +2,6 @@ export interface TradeAdItem {
   itemId: string;
   itemName: string;
   emoji: string;
-  value: number;
   quantity: number;
 }
 
