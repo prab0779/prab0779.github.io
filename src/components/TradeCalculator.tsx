@@ -424,7 +424,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
               {/* No Tax Message */}
               {calculation.totalGemTax === 0 && calculation.totalGoldTax === 0 && (
                 <div className="text-center py-3 mt-4">
-                  <p className="text-green-400 font-medium">🎉 No net tax for this trade!</p>
+                  <p className="text-green-400 font-medium">No net tax for this trade!</p>
                 </div>
               )}
             </div>
