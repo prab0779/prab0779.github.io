@@ -343,6 +343,17 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // GitHub Pages SPA redirect handler
+      // Store the current path for the 404.html redirect
+      (function() {
+        if (location.search.slice(1)) {
+          var redirect = location.pathname + location.search + location.hash;
+          sessionStorage.redirect = redirect;
+          location.replace(location.pathname.split('/').slice(0, -1).join('/') + '/?p=' + redirect);
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

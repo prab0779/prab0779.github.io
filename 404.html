@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.aotr.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🎮 Attack on Titan Revolution Value List (UNOFFICIAL) - AOTR Trading Values & Calculator</title>
+    <title>Redirecting... - AOTR Value Hub</title>
     
     <!-- Primary Meta Tags -->
     <meta name="title" content="🎮 Attack on Titan Revolution Value List (Updated) - AOTR Trading Values & Calculator" />
@@ -343,6 +343,17 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // GitHub Pages SPA redirect script
+      // This script handles client-side routing for GitHub Pages
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect != location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
