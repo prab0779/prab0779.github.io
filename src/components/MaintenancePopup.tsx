@@ -55,7 +55,7 @@ export const MaintenancePopup: React.FC = () => {
           
           <div className="bg-gray-800 rounded-lg p-4 border border-gray-600">
             <p className="text-gray-400 text-sm mb-2">Estimated downtime:</p>
-            <p className="text-blue-400 font-bold">soon</p>
+            <p className="text-blue-400 font-bold"></p>
           </div>
           
           <p className="text-gray-400 text-sm">
