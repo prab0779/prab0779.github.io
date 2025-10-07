@@ -30,7 +30,7 @@ export const LoginForm: React.FC = () => {
         <div className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <span className="text-4xl">⚔️</span>
-            <span className="text-2xl font-bold text-white">AOT:R Admin</span>
+            <span className="text-2xl font-bold text-white">Admin</span>
           </div>
           <h2 className="text-xl text-gray-400">
             Sign in to access the admin panel
