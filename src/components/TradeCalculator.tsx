@@ -324,7 +324,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 animate-slide-in">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">🧮 Trade Calculator</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Trade Calculator</h1>
         <p className="text-gray-400">Calculate the value and tax of your trades</p>
       </div>
 
