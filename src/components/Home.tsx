@@ -32,7 +32,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           </div>
           <div className="hidden md:block bg-blue-900 bg-opacity-30 px-4 py-2 rounded-lg border border-blue-700">
             <p className="text-blue-300 text-sm font-medium">
-              🔄 Updated Daily
+              Updated Daily
             </p>
           </div>
         </div>
