@@ -46,7 +46,7 @@ export const MaintenancePopup: React.FC = () => {
         {/* Main Message */}
         <div className="text-center space-y-4">
           <h2 className="text-xl font-semibold text-white">
-            This list will no longer be updated
+            SOON
           </h2>
           
           <p className="text-gray-300">
