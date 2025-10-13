@@ -15,7 +15,17 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           Attack on Titan Revolution (UNOFFICIAL) Value List
         </h1>
         <p className="text-xl text-gray-400 mb-6">
-          The #1 most trusted Attack on Titan Revolution Value List is maintained by experienced players worldwide, providing an accurate and reliable value list that is frequently updated
+         The #1 most trusted Attack on Titan: Revolution Value List, maintained by experienced players worldwide. We provide accurate and reliable updates based on real trading activity.
+Note: This is not an official list or set of fixed prices.
+Values are determined by three key factors:
+
+Rarity – How difficult the item is to obtain.
+
+Demand – How many players actively want it.
+
+Player Needs – What it’s worth to the person you’re trading with.
+
+Because of this, values can shift depending on the market. Trading is all about negotiation and finding a deal that feels fair to both sides.
         </p>
       </div>
 
