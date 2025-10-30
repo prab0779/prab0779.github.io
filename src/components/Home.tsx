@@ -12,7 +12,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       {/* Hero Section with SEO Keywords */}
       <div className="text-center py-12">
         <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
-          Attack on Titan Revolution (UNOFFICIAL) Value List
+          Attack on Titan Revolution (OUTDATED) Value List
         </h1>
         <p className="text-xl text-gray-400 mb-6">
          The #1 most trusted Attack on Titan: Revolution Value List, maintained by experienced players worldwide. We provide accurate and reliable updates based on real trading activity.
