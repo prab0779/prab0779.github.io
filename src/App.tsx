@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy, memo } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Header } from './components/Header';
 import { MaintenancePopup } from './components/MaintenancePopup';
 import { Home } from './components/Home';
-import { TradeCalculator } from './components/TradeCalculator';
-import { ValueChangesPage } from './components/ValueChangesPage';
-import { ValueGuesser } from './components/ValueGuesser';
-import { TradeAdsPage } from './components/TradeAdsPage';
-import { AdminPage } from './components/AdminPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { useItems } from './hooks/useItems';
 import { ItemHistory } from './types/Item';
+
+const TradeCalculator = lazy(() => import('./components/TradeCalculator').then(m => ({ default: m.TradeCalculator })));
+const ValueChangesPage = lazy(() => import('./components/ValueChangesPage').then(m => ({ default: m.ValueChangesPage })));
+const ValueGuesser = lazy(() => import('./components/ValueGuesser').then(m => ({ default: m.ValueGuesser })));
+const TradeAdsPage = lazy(() => import('./components/TradeAdsPage').then(m => ({ default: m.TradeAdsPage })));
+const AdminPage = lazy(() => import('./components/AdminPage').then(m => ({ default: m.AdminPage })));
 
 // Component that has access to location
 const AppContent: React.FC = () => {
@@ -78,29 +79,31 @@ const AppContent: React.FC = () => {
     setIsTransitioning(false);
   };
 
+  const LoadingFallback = () => (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-gray-400">Loading...</p>
+      </div>
+    </div>
+  );
+
   const renderPage = () => {
     if (loading) {
-      return (
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-400">Loading items...</p>
-          </div>
-        </div>
-      );
+      return <LoadingFallback />;
     }
 
     switch (currentPage) {
       case 'home':
         return <Home items={items} />;
       case 'calculator':
-        return <TradeCalculator items={items} />;
+        return <Suspense fallback={<LoadingFallback />}><TradeCalculator items={items} /></Suspense>;
       case 'value-changes':
-        return <ValueChangesPage />;
+        return <Suspense fallback={<LoadingFallback />}><ValueChangesPage /></Suspense>;
       case 'value-guesser':
-        return <ValueGuesser items={items} />;
+        return <Suspense fallback={<LoadingFallback />}><ValueGuesser items={items} /></Suspense>;
       case 'trade-ads':
-        return <TradeAdsPage items={items} />;
+        return <Suspense fallback={<LoadingFallback />}><TradeAdsPage items={items} /></Suspense>;
       default:
         return <Home items={items} />;
     }
@@ -113,16 +116,18 @@ const AppContent: React.FC = () => {
       
       <Routes>
         {/* Admin Route - Protected */}
-        <Route 
-          path="/admin" 
+        <Route
+          path="/admin"
           element={
             <ProtectedRoute>
-              <AdminPage 
-                maintenanceMode={maintenanceMode}
-                onMaintenanceModeChange={toggleMaintenanceMode}
-              />
+              <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="text-gray-400">Loading admin...</div></div>}>
+                <AdminPage
+                  maintenanceMode={maintenanceMode}
+                  onMaintenanceModeChange={toggleMaintenanceMode}
+                />
+              </Suspense>
             </ProtectedRoute>
-          } 
+          }
         />
         
         {/* Main App Routes */}

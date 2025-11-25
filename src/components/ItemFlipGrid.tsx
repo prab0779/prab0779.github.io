@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, memo } from 'react';
 import { ItemFlipCard } from './ItemFlipCard';
 import { SearchAndFilter } from './SearchAndFilter';
 import { Item } from '../types/Item';
@@ -7,7 +7,7 @@ interface ItemFlipGridProps {
   items: Item[];
 }
 
-export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items }) => {
+export const ItemFlipGrid: React.FC<ItemFlipGridProps> = memo(({ items }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -60,4 +60,4 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items }) => {
       )}
     </div>
   );
-};
+});

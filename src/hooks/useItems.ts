@@ -1,13 +1,70 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { Item } from '../types/Item';
+
+const CACHE_KEY = 'aotr_items_cache';
+const CACHE_TTL = 5 * 60 * 1000;
 
 export const useItems = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchItems = async () => {
+  const transformItems = useCallback((data: any[]): Item[] => {
+    return (data || []).map(row => ({
+      id: row.id,
+      name: row.name,
+      value: row.value,
+      demand: row.demand,
+      rateOfChange: row.rate_of_change,
+      prestige: row.prestige,
+      status: row.status,
+      obtainedFrom: row.obtained_from,
+      gemTax: row.gem_tax,
+      goldTax: row.gold_tax,
+      category: row.category,
+      rarity: row.rarity,
+      emoji: row.emoji,
+    }));
+  }, []);
+
+  const getCachedItems = useCallback((): Item[] | null => {
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (!cached) return null;
+
+      const { data, timestamp } = JSON.parse(cached);
+      if (Date.now() - timestamp > CACHE_TTL) {
+        localStorage.removeItem(CACHE_KEY);
+        return null;
+      }
+
+      return data;
+    } catch {
+      localStorage.removeItem(CACHE_KEY);
+      return null;
+    }
+  }, []);
+
+  const setCachedItems = useCallback((items: Item[]) => {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        data: items,
+        timestamp: Date.now(),
+      }));
+    } catch {
+      // Silently fail cache write
+    }
+  }, []);
+
+  const fetchItems = useCallback(async () => {
+    const cached = getCachedItems();
+    if (cached) {
+      setItems(cached);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -17,32 +74,16 @@ export const useItems = () => {
 
       if (error) throw error;
 
-      // Transform database rows to Item interface
-      const transformedItems: Item[] = (data || []).map(row => ({
-        id: row.id,
-        name: row.name,
-        value: row.value,
-        demand: row.demand,
-        rateOfChange: row.rate_of_change,
-        prestige: row.prestige,
-        status: row.status,
-        obtainedFrom: row.obtained_from,
-        gemTax: row.gem_tax,
-        goldTax: row.gold_tax,
-        category: row.category,
-        rarity: row.rarity,
-        emoji: row.emoji,
-      }));
-
+      const transformedItems = transformItems(data);
       setItems(transformedItems);
+      setCachedItems(transformedItems);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch items');
-      console.error('Error fetching items:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [transformItems, getCachedItems, setCachedItems]);
 
   const createItem = async (item: Omit<Item, 'id'>) => {
     try {

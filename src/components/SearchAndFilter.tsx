@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { Search, Filter, ArrowUpDown } from 'lucide-react';
 
 interface SearchAndFilterProps {
@@ -11,7 +11,7 @@ interface SearchAndFilterProps {
   onSortOrderChange: (order: 'asc' | 'desc') => void;
 }
 
-export const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
+export const SearchAndFilter: React.FC<SearchAndFilterProps> = React.memo(({
   searchTerm,
   onSearchChange,
   selectedCategory,
@@ -20,6 +20,25 @@ export const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
   sortOrder,
   onSortOrderChange
 }) => {
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    setLocalSearchTerm(searchTerm);
+  }, [searchTerm]);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setLocalSearchTerm(value);
+
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      onSearchChange(value);
+    }, 300);
+  }, [onSearchChange]);
+
   return (
     <div className="bg-gray-900 rounded-lg p-4 border border-gray-700 mb-6">
       <div className="flex flex-col md:flex-row gap-4">
@@ -29,8 +48,8 @@ export const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
           <input
             type="text"
             placeholder="Search items..."
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
+            value={localSearchTerm}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
           />
         </div>
@@ -63,4 +82,4 @@ export const SearchAndFilter: React.FC<SearchAndFilterProps> = ({
       </div>
     </div>
   );
-};
+});

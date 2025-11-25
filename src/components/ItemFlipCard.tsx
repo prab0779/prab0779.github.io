@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo, useCallback } from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { Item } from '../types/Item';
 
@@ -6,7 +6,7 @@ interface ItemFlipCardProps {
   item: Item;
 }
 
-export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
+export const ItemFlipCard: React.FC<ItemFlipCardProps> = memo(({ item }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const getDemandColor = (demand: number) => {
@@ -236,4 +236,4 @@ export const ItemFlipCard: React.FC<ItemFlipCardProps> = ({ item }) => {
       `}</style>
     </div>
   );
-};
+});
