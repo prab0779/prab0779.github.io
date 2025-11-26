@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
-import { ScamLog } from '../types/ScamLog';
 
 interface CreateScamLogInput {
   robloxId: string;
@@ -18,17 +17,20 @@ export const useScamLogsAdmin = () => {
       setLoading(true);
       setError(null);
 
-      const id = `scam_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      // evidence is JSONB → must store an object
+      const evidenceJson =
+        data.evidenceUrl && data.evidenceUrl.trim() !== ""
+          ? { url: data.evidenceUrl }
+          : {};
 
       const { data: result, error: err } = await supabase
-        .from('scam_logs')
+        .from("scam_logs")
         .insert([
           {
-            id,
             roblox_id: data.robloxId,
             discord_id: data.discordId || null,
             reason: data.reason,
-            evidence_url: data.evidenceUrl || null,
+            evidence: evidenceJson,   // FIXED
           },
         ])
         .select();
@@ -37,7 +39,8 @@ export const useScamLogsAdmin = () => {
 
       return { data: result, error: null };
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to create scam log';
+      const message =
+        err instanceof Error ? err.message : "Failed to create scam log";
       setError(message);
       return { data: null, error: message };
     } finally {
@@ -51,15 +54,16 @@ export const useScamLogsAdmin = () => {
       setError(null);
 
       const { error: err } = await supabase
-        .from('scam_logs')
+        .from("scam_logs")
         .delete()
-        .eq('id', id);
+        .eq("id", id);
 
       if (err) throw err;
 
       return { error: null };
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to delete scam log';
+      const message =
+        err instanceof Error ? err.message : "Failed to delete scam log";
       setError(message);
       return { error: message };
     } finally {
