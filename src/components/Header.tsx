@@ -67,6 +67,15 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
               Trade Ads
             </button>
 
+            <button
+              onClick={() => onPageChange('scam-logs')}
+              className={`text-sm font-medium transition-all duration-200 hover:text-blue-400 px-3 py-2 rounded-md hover:bg-gray-800 ${
+                currentPage === 'scam-logs' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
+              }`}
+            >
+              Scam Logs
+            </button>
+
             <a
               href="https://discord.gg/tradingcorps"
               target="_blank"
@@ -149,6 +158,18 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
                 }`}
               >
                 Trade Ads
+              </button>
+
+              <button
+                onClick={() => {
+                  onPageChange('scam-logs');
+                  setIsMenuOpen(false);
+                }}
+                className={`text-left text-sm font-medium transition-colors hover:text-blue-400 px-3 py-2 rounded-md ${
+                  currentPage === 'scam-logs' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
+                }`}
+              >
+                Scam Logs
               </button>
 
               <a
