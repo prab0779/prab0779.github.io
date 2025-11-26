@@ -11,6 +11,7 @@ const TradeCalculator = lazy(() => import('./components/TradeCalculator').then(m
 const ValueChangesPage = lazy(() => import('./components/ValueChangesPage').then(m => ({ default: m.ValueChangesPage })));
 const ValueGuesser = lazy(() => import('./components/ValueGuesser').then(m => ({ default: m.ValueGuesser })));
 const TradeAdsPage = lazy(() => import('./components/TradeAdsPage').then(m => ({ default: m.TradeAdsPage })));
+const ScamLogsPage = lazy(() => import('./components/ScamLogsPage').then(m => ({ default: m.ScamLogsPage })));
 const AdminPage = lazy(() => import('./components/AdminPage').then(m => ({ default: m.AdminPage })));
 
 // Component that has access to location
@@ -104,6 +105,8 @@ const AppContent: React.FC = () => {
         return <Suspense fallback={<LoadingFallback />}><ValueGuesser items={items} /></Suspense>;
       case 'trade-ads':
         return <Suspense fallback={<LoadingFallback />}><TradeAdsPage items={items} /></Suspense>;
+      case 'scam-logs':
+        return <Suspense fallback={<LoadingFallback />}><ScamLogsPage /></Suspense>;
       default:
         return <Home items={items} />;
     }
@@ -182,6 +185,12 @@ const AppContent: React.FC = () => {
                       className="text-gray-400 hover:text-blue-400 transition-colors"
                     >
                       Trade Ads
+                    </button>
+                    <button
+                      onClick={() => handlePageChange('scam-logs')}
+                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                    >
+                      Scam Logs
                     </button>
                     <a
                       href="#"
