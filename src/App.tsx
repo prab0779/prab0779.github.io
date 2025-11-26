@@ -172,12 +172,6 @@ const AppContent: React.FC = () => {
                       Value Changes
                     </button>
                     <button
-                      onClick={() => handlePageChange('value-guesser')}
-                      className="text-gray-400 hover:text-blue-400 transition-colors"
-                    >
-                      Value Guesser
-                    </button>
-                    <button
                       onClick={() => handlePageChange('trade-ads')}
                       className="text-gray-400 hover:text-blue-400 transition-colors"
                     >
