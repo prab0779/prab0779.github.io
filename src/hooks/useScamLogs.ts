@@ -13,7 +13,7 @@ export const useScamLogs = () => {
       robloxId: row.roblox_id,
       discordId: row.discord_id,
       reason: row.reason,
-      evidenceUrl: row.evidence_url,
+      evidenceUrl: row.evidence?.url ?? null,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
     }));
