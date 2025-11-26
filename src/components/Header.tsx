@@ -46,15 +46,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
             >
               Value Changes
             </button>
-
-            <button
-              onClick={() => onPageChange('value-guesser')}
-              className={`text-sm font-medium transition-all duration-200 hover:text-blue-400 px-3 py-2 rounded-md hover:bg-gray-800 ${
-                currentPage === 'value-guesser' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-              }`}
-            >
-              Value Guesser
-            </button>
+            
             <button
               onClick={() => {
                 onPageChange('trade-ads');
