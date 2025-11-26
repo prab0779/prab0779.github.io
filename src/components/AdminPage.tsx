@@ -1,9 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, CreditCard as Edit, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye } from 'lucide-react';
+import { Plus, CreditCard as Edit, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useItems } from '../hooks/useItems';
 import { useValueChanges } from '../hooks/useValueChanges';
 import { useOnlineUsers } from '../hooks/useOnlineUsers';
+import { useScamLogs } from '../hooks/useScamLogs';
+import { useScamLogsAdmin } from '../hooks/useScamLogsAdmin';
 import { Item } from '../types/Item';
 
 interface AdminPageProps {
@@ -16,9 +18,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const { items, loading, error, createItem, updateItem, deleteItem } = useItems();
   const { valueChanges, loading: changesLoading, deleteValueChange } = useValueChanges();
   const { onlineCount, loading: usersLoading } = useOnlineUsers();
+  const { scamLogs, loading: scamLogsLoading } = useScamLogs();
+  const { createScamLog, deleteScamLog } = useScamLogsAdmin();
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [currentView, setCurrentView] = useState<'items' | 'changes'>('items');
+  const [showScamLogForm, setShowScamLogForm] = useState(false);
+  const [currentView, setCurrentView] = useState<'items' | 'changes' | 'scam-logs'>('items');
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   
   // Search and filter states for items
@@ -26,6 +31,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortField, setSortField] = useState<'name' | 'value' | 'demand' | 'prestige' | 'category'>('value');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // Scam logs form state
+  const [scamLogForm, setScamLogForm] = useState({
+    robloxId: '',
+    discordId: '',
+    reason: '',
+    evidenceUrl: '',
+  });
 
   const showNotification = (type: 'success' | 'error', message: string) => {
     setNotification({ type, message });
@@ -108,6 +121,44 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
         showNotification('error', error);
       } else {
         showNotification('success', 'Value change deleted successfully!');
+      }
+    }
+  };
+
+  const handleCreateScamLog = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!scamLogForm.robloxId.trim()) {
+      showNotification('error', 'Roblox ID is required');
+      return;
+    }
+    if (!scamLogForm.reason.trim()) {
+      showNotification('error', 'Reason is required');
+      return;
+    }
+
+    const { error } = await createScamLog({
+      robloxId: scamLogForm.robloxId.trim(),
+      discordId: scamLogForm.discordId.trim() || undefined,
+      reason: scamLogForm.reason.trim(),
+      evidenceUrl: scamLogForm.evidenceUrl.trim() || undefined,
+    });
+
+    if (error) {
+      showNotification('error', error);
+    } else {
+      showNotification('success', 'Scam log created successfully!');
+      setScamLogForm({ robloxId: '', discordId: '', reason: '', evidenceUrl: '' });
+      setShowScamLogForm(false);
+    }
+  };
+
+  const handleDeleteScamLog = async (id: string, robloxId: string) => {
+    if (window.confirm(`Are you sure you want to delete the scam log for "${robloxId}"?`)) {
+      const { error } = await deleteScamLog(id);
+      if (error) {
+        showNotification('error', error);
+      } else {
+        showNotification('success', 'Scam log deleted successfully!');
       }
     }
   };
@@ -468,12 +519,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-gray-800 border-b border-gray-700">
+      <div className="bg-gray-800 border-b border-gray-700 overflow-x-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-4 sm:space-x-8">
             <button
               onClick={() => setCurrentView('items')}
-              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors ${
+              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap ${
                 currentView === 'items'
                   ? 'border-blue-500 text-blue-400'
                   : 'border-transparent text-gray-400 hover:text-gray-300'
@@ -494,8 +545,21 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
               <span className="sm:hidden">Changes</span>
             </button>
             <button
+              onClick={() => setCurrentView('scam-logs')}
+              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors flex items-center space-x-2 ${
+                currentView === 'scam-logs'
+                  ? 'border-red-500 text-red-400'
+                  : 'border-transparent text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              <AlertTriangle className="w-4 h-4" />
+              <span className="hidden sm:inline">Scam Logs</span>
+              <span className="sm:hidden">Scams</span>
+              <span className="ml-1 text-xs bg-red-900 px-2 py-0.5 rounded-full">({scamLogs.length})</span>
+            </button>
+            <button
               onClick={() => setCurrentView('settings')}
-              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors ${
+              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap ${
                 currentView === 'settings'
                   ? 'border-blue-500 text-blue-400'
                   : 'border-transparent text-gray-400 hover:text-gray-300'
@@ -856,7 +920,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
               </div>
             )}
           </>
-        ) : (
+        ) : currentView === 'changes' ? (
           /* Value Changes View */
           <div>
             <div className="mb-6 sm:mb-8">
@@ -983,7 +1047,88 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
               </div>
             )}
           </div>
-        )}
+        ) : currentView === 'scam-logs' ? (
+          /* Scam Logs View */
+          <div>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-white">Scam Logs Management</h1>
+                <p className="text-gray-400 mt-1 sm:mt-2 text-sm sm:text-base">Report and manage scammer accounts</p>
+              </div>
+
+              <button
+                onClick={() => setShowScamLogForm(true)}
+                className="flex items-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base w-full sm:w-auto justify-center"
+              >
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span>Report Scammer</span>
+              </button>
+            </div>
+
+            {scamLogsLoading ? (
+              <div className="text-center py-12">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-400 text-sm sm:text-base">Loading scam logs...</p>
+              </div>
+            ) : scamLogs.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-4xl sm:text-6xl mb-4">📋</div>
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-300 mb-2">No scam reports yet</h3>
+                <p className="text-gray-500 text-sm sm:text-base">Create the first scam report to get started</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {scamLogs.map((log) => (
+                  <div key={log.id} className="bg-gray-900 rounded-lg border border-red-900 p-4 sm:p-6 hover:border-red-700 transition-colors">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between space-y-3 sm:space-y-0">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <AlertTriangle className="w-5 h-5 text-red-400" />
+                          <h3 className="text-lg font-semibold text-white">Roblox ID: {log.robloxId}</h3>
+                        </div>
+
+                        {log.discordId && (
+                          <p className="text-gray-400 text-sm mb-2">Discord ID: {log.discordId}</p>
+                        )}
+
+                        <div className="bg-red-900 bg-opacity-20 border border-red-800 rounded-lg p-3 mb-3">
+                          <p className="text-sm text-red-200">{log.reason}</p>
+                        </div>
+
+                        {log.evidenceUrl && (
+                          <div className="mb-3">
+                            <p className="text-xs text-gray-400 mb-1">Evidence:</p>
+                            <a
+                              href={log.evidenceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-400 hover:text-blue-300 text-sm truncate"
+                            >
+                              {log.evidenceUrl}
+                            </a>
+                          </div>
+                        )}
+
+                        <p className="text-xs text-gray-500">
+                          Reported on {new Date(log.createdAt).toLocaleDateString()} at {new Date(log.createdAt).toLocaleTimeString()}
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => handleDeleteScamLog(log.id, log.robloxId)}
+                        className="flex items-center space-x-2 px-3 sm:px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-900 hover:bg-opacity-30 rounded-lg transition-colors mt-3 sm:mt-0 w-full sm:w-auto justify-center"
+                        title="Delete Scam Log"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span className="text-sm">Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : null}
       </main>
 
       {/* Forms */}
@@ -1000,6 +1145,105 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
           onSubmit={(data) => handleUpdateItem(editingItem.id, data)}
           onCancel={() => setEditingItem(null)}
         />
+      )}
+
+      {showScamLogForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 rounded-lg p-4 sm:p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-700">
+            <div className="flex justify-between items-center mb-4 sm:mb-6">
+              <div className="flex items-center space-x-2">
+                <AlertTriangle className="w-6 h-6 text-red-400" />
+                <h3 className="text-lg sm:text-xl font-semibold text-white">Report Scammer</h3>
+              </div>
+              <button
+                onClick={() => setShowScamLogForm(false)}
+                className="text-gray-400 hover:text-white transition-colors p-1"
+              >
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateScamLog} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Roblox ID *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={scamLogForm.robloxId}
+                  onChange={(e) => setScamLogForm({ ...scamLogForm, robloxId: e.target.value })}
+                  placeholder="Enter Roblox username or ID"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Discord ID (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={scamLogForm.discordId}
+                  onChange={(e) => setScamLogForm({ ...scamLogForm, discordId: e.target.value })}
+                  placeholder="Enter Discord username or ID"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Reason for Report *
+                </label>
+                <textarea
+                  required
+                  value={scamLogForm.reason}
+                  onChange={(e) => setScamLogForm({ ...scamLogForm, reason: e.target.value })}
+                  placeholder="Describe the scam or fraudulent activity in detail"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
+                  rows={4}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Evidence URL (Optional)
+                </label>
+                <input
+                  type="url"
+                  value={scamLogForm.evidenceUrl}
+                  onChange={(e) => setScamLogForm({ ...scamLogForm, evidenceUrl: e.target.value })}
+                  placeholder="Link to screenshot, video, or other evidence"
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 text-sm sm:text-base"
+                />
+                <p className="text-xs text-gray-400 mt-1">Supports images and external links</p>
+              </div>
+
+              <div className="bg-blue-900 bg-opacity-30 border border-blue-700 rounded-lg p-3">
+                <p className="text-blue-300 text-sm">
+                  This report will be visible to all users on the Scam Logs page. Ensure all information is accurate.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowScamLogForm(false)}
+                  className="px-4 sm:px-6 py-2 text-gray-300 hover:text-white transition-colors text-sm sm:text-base"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm sm:text-base"
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                  <span>Report Scammer</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );
