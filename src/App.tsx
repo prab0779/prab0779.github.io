@@ -9,7 +9,6 @@ import { ItemHistory } from './types/Item';
 
 const TradeCalculator = lazy(() => import('./components/TradeCalculator').then(m => ({ default: m.TradeCalculator })));
 const ValueChangesPage = lazy(() => import('./components/ValueChangesPage').then(m => ({ default: m.ValueChangesPage })));
-const ValueGuesser = lazy(() => import('./components/ValueGuesser').then(m => ({ default: m.ValueGuesser })));
 const TradeAdsPage = lazy(() => import('./components/TradeAdsPage').then(m => ({ default: m.TradeAdsPage })));
 const ScamLogsPage = lazy(() => import('./components/ScamLogsPage').then(m => ({ default: m.ScamLogsPage })));
 const AdminPage = lazy(() => import('./components/AdminPage').then(m => ({ default: m.AdminPage })));
@@ -101,8 +100,6 @@ const AppContent: React.FC = () => {
         return <Suspense fallback={<LoadingFallback />}><TradeCalculator items={items} /></Suspense>;
       case 'value-changes':
         return <Suspense fallback={<LoadingFallback />}><ValueChangesPage /></Suspense>;
-      case 'value-guesser':
-        return <Suspense fallback={<LoadingFallback />}><ValueGuesser items={items} /></Suspense>;
       case 'trade-ads':
         return <Suspense fallback={<LoadingFallback />}><TradeAdsPage items={items} /></Suspense>;
       case 'scam-logs':
