@@ -239,7 +239,7 @@ export const ScamLogsPage: React.FC = () => {
                 These reports are community-submitted and may not be verified. Always exercise caution when trading:
               </p>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>Use middleman services for high-value trades</li>
+                <li>Use middleman services for multi-step trades</li>
                 <li>Verify user identities through multiple channels</li>
                 <li>Never share personal or payment information</li>
                 <li>Report suspicious activity to moderators</li>
