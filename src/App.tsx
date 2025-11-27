@@ -156,39 +156,33 @@ const AppContent: React.FC = () => {
                   <p className="text-gray-400 mb-4">
                     Attack on Titan Revolution Values (UPDATED)
                   </p>
-                  <div className="flex justify-center space-x-6">
+                  <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
                     <a
                       href="https://discord.gg/aotrvalues"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                      className="text-gray-400 hover:text-blue-400 transition-colors text-sm sm:text-base"
                     >
                       Discord Community
                     </a>
                     <button
                       onClick={() => handlePageChange('value-changes')}
-                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                      className="text-gray-400 hover:text-blue-400 transition-colors text-sm sm:text-base"
                     >
                       Value Changes
                     </button>
                     <button
                       onClick={() => handlePageChange('trade-ads')}
-                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                      className="text-gray-400 hover:text-blue-400 transition-colors text-sm sm:text-base"
                     >
                       Trade Ads
                     </button>
                     <button
                       onClick={() => handlePageChange('scam-logs')}
-                      className="text-gray-400 hover:text-blue-400 transition-colors"
+                      className="text-gray-400 hover:text-blue-400 transition-colors text-sm sm:text-base"
                     >
                       Scam Logs
                     </button>
-                    <a
-                      href="#"
-                      className="text-gray-400 hover:text-blue-400 transition-colors"
-                    >
-                      Updates
-                    </a>
                   </div>
                   <div className="mt-6 pt-6 border-t border-gray-800">
                     <p className="text-gray-500 text-sm">
