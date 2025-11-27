@@ -1,78 +1,69 @@
 import React, { useState } from 'react';
 import { Menu, X, ExternalLink } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
-interface HeaderProps {
-  currentPage: string;
-  onPageChange: (page: string) => void;
-}
-
-export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
+export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) =>
+    location.pathname === path
+      ? 'text-blue-400 bg-gray-800'
+      : 'text-gray-300';
 
   return (
     <header className="bg-black border-b border-gray-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
+
           {/* Logo */}
-          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onPageChange('home')}>
-            <img src="/customdiscordlogo.png" alt="AOT:R Values Logo" className="h-16 w-auto object-contain hover:scale-105 transition-transform duration-200" />
-          </div>
+          <Link to="/" className="flex items-center space-x-2 cursor-pointer">
+            <img src="/customdiscordlogo.png" alt="AOT:R Values Logo"
+              className="h-16 w-auto object-contain hover:scale-105 transition-transform duration-200" />
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <button
-              onClick={() => onPageChange('home')}
-              className={`text-sm font-medium transition-all duration-200 hover:text-blue-400 px-3 py-2 rounded-md hover:bg-gray-800 ${
-                currentPage === 'home' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-              }`}
+            <Link
+              to="/"
+              className={`text-sm font-medium px-3 py-2 rounded-md hover:text-blue-400 hover:bg-gray-800 transition ${isActive('/')}`}
             >
               Home
-            </button>
+            </Link>
 
-            <button
-              onClick={() => onPageChange('calculator')}
-              className={`text-sm font-medium transition-all duration-200 hover:text-blue-400 px-3 py-2 rounded-md hover:bg-gray-800 ${
-                currentPage === 'calculator' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-              }`}
+            <Link
+              to="/calculator"
+              className={`text-sm font-medium px-3 py-2 rounded-md hover:text-blue-400 hover:bg-gray-800 transition ${isActive('/calculator')}`}
             >
               Trade Calculator
-            </button>
+            </Link>
 
-            <button
-              onClick={() => onPageChange('value-changes')}
-              className={`text-sm font-medium transition-all duration-200 hover:text-blue-400 px-3 py-2 rounded-md hover:bg-gray-800 ${
-                currentPage === 'value-changes' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-              }`}
+            <Link
+              to="/value-changes"
+              className={`text-sm font-medium px-3 py-2 rounded-md hover:text-blue-400 hover:bg-gray-800 transition ${isActive('/value-changes')}`}
             >
               Value Changes
-            </button>
-            
-            <button
-              onClick={() => {
-                onPageChange('trade-ads');
-                setIsMenuOpen(false);
-              }}
-              className={`text-left text-sm font-medium transition-colors hover:text-blue-400 px-3 py-2 rounded-md ${
-                currentPage === 'trade-ads' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-              }`}
+            </Link>
+
+            <Link
+              to="/trade-ads"
+              className={`text-sm font-medium px-3 py-2 rounded-md hover:text-blue-400 hover:bg-gray-800 transition ${isActive('/trade-ads')}`}
             >
               Trade Ads
-            </button>
+            </Link>
 
-            <button
-              onClick={() => onPageChange('scam-logs')}
-              className={`text-sm font-medium transition-all duration-200 hover:text-blue-400 px-3 py-2 rounded-md hover:bg-gray-800 ${
-                currentPage === 'scam-logs' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-              }`}
+            <Link
+              to="/scam-logs"
+              className={`text-sm font-medium px-3 py-2 rounded-md hover:text-blue-400 hover:bg-gray-800 transition ${isActive('/scam-logs')}`}
             >
               Scam Logs
-            </button>
+            </Link>
 
             <a
               href="https://discord.gg/tradingcorps"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-1 text-sm font-medium text-gray-300 hover:text-blue-400 transition-all duration-200 px-3 py-2 rounded-md hover:bg-gray-800"
+              className="flex items-center space-x-1 text-sm font-medium text-gray-300 hover:text-blue-400 transition px-3 py-2 rounded-md hover:bg-gray-800"
             >
               <span>Discord</span>
               <ExternalLink className="w-4 h-4" />
@@ -82,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
           {/* Mobile menu button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+            className="md:hidden p-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-800 transition"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -92,73 +83,32 @@ export const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => 
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-800 animate-fade-in">
             <div className="flex flex-col space-y-2">
-              <button
-                onClick={() => {
-                  onPageChange('home');
-                  setIsMenuOpen(false);
-                }}
-                className={`text-left text-sm font-medium transition-colors hover:text-blue-400 px-3 py-2 rounded-md ${
-                  currentPage === 'home' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-                }`}
-              >
+              <Link to="/" onClick={() => setIsMenuOpen(false)} className={`text-left px-3 py-2 rounded-md ${isActive('/')}`}>
                 Home
-              </button>
-              
-              <button
-                onClick={() => {
-                  onPageChange('calculator');
-                  setIsMenuOpen(false);
-                }}
-                className={`text-left text-sm font-medium transition-colors hover:text-blue-400 px-3 py-2 rounded-md ${
-                  currentPage === 'calculator' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-                }`}
-              >
+              </Link>
+
+              <Link to="/calculator" onClick={() => setIsMenuOpen(false)} className={`text-left px-3 py-2 rounded-md ${isActive('/calculator')}`}>
                 Trade Calculator
-              </button>
+              </Link>
 
-              <button
-                onClick={() => {
-                  onPageChange('value-changes');
-                  setIsMenuOpen(false);
-                }}
-                className={`text-left text-sm font-medium transition-colors hover:text-blue-400 px-3 py-2 rounded-md ${
-                  currentPage === 'value-changes' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-                }`}
-              >
+              <Link to="/value-changes" onClick={() => setIsMenuOpen(false)} className={`text-left px-3 py-2 rounded-md ${isActive('/value-changes')}`}>
                 Value Changes
-              </button>
+              </Link>
 
-              <button
-                onClick={() => {
-                  onPageChange('trade-ads');
-                  setIsMenuOpen(false);
-                }}
-                className={`text-left text-sm font-medium transition-colors hover:text-blue-400 px-3 py-2 rounded-md ${
-                  currentPage === 'trade-ads' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-                }`}
-              >
+              <Link to="/trade-ads" onClick={() => setIsMenuOpen(false)} className={`text-left px-3 py-2 rounded-md ${isActive('/trade-ads')}`}>
                 Trade Ads
-              </button>
+              </Link>
 
-              <button
-                onClick={() => {
-                  onPageChange('scam-logs');
-                  setIsMenuOpen(false);
-                }}
-                className={`text-left text-sm font-medium transition-colors hover:text-blue-400 px-3 py-2 rounded-md ${
-                  currentPage === 'scam-logs' ? 'text-blue-400 bg-gray-800' : 'text-gray-300'
-                }`}
-              >
+              <Link to="/scam-logs" onClick={() => setIsMenuOpen(false)} className={`text-left px-3 py-2 rounded-md ${isActive('/scam-logs')}`}>
                 Scam Logs
-              </button>
+              </Link>
 
               <a
                 href="https://discord.gg/tradingcorps"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-2 text-sm font-medium text-gray-300 hover:text-blue-400 transition-colors px-3 py-2"
+                className="flex items-center space-x-2 text-sm font-medium text-gray-300 hover:text-blue-400 transition px-3 py-2"
               >
-                <span></span>
                 <span>Discord</span>
                 <ExternalLink className="w-4 h-4" />
               </a>
