@@ -620,27 +620,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                 </div>
               )}
 
-              {/* Footer */}
-              <div className="flex justify-between items-center pt-3 border-t border-gray-700">
-                <span className="text-xs text-gray-500">
-                  Expires {getRelativeTime(ad.expiresAt)}
-                </span>
-                
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => updateTradeAdStatus(ad.id, 'completed')}
-                    className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-xs transition-colors"
-                  >
-                    Mark Complete
-                  </button>
-                  <button
-                    onClick={() => updateTradeAdStatus(ad.id, 'cancelled')}
-                    className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
+            
             </div>
           ))}
         </div>
