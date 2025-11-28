@@ -1,6 +1,7 @@
-import React from 'react';
-import { Item } from '../types/Item';
-import { FAQSection } from './FAQSection';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Item } from "../types/Item";
+import { FAQSection } from "./FAQSection";
 
 interface HomeProps {
   items: Item[];
@@ -8,35 +9,118 @@ interface HomeProps {
 
 export const Home: React.FC<HomeProps> = ({ items }) => {
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      {/* Hero Section with SEO Keywords */}
-      <div className="text-center py-8 sm:py-12 px-4">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-          Attack on Titan Revolution (OUTDATED) Value List
-        </h1>
-        <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-6 max-w-4xl mx-auto">
-         The #1 most trusted Attack on Titan: Revolution Value List, maintained by experienced players worldwide. We provide accurate and reliable updates based on real trading activity.
-        </p>
-        <div className="bg-yellow-900 bg-opacity-20 border border-yellow-700 rounded-lg p-4 sm:p-6 max-w-3xl mx-auto text-left">
-          <p className="text-yellow-200 text-sm sm:text-base mb-3">
-            <strong>Note:</strong> This is not an official list or set of fixed prices.
-          </p>
-          <p className="text-gray-300 text-sm sm:text-base mb-2">Values are determined by three key factors:</p>
-          <ul className="space-y-2 text-gray-300 text-sm sm:text-base ml-4">
-            <li><strong>Rarity</strong> – How difficult the item is to obtain.</li>
-            <li><strong>Demand</strong> – How many players actively want it.</li>
-            <li><strong>Player Needs</strong> – What it's worth to the person you're trading with.</li>
-          </ul>
-          <p className="text-gray-300 text-sm sm:text-base mt-3">
-            Because of this, values can shift depending on the market. Trading is all about negotiation and finding a deal that feels fair to both sides.
-          </p>
-        </div>
-      </div>
+    <div className="relative">
 
-      {/* FAQ Section */}
-      <div className="py-8">
+      {/* Grid Background */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20 pointer-events-none"></div>
+
+      {/* ---------------------------- */}
+      {/* HERO SECTION */}
+      {/* ---------------------------- */}
+      <section className="relative z-10 max-w-6xl mx-auto px-6 py-20 text-center">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight text-white mb-6">
+          Attack on Titan Revolution{" "}
+          <span className="text-blue-400">Value List</span>
+        </h1>
+
+        <p className="text-gray-300 text-lg sm:text-xl max-w-3xl mx-auto mb-10">
+          The most accurate and trusted AOT:R trading values.  
+          Updated by experienced analysts, based on real trading activity.
+        </p>
+
+        {/* Buttons */}
+        <div className="flex justify-center gap-4">
+          <Link
+            to="/calculator"
+            className="px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition shadow-lg shadow-blue-600/20"
+          >
+            Start Trading →
+          </Link>
+
+          <Link
+            to="/value-list"
+            className="px-6 py-3 rounded-lg bg-gray-800 text-gray-200 font-medium hover:bg-gray-700 transition border border-gray-700"
+          >
+            Browse Values
+          </Link>
+        </div>
+      </section>
+
+      {/* ---------------------------- */}
+      {/* FEATURES GRID SECTION */}
+      {/* ---------------------------- */}
+      <section className="relative z-10 max-w-6xl mx-auto px-6 py-16">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-8">
+          Trading Corps. Features
+        </h2>
+        <p className="text-gray-400 mb-10">
+          Everything you need for successful Attack on Titan Revolution trading.
+        </p>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-6">
+  {[
+    {
+      title: "Real-Time Values",
+      desc: "Live updated trading values with accurate market trends.",
+      link: "/value-list",
+    },
+    {
+      title: "Trade Ads",
+      desc: "Post and browse trades from an active community.",
+      link: "/trade-ads",
+    },
+    {
+      title: "Smart Calculator",
+      desc: "Analyze trades instantly and avoid losing value.",
+      link: "/calculator",
+    },
+    {
+      title: "Safe Trading",
+      desc: "Avoid scams with verified logs and trusted guidance.",
+      link: "/scam-logs",
+    },
+  ].map((feature, i) => (
+    <Link
+      to={feature.link}
+      key={i}
+      className="
+        block
+        bg-gray-900/40
+        backdrop-blur-xl
+        border border-gray-800
+        rounded-2xl
+        p-6
+        shadow-lg
+        transition
+        hover:border-blue-500
+        hover:bg-gray-900/60
+        hover:shadow-blue-500/20
+        hover:-translate-y-1
+      "
+    >
+      <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">
+        {feature.title}
+      </h3>
+
+      <p className="text-gray-400 text-sm mb-4">
+        {feature.desc}
+      </p>
+
+      <span className="text-blue-400 hover:text-blue-300 font-medium text-sm">
+        Explore →
+      </span>
+    </Link>
+  ))}
+</div>
+
+      </section>
+
+      {/* ---------------------------- */}
+      {/* FAQ SECTION */}
+      {/* ---------------------------- */}
+      <section className="relative z-10 max-w-6xl mx-auto px-6 py-16">
         <FAQSection />
-      </div>
+      </section>
     </div>
   );
 };
