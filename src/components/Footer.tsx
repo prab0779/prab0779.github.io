@@ -14,7 +14,7 @@ export const Footer: React.FC = () => {
                 <span className="text-lg font-bold text-white">AOT:R Value Hub</span>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed">
-                The ultimate resource for Attack on Titan Revolution item values and trading tools.
+                https://www.aotrvalue.com is a 3rd party website that is not affiliated or partnered with Attack on titan Revolution. We are not endorsed by their respective owners.
               </p>
             </div>
 
