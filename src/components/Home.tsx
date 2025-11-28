@@ -33,7 +33,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           {/* Buttons */}
           <div className="flex flex-wrap gap-4 mt-10">
             <Link
-              to="/calculator"
+              to="/trade-ads"
               className="px-6 py-3 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition shadow-lg shadow-blue-600/20 flex items-center gap-2"
             >
               Start Trading →
