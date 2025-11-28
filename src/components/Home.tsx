@@ -82,7 +82,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       {/* FEATURES SECTION */}
       {/* -------------------------------------- */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-bold text-white mb-6">Trading Corps. Features</h2>
+        <h2 className="text-3xl font-bold text-white mb-6">AOTR Values Features</h2>
         <p className="text-gray-400 mb-10">
           Everything you need for successful Attack on Titan Revolution trading.
         </p>
