@@ -48,22 +48,16 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
         onSortOrderChange={setSortOrder}
       />
 
-     <div
-  className="
-    grid 
-    justify-center 
-    gap-4 sm:gap-6 
-    grid-cols-[repeat(auto-fit,minmax(170px,1fr))]
-  "
->
-  {filteredItems.map((i) => (
-    <div className="flex justify-center">
-      <ItemCard key={i.id} item={i} mode={mode} vizardValue={vizardValue} />
-    </div>
-  ))}
-</div>
-
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-16">
+        {filteredItems.map((item) => (
+          <ItemCard
+            key={item.id}
+            item={item}
+            mode={mode}
+            vizardValue={vizardValue}   // 🔥 SEND Vizard Mask value here
+          />
+        ))}
+      </div>
     </div>
   );
 };
