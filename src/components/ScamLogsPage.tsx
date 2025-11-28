@@ -209,7 +209,7 @@ export const ScamLogsPage: React.FC = () => {
                         className="flex items-center space-x-2 text-blue-400 hover:text-blue-300 transition-colors group"
                       >
                         <ExternalLink className="w-4 h-4" />
-                        <span className="text-sm underline break-all">View evidence link</span>
+                        <span className="text-sm underline break-all">View evidence</span>
                       </a>
                     )}
                   </div>
