@@ -17,8 +17,10 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
       </h1>
 
       <p className="text-gray-400 max-w-2xl mx-auto mb-12">
-        Browse our full AOT:R item value list with {items.length}+ items
+  Browse our complete AOT:R value list ({items.length}+ items).  
+  <span className="text-yellow-400 font-semibold">Warning:</span> Values are temporarily outdated — join Discord for verified prices.
       </p>
+
 
       <div className="mb-12">
         <h3 className="text-white font-semibold mb-3">Default View Mode</h3>
