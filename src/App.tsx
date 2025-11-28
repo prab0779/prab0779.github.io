@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
 import { MaintenancePopup } from "./components/MaintenancePopup";
 import { Home } from "./components/Home";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -8,6 +9,9 @@ import { useItems } from "./hooks/useItems";
 
 const TradeCalculator = lazy(() =>
   import("./components/TradeCalculator").then(m => ({ default: m.TradeCalculator }))
+);
+const ValueListPage = lazy(() =>
+  import("./components/ValueListPage").then(m => ({ default: m.ValueListPage }))
 );
 const ValueChangesPage = lazy(() =>
   import("./components/ValueChangesPage").then(m => ({ default: m.ValueChangesPage }))
@@ -59,6 +63,7 @@ export const AppContent: React.FC = () => {
             <Routes>
               <Route path="/" element={<Home items={items} />} />
               <Route path="/calculator" element={<TradeCalculator items={items} />} />
+              <Route path="/value-list" element={<ValueListPage items={items} />} />
               <Route path="/value-changes" element={<ValueChangesPage />} />
               <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
               <Route path="/scam-logs" element={<ScamLogsPage />} />
@@ -80,6 +85,7 @@ export const AppContent: React.FC = () => {
           </Suspense>
         </div>
       </main>
+      {!isAdminPage && <Footer />}
     </>
   );
 };
