@@ -11,7 +11,6 @@ export const Footer: React.FC = () => {
             {/* Brand Section */}
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center space-x-2 mb-4">
-                <span className="text-2xl">⚔️</span>
                 <span className="text-lg font-bold text-white">AOT:R Value Hub</span>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed">
@@ -62,7 +61,7 @@ export const Footer: React.FC = () => {
                 </li>
                 <li>
                   <a
-                    href="https://discord.gg/aotrvalues"
+                    href="https://discord.gg/tradingcorps"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center space-x-1 text-gray-400 hover:text-blue-400 transition-colors text-sm"
@@ -80,7 +79,7 @@ export const Footer: React.FC = () => {
               <ul className="space-y-2">
                 <li>
                   <a
-                    href="https://discord.gg/aotrvalues"
+                    href="https://discord.gg/tradingcorps"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center space-x-1 text-gray-400 hover:text-blue-400 transition-colors text-sm"
@@ -89,22 +88,8 @@ export const Footer: React.FC = () => {
                     <span>Contact Us</span>
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-blue-400 transition-colors text-sm"
-                  >
-                    Report Bug
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-blue-400 transition-colors text-sm"
-                  >
-                    Feedback
-                  </a>
-                </li>
+                
+        
               </ul>
             </div>
           </div>
@@ -114,7 +99,7 @@ export const Footer: React.FC = () => {
             {/* Bottom Footer */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <p className="text-gray-500 text-xs sm:text-sm text-center sm:text-left">
-                © 2025 AOT:R Value Hub. Not affiliated with Attack on Titan or Roblox.
+                © 2025 AOT:R Value Hub. Not affiliated with Attack on Titan Revolution or Roblox.
               </p>
               <div className="flex items-center space-x-1 text-gray-500 text-xs sm:text-sm">
                 <span>Made with</span>
