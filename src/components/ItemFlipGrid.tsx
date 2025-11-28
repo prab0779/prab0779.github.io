@@ -51,18 +51,18 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
      <div
   className="
     grid 
-    grid-cols-2          /* 2 items per row on ALL phones */
-    sm:grid-cols-2
-    md:grid-cols-3
-    lg:grid-cols-4
-    gap-4
-    sm:gap-x-6 sm:gap-y-16
+    justify-center 
+    gap-4 sm:gap-6 
+    grid-cols-[repeat(auto-fit,minmax(170px,1fr))]
   "
 >
   {filteredItems.map((i) => (
-    <ItemCard key={i.id} item={i} mode={mode} vizardValue={vizardValue} />
+    <div className="flex justify-center">
+      <ItemCard key={i.id} item={i} mode={mode} vizardValue={vizardValue} />
+    </div>
   ))}
 </div>
+
 
     </div>
   );
