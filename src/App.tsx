@@ -53,41 +53,43 @@ export const AppContent: React.FC = () => {
   const isAdminPage = location.pathname === "/admin";
 
   return (
-    <>
-      {!isAdminPage && <Header />}
-      {maintenanceMode && !isAdminPage && <MaintenancePopup />}
+  <div className="min-h-screen bg-black">   {/* ← FIX: FULL PAGE BLACK BACKGROUND */}
 
-      <main className="min-h-screen bg-black">
-        <div className="container mx-auto px-4 py-8">
-          <Suspense fallback={<LoadingFallback />}>
-            <Routes>
-              <Route path="/" element={<Home items={items} />} />
-              <Route path="/calculator" element={<TradeCalculator items={items} />} />
-              <Route path="/value-list" element={<ValueListPage items={items} />} />
-              <Route path="/value-changes" element={<ValueChangesPage />} />
-              <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
-              <Route path="/scam-logs" element={<ScamLogsPage />} />
+    {!isAdminPage && <Header />}
+    {maintenanceMode && !isAdminPage && <MaintenancePopup />}
 
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <AdminPage
-                      maintenanceMode={maintenanceMode}
-                      onMaintenanceModeChange={toggleMaintenanceMode}
-                    />
-                  </ProtectedRoute>
-                }
-              />
+    <main className="pb-20">   {/* removed bg-black since wrapper handles it */}
+      <div className="container mx-auto px-4 py-8">
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<Home items={items} />} />
+            <Route path="/calculator" element={<TradeCalculator items={items} />} />
+            <Route path="/value-list" element={<ValueListPage items={items} />} />
+            <Route path="/value-changes" element={<ValueChangesPage />} />
+            <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
+            <Route path="/scam-logs" element={<ScamLogsPage />} />
 
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Suspense>
-        </div>
-      </main>
-      {!isAdminPage && <Footer />}
-    </>
-  );
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminPage
+                    maintenanceMode={maintenanceMode}
+                    onMaintenanceModeChange={toggleMaintenanceMode}
+                  />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </div>
+    </main>
+
+    {!isAdminPage && <Footer />}
+  </div>
+);
 };
 
 // THIS MUST EXIST
