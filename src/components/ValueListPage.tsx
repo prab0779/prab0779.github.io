@@ -1,32 +1,63 @@
-import React from 'react';
-import { ItemFlipGrid } from './ItemFlipGrid';
-import { Item } from '../types/Item';
+import React, { useState } from "react";
+import { ItemFlipGrid } from "./ItemFlipGrid";
+import { Item } from "../types/Item";
 
 interface ValueListPageProps {
   items: Item[];
 }
 
 export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
+  const [viewMode, setViewMode] = useState<"regular" | "permanent">("regular");
+
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      <div className="px-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
-              Complete Value List
-            </h1>
-            <p className="text-gray-400 mt-2 text-sm sm:text-base">
-              Browse our comprehensive Attack on Titan Revolution value list with {items.length}+ items
-            </p>
-          </div>
-          <div className="bg-blue-900 bg-opacity-30 px-4 py-2 rounded-lg border border-blue-700">
-            <p className="text-blue-300 text-xs sm:text-sm font-medium">
-              Updated Daily
-            </p>
-          </div>
+    <div className="max-w-5xl mx-auto px-6 py-16 text-center">
+
+      {/* Title */}
+      <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-4">
+        AOT:R Value List
+      </h1>
+
+      {/* Subtitle */}
+      <p className="text-gray-400 max-w-2xl mx-auto mb-12">
+        Browse and track our comprehensive Attack on Titan Revolution value list with {items.length}+ items
+      </p>
+
+      {/* Default View Mode Toggle */}
+      <div className="mb-12">
+        <h3 className="text-white font-semibold mb-3">Default View Mode</h3>
+
+        <div className="inline-flex bg-gray-900 border border-gray-700 rounded-lg overflow-hidden">
+          <button
+            onClick={() => setViewMode("regular")}
+            className={`px-6 py-2 font-medium transition ${
+              viewMode === "regular"
+                ? "bg-purple-600 text-white"
+                : "text-gray-300 hover:bg-gray-800"
+            }`}
+          >
+            Keys
+          </button>
+
+          <button
+            onClick={() => setViewMode("permanent")}
+            className={`px-6 py-2 font-medium transition ${
+              viewMode === "permanent"
+                ? "bg-purple-600 text-white"
+                : "text-gray-300 hover:bg-gray-800"
+            }`}
+          >
+            Vizard
+          </button>
         </div>
-        <ItemFlipGrid items={items} />
+
+        <p className="text-gray-500 text-sm mt-2">
+          Sets the default display mode for all items.  
+          You can still toggle modes individually on each card.
+        </p>
       </div>
+
+      {/* Item Grid */}
+      <ItemFlipGrid items={items} mode={viewMode} />
     </div>
   );
 };
