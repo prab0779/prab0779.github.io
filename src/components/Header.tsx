@@ -32,17 +32,17 @@ export const Header: React.FC = () => {
             </Link>
 
             <Link
-              to="/calculator"
-              className={`text-sm font-medium px-3 py-2 rounded-md hover:text-blue-400 hover:bg-gray-800 transition ${isActive('/calculator')}`}
-            >
-              Trade Calculator
-            </Link>
-
-            <Link
               to="/value-list"
               className={`text-sm font-medium px-3 py-2 rounded-md hover:text-blue-400 hover:bg-gray-800 transition ${isActive('/value-list')}`}
             >
               Value List
+            </Link>
+
+            <Link
+              to="/calculator"
+              className={`text-sm font-medium px-3 py-2 rounded-md hover:text-blue-400 hover:bg-gray-800 transition ${isActive('/calculator')}`}
+            >
+              Trade Calculator
             </Link>
 
             <Link
@@ -94,13 +94,15 @@ export const Header: React.FC = () => {
                 Home
               </Link>
 
+              <Link to="/value-list" onClick={() => setIsMenuOpen(false)} className={`text-left px-3 py-2 rounded-md ${isActive('/value-list')}`}>
+                Value List
+              </Link>
+
               <Link to="/calculator" onClick={() => setIsMenuOpen(false)} className={`text-left px-3 py-2 rounded-md ${isActive('/calculator')}`}>
                 Trade Calculator
               </Link>
 
-              <Link to="/value-list" onClick={() => setIsMenuOpen(false)} className={`text-left px-3 py-2 rounded-md ${isActive('/value-list')}`}>
-                Value List
-              </Link>
+      
 
               <Link to="/value-changes" onClick={() => setIsMenuOpen(false)} className={`text-left px-3 py-2 rounded-md ${isActive('/value-changes')}`}>
                 Value Changes
