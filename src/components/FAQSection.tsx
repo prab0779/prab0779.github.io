@@ -8,16 +8,16 @@ interface FAQItem {
 
 const faqItems: FAQItem[] = [
   {
-    question: 'What is Trading Corps.?',
-    answer: 'Trading Corps. is the ultimate resource for Attack on Titan Revolution item values, featuring a comprehensive trade calculator, real-time market data, and an extensive item database to help players make informed trading decisions. Trading Corps. is a fan-made resource and is not affiliated with, sponsored by, or endorsed by Attack on Titan, its creators, or the Roblox game Attack on Titan Revolution'
+    question: 'What is Aotr Values?',
+    answer: 'Aotr Values is the ultimate resource for Attack on Titan Revolution item values, featuring a comprehensive trade calculator, real-time market data, and an extensive item database to help players make informed trading decisions. Aotr Values is a fan-made resource and is not affiliated with, sponsored by, or endorsed by Attack on Titan, its creators, or the Roblox game Attack on Titan Revolution'
   },
   {
     question: 'How accurate are the values?',
     answer: 'Our item values are updated regularly based on market trends, community feedback, and trading data to ensure the most accurate and current pricing information for Attack on Titan Revolution items.'
   },
   {
-    question: 'Is the Trading Corps. calculator free?',
-    answer: 'Yes! Trading Corps. is completely free to use. Our trade calculator, item database, and all features are available at no cost to help the Attack on Titan Revolution community.'
+    question: "How are values determined",
+    answer: "Values are for guidance purposes only and are not official. They change daily and are based on three key factors: Rarity, Demand, and Player Needs. This means an item's value can shift depending on how hard it is to obtain, how many players want it, and what it’s worth to the person you're trading with. Trading is about negotiation and finding a deal both sides agree on. We also advise against relying on unofficial value lists made by players, as they often misrepresent true market value."
   },
   {
     question: 'How often are values updated?',
