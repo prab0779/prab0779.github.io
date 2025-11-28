@@ -92,3 +92,4 @@ export const FAQSection: React.FC = () => {
     </div>
   );
 };
+
