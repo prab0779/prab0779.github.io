@@ -46,11 +46,6 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
               Values ★
             </Link>
           </div>
-
-          {/* Powered by */}
-          <p className="text-gray-500 text-sm mt-6">
-            ★ Powered by Trading Corps
-          </p>
         </div>
 
         {/* RIGHT SIDE — IMAGE CARD */}
