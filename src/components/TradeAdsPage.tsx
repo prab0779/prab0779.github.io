@@ -123,7 +123,11 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       user?.email ||
       "Unknown User";
 
+    const discordAvatar = user?.user_metadata?.avatar_url || null;
+
+
     const [formData, setFormData] = useState<CreateTradeAdData>({
+      authorAvatar: discordAvatar,
       title: "",
       itemsWanted: [],
       itemsOffering: [],
@@ -562,16 +566,17 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
             >
               <h3 className="text-lg text-white font-semibold">{ad.title}</h3>
 
-              <div className="flex items-center space-x-4 text-sm text-gray-400 mt-2 mb-4">
-                <div className="flex items-center space-x-1">
-                  <User className="w-4 h-4" />
-                  <span>{ad.authorName}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Clock className="w-4 h-4" />
-                  <span>{getRelativeTime(ad.createdAt)}</span>
-                </div>
-              </div>
+             <div className="flex items-center space-x-3 mt-2 mb-4">
+  <img
+    src={ad.authorAvatar || "/default-avatar.png"}
+    className="w-8 h-8 rounded-full border border-gray-700"
+  />
+  <div>
+    <p className="text-white text-sm font-semibold">{ad.authorName}</p>
+    <p className="text-gray-500 text-xs">{getRelativeTime(ad.createdAt)}</p>
+  </div>
+</div>
+
 
               {/* ITEMS */}
               <div className="grid grid-cols-2 gap-4">
