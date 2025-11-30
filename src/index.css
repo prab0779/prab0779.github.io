@@ -141,4 +141,23 @@
   height: 12px;
   background: #374151;
   border-radius: 6px;
+
+/* ------------------------------------------ */
+/* VIDEO SLIDER — RIGHT ➜ LEFT INFINITE SCROLL */
+/* ------------------------------------------ */
+
+@keyframes slide-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.slider-animation {
+  animation: slide-left 22s linear infinite;
+  display: flex;
+  width: max-content;
+}
 }
