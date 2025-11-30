@@ -141,6 +141,7 @@
   height: 12px;
   background: #374151;
   border-radius: 6px;
+}
 
 /* ------------------------------------------ */
 /* VIDEO SLIDER — RIGHT ➜ LEFT INFINITE SCROLL */
@@ -156,8 +157,7 @@
 }
 
 .slider-animation {
-  animation: slide-left 15s linear infinite;
+  animation: slide-left 22s linear infinite;
   display: flex;
   width: max-content;
-}
 }
