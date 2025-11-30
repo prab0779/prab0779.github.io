@@ -31,17 +31,17 @@ export const useAuth = () => {
   // DISCORD LOGIN — IDENTIFY ONLY
   // ------------------------------
   const signInWithDiscord = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "discord",
-      options: {
-        // ONLY REQUEST USERNAME + AVATAR
-        scopes: "identify",
-        redirectTo: window.location.origin
-      }
-    });
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "discord",
+    options: {
+      redirectTo: window.location.origin, 
+      scopes: "identify"
+    }
+  });
 
-    return { data, error };
-  };
+  return { data, error };
+};
+
 
   // Logout
   const signOut = async () => {
