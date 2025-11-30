@@ -28,7 +28,7 @@ const AdminPage = lazy(() =>
 
 /* ⭐ ADD THIS NEW ONE ⭐ */
 const AuthCallback = lazy(() =>
-  import("./components/AuthCallback")
+  import("./components/AuthCallback").then(m => ({ default: m.default }))
 );
 
 const LoadingFallback = () => (
@@ -74,7 +74,7 @@ export const AppContent: React.FC = () => {
   <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
   <Route path="/scam-logs" element={<ScamLogsPage />} />
 
-  {/* ⭐ NEW — DISCORD OAUTH CALLBACK ROUTE ⭐ */}
+  {/* ⭐ Discord OAuth callback */}
   <Route path="/auth/callback" element={<AuthCallback />} />
 
   <Route
