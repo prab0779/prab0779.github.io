@@ -62,27 +62,31 @@ export const AppContent: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
-            <Route path="/" element={<Home items={items} />} />
-            <Route path="/calculator" element={<TradeCalculator items={items} />} />
-            <Route path="/value-list" element={<ValueListPage items={items} />} />
-            <Route path="/value-changes" element={<ValueChangesPage />} />
-            <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
-            <Route path="/scam-logs" element={<ScamLogsPage />} />
+  <Route path="/" element={<Home items={items} />} />
+  <Route path="/calculator" element={<TradeCalculator items={items} />} />
+  <Route path="/value-list" element={<ValueListPage items={items} />} />
+  <Route path="/value-changes" element={<ValueChangesPage />} />
+  <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
+  <Route path="/scam-logs" element={<ScamLogsPage />} />
 
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute>
-                  <AdminPage
-                    maintenanceMode={maintenanceMode}
-                    onMaintenanceModeChange={toggleMaintenanceMode}
-                  />
-                </ProtectedRoute>
-              }
-            />
+  {/* ⭐ NEW — DISCORD OAUTH CALLBACK ROUTE ⭐ */}
+  <Route path="/auth/callback" element={<AuthCallback />} />
 
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+  <Route
+    path="/admin"
+    element={
+      <ProtectedRoute>
+        <AdminPage
+          maintenanceMode={maintenanceMode}
+          onMaintenanceModeChange={toggleMaintenanceMode}
+        />
+      </ProtectedRoute>
+    }
+  />
+
+  <Route path="*" element={<Navigate to="/" replace />} />
+</Routes>
+
         </Suspense>
       </div>
     </main>
