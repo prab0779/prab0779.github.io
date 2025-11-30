@@ -71,9 +71,25 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   }, [tradeAds, searchTerm, selectedTag]);
 
   const renderItemIcon = (emoji: string, itemName: string) => {
-    if (!emoji) return <span className="text-xl">👹</span>;
-    return <span className="text-xl">{emoji}</span>;
-  };
+  if (!emoji || typeof emoji !== "string") {
+    return <span className="text-xl">👹</span>;
+  }
+
+  // Image file support: /file.png or ./file.png
+  if (emoji.startsWith("/") || emoji.startsWith("./")) {
+    return (
+      <img
+        src={emoji}
+        alt={itemName}
+        className="w-6 h-6 object-contain inline-block rounded-sm"
+      />
+    );
+  }
+
+  // Unicode emoji support
+  return <span className="text-xl">{emoji}</span>;
+};
+
 
   const getRelativeTime = (dateString: string) => {
     const now = new Date();
