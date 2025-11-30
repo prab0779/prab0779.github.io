@@ -69,7 +69,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       </section>
 
       {/* FEATURES */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16">
+      <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
         <h2 className="text-3xl font-bold text-white mb-3">AOTR Values Features</h2>
         <p className="text-gray-400 mb-8 text-sm md:text-base">
           Everything you need for successful Attack on Titan Revolution trading.
@@ -96,7 +96,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       </section>
 
       {/* FAQ */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
+      <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
         <FAQSection />
       </section>
 
