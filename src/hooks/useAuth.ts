@@ -27,6 +27,21 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // ------------------------------
+  // ADD DISCORD LOGIN HERE
+  // ------------------------------
+  const signInWithDiscord = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "discord",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      }
+    });
+
+    return { data, error };
+  };
+
+  // Email/password login
   const signIn = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -46,5 +61,6 @@ export const useAuth = () => {
     loading,
     signIn,
     signOut,
+    signInWithDiscord,   // NOW IT EXISTS → NO MORE CRASH
   };
 };
