@@ -51,24 +51,26 @@ export const useTradeAds = () => {
       const expiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
 
       const { data, error } = await supabase
-        .from('trade_ads')
-        .insert([
-          {
-            title: adData.title,
-            description: adData.description,
-            items_wanted: adData.itemsWanted,
-            items_offering: adData.itemsOffering,
-            tags: adData.tags,
-            author_name: adData.authorName,
-            contact_info: adData.contactInfo,
+  .from('trade_ads')
+  .insert([
+    {
+      title: adData.title,
+      description: adData.description,
+      items_wanted: adData.itemsWanted,
+      items_offering: adData.itemsOffering,
+      tags: adData.tags,
 
-            // REQUIRED FIELDS
-            status: 'active',
-            expires_at: expiresAt,
-          }
-        ])
-        .select()
-        .single();
+      author_name: adData.authorName,
+      author_avatar: adData.authorAvatar,  // 🔥 ADD THIS
+      contact_info: adData.contactInfo,
+
+      status: 'active',
+      expires_at: expiresAt,
+    }
+  ])
+  .select()
+  .single();
+
 
       if (error) throw error;
 
