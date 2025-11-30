@@ -132,6 +132,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       itemsWanted: [],
       itemsOffering: [],
       tags: [],
+      authorAvatar: user?.user_metadata?.avatar_url || null,
       authorName: discordName,
       contactInfo: discordName,
       description: ""
