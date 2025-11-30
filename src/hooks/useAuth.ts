@@ -8,14 +8,12 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    // Listen for auth changes
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -27,32 +25,21 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // ------------------------------
-  // DISCORD LOGIN — IDENTIFY ONLY
-  // ------------------------------
+  // Discord login
   const signInWithDiscord = async () => {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "discord",
-    options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
-      scopes: "identify"
-    }
-  });
-
-  return { data, error };
-};
-
-
-
-  // Logout
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    return { error };
+    return await supabase.auth.signInWithOAuth({
+      provider: "discord",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      }
+    });
   };
 
-  // ------------------------------
-  // Extract only SAFE DISCORD DATA
-  // ------------------------------
+  const signOut = async () => {
+    return await supabase.auth.signOut();
+  };
+
+  // safer discord metadata
   const discord = user
     ? {
         id: user.id,
@@ -61,14 +48,14 @@ export const useAuth = () => {
           user.user_metadata?.full_name ??
           user.user_metadata?.name ??
           "Unknown",
-        avatar: user.user_metadata?.avatar_url || null,
-        banner: user.user_metadata?.banner || null
+        avatar: user.user_metadata?.avatar_url ?? null,
+        banner: user.user_metadata?.banner ?? null
       }
     : null;
 
   return {
     user,
-    discord,      // <--- use this instead of user.user_metadata
+    discord,
     session,
     loading,
     signInWithDiscord,
