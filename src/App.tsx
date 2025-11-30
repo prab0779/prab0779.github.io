@@ -63,8 +63,8 @@ export const AppContent: React.FC = () => {
     {!isAdminPage && <Header />}
     {maintenanceMode && !isAdminPage && <MaintenancePopup />}
 
-    <main className="pb-20">   {/* removed bg-black since wrapper handles it */}
-      <div className="container mx-auto px-4 py-8">
+    <main className="bg-black">   {/* removed bg-black since wrapper handles it */}
+      <div className="container mx-auto px-4 py-4">
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
   <Route path="/" element={<Home items={items} />} />
