@@ -36,7 +36,7 @@ export const useAuth = () => {
       options: {
         // ONLY REQUEST USERNAME + AVATAR
         scopes: "identify",
-        redirectTo: `${window.location.origin}/auth/callback`
+        redirectTo: window.location.origin
       }
     });
 
