@@ -26,6 +26,11 @@ const AdminPage = lazy(() =>
   import("./components/AdminPage").then(m => ({ default: m.AdminPage }))
 );
 
+/* ⭐ ADD THIS NEW ONE ⭐ */
+const AuthCallback = lazy(() =>
+  import("./components/AuthCallback")
+);
+
 const LoadingFallback = () => (
   <div className="flex items-center justify-center min-h-[400px]">
     <div className="text-center">
