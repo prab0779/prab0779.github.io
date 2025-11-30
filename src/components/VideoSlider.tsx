@@ -8,17 +8,13 @@ export const VideoSlider = () => {
     "PXkMKWzhNZk",
   ];
 
-  // Duplicate array for seamless infinite loop
-  const scrollingVideos = [...videos, ...videos];
+  // Duplicate for infinite loop
+  const loop = [...videos, ...videos];
 
   return (
-    <div className="overflow-hidden relative">
-      <div
-        className="
-          flex gap-6 animate-scroll-left
-        "
-      >
-        {scrollingVideos.map((id, i) => (
+    <div className="overflow-hidden w-full">
+      <div className="flex gap-6 slider-animation">
+        {loop.map((id, i) => (
           <div
             key={i}
             className="min-w-[260px] md:min-w-[360px] bg-black border border-gray-700 rounded-xl shadow-lg overflow-hidden"
