@@ -6,6 +6,7 @@ export const VideoSlider = () => {
     "fS2u_FNFt84",
     "_HoItTdLc5k",
     "PXkMKWzhNZk",
+    "8mz3dUJXhdc",
   ];
 
   // Duplicate for infinite loop
