@@ -28,6 +28,7 @@ export const useTradeAds = () => {
         tags: row.tags || [],
         status: row.status,
         authorName: row.author_name,
+        authorAvatar: row.author_avatar,
         contactInfo: row.contact_info,
         createdAt: row.created_at,
         updatedAt: row.updated_at,
