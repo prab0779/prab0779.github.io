@@ -157,7 +157,7 @@
 }
 
 .slider-animation {
-  animation: slide-left 8s linear infinite;
+  animation: slide-left 35s linear infinite;
   display: flex;
   width: max-content;
 }
