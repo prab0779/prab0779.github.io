@@ -6,7 +6,6 @@ export const StockRestocker: React.FC = () => {
   const [stock, setStock] = useState<any>(null);
   const [timeLeft, setTimeLeft] = useState("00:00:00");
 
-  // Auto-load stock
   useEffect(() => {
     loadStock();
     const interval = setInterval(loadStock, 60000);
@@ -14,22 +13,28 @@ export const StockRestocker: React.FC = () => {
   }, []);
 
   async function loadStock() {
-    // Check if expired
-    const { data } = await supabase
+    console.log("Loading stock…");
+
+    const { data, error } = await supabase
       .from("stock_rotation")
       .select("*")
       .eq("id", 1)
       .single();
 
-    console.log("SUPABASE RESPONSE:", data);
-    console.log("SUPABASE ERROR:", error);
+    console.log("Supabase Data:", data);
+    console.log("Supabase Error:", error);
 
-    if (!data) return;
+    // If no row → DO NOT hide the UI, just show placeholder
+    if (!data) {
+      console.log("No stock data found.");
+      setStock(null);
+      return;
+    }
 
+    // Check expiry
     const now = new Date();
     const expiry = new Date(data.expires_at);
 
-    // If expired → reset
     if (now >= expiry) {
       const next = getNextReset();
       await supabase
@@ -40,7 +45,7 @@ export const StockRestocker: React.FC = () => {
           slot3: null,
           slot4: null,
           updated_for_cycle: false,
-          expires_at: next
+          expires_at: next,
         })
         .eq("id", 1);
 
@@ -49,7 +54,7 @@ export const StockRestocker: React.FC = () => {
         slot2: null,
         slot3: null,
         slot4: null,
-        expires_at: next
+        expires_at: next,
       });
 
       setTimer(next);
@@ -60,7 +65,6 @@ export const StockRestocker: React.FC = () => {
     setTimer(data.expires_at);
   }
 
-  // Countdown Timer
   function setTimer(expiresAt: string) {
     const interval = setInterval(() => {
       const now = new Date().getTime();
@@ -86,28 +90,41 @@ export const StockRestocker: React.FC = () => {
     }, 1000);
   }
 
-  if (!stock) return null;
+  // ALWAYS display UI (with placeholders if needed)
+  const slots = stock
+    ? [stock.slot1, stock.slot2, stock.slot3, stock.slot4]
+    : [null, null, null, null];
 
   return (
-    <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
+    <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14 mt-10">
+
       <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
         Stock Restocker
       </h2>
 
-      <p className="text-gray-400 mb-6">Next restock in: {timeLeft}</p>
+      <p className="text-gray-400 mb-6">
+        Next restock in: {stock ? timeLeft : "loading…"}
+      </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[stock.slot1, stock.slot2, stock.slot3, stock.slot4].map(
-          (item, i) => (
-            <div
-              key={i}
-              className="bg-gray-900/40 border border-gray-800 rounded-xl p-6 flex justify-center items-center text-white text-xl font-bold"
-            >
+        {slots.map((item, i) => (
+          <div
+            key={i}
+            className="relative bg-black border border-yellow-600 rounded-xl p-5 shadow-xl flex flex-col items-center justify-between transition hover:scale-[1.02]"
+          >
+            <div className="text-yellow-300 text-lg font-bold mb-4 tracking-wide">
               {item ?? "?"}
             </div>
-          )
-        )}
+
+            <div className="w-full">
+              <div className="bg-gray-800 text-blue-300 text-center font-bold py-2 rounded-md">
+                {item ? "In Stock" : "?"}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
+
     </section>
   );
 };
