@@ -1,85 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import { getNextReset } from "../types/getNextReset";
 
 export const StockRestocker: React.FC = () => {
-  const [stock, setStock] = useState<any>(null);
+  const [slots, setSlots] = useState([null, null, null, null]);
   const [timeLeft, setTimeLeft] = useState("00:00:00");
 
-  useEffect(() => {
-    loadStock();
-    const interval = setInterval(loadStock, 60000);
-    return () => clearInterval(interval);
-  }, []);
+  // 6-hour reset times (UK)
+  const RESET_HOURS = [0, 6, 12, 18];
 
-  async function loadStock() {
-    console.log("Loading stock…");
-
-    const { data, error } = await supabase
-      .from("stock_rotation")
-      .select("*")
-      .eq("id", 1)
-      .single();
-
-    console.log("Supabase Data:", data);
-    console.log("Supabase Error:", error);
-
-    // If no row → DO NOT hide the UI, just show placeholder
-    if (!data) {
-      console.log("No stock data found.");
-      setStock(null);
-      return;
-    }
-
-    // Check expiry
+  // --- GET NEXT UK RESET TIME ---
+  function getNextUKResetDate() {
     const now = new Date();
-    const expiry = new Date(data.expires_at);
+    const ukNow = new Date(
+      now.toLocaleString("en-GB", { timeZone: "Europe/London" })
+    );
 
-    if (now >= expiry) {
-      const next = getNextReset();
-      await supabase
-        .from("stock_rotation")
-        .update({
-          slot1: null,
-          slot2: null,
-          slot3: null,
-          slot4: null,
-          updated_for_cycle: false,
-          expires_at: next,
-        })
-        .eq("id", 1);
+    const currentHour = ukNow.getHours();
+    const nextHour = RESET_HOURS.find(h => h > currentHour) ?? 24;
 
-      setStock({
-        slot1: null,
-        slot2: null,
-        slot3: null,
-        slot4: null,
-        expires_at: next,
-      });
+    const nextReset = new Date(ukNow);
+    nextReset.setHours(nextHour === 24 ? 0 : nextHour, 0, 0, 0);
 
-      setTimer(next);
-      return;
-    }
+    if (nextHour === 24) nextReset.setDate(nextReset.getDate() + 1);
 
-    setStock(data);
-    setTimer(data.expires_at);
+    return nextReset;
   }
 
-  function setTimer(expiresAt: string) {
+  // --- COUNTDOWN TIMER ---
+  function startTimer() {
+    const target = getNextUKResetDate();
+
     const interval = setInterval(() => {
       const now = new Date().getTime();
-      const expiry = new Date(expiresAt).getTime();
+      const diff = target.getTime() - now;
 
-      const diff = expiry - now;
       if (diff <= 0) {
-        setTimeLeft("00:00:00");
         clearInterval(interval);
+        setTimeLeft("00:00:00");
+        clearSlots();
+        startTimer(); // Restart timer for next cycle
         return;
       }
 
-      const h = Math.floor(diff / (1000 * 60 * 60));
-      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const s = Math.floor((diff % (1000 * 60)) / 1000);
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
 
       setTimeLeft(
         `${String(h).padStart(2, "0")}:${String(m).padStart(
@@ -90,10 +55,44 @@ export const StockRestocker: React.FC = () => {
     }, 1000);
   }
 
-  // ALWAYS display UI (with placeholders if needed)
-  const slots = stock
-    ? [stock.slot1, stock.slot2, stock.slot3, stock.slot4]
-    : [null, null, null, null];
+  // --- LOAD ITEMS FROM SUPABASE ---
+  async function loadStock() {
+    const { data, error } = await supabase
+      .from("stock_rotation")
+      .select("slot1, slot2, slot3, slot4")
+      .eq("id", 1)
+      .single();
+
+    if (!data) return; // fallback: all nulls
+
+    setSlots([
+      data.slot1,
+      data.slot2,
+      data.slot3,
+      data.slot4,
+    ]);
+  }
+
+  // --- CLEAR ITEMS AUTOMATICALLY AT RESET ---
+  async function clearSlots() {
+    setSlots([null, null, null, null]);
+
+    await supabase
+      .from("stock_rotation")
+      .update({
+        slot1: null,
+        slot2: null,
+        slot3: null,
+        slot4: null
+      })
+      .eq("id", 1);
+  }
+
+  // INITIAL LOAD / TIMER
+  useEffect(() => {
+    loadStock();
+    startTimer();
+  }, []);
 
   return (
     <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14 mt-10">
@@ -103,7 +102,7 @@ export const StockRestocker: React.FC = () => {
       </h2>
 
       <p className="text-gray-400 mb-6">
-        Next restock in: {stock ? timeLeft : "loading…"}
+        Next restock in: {timeLeft}
       </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
