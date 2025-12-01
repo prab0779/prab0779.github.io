@@ -151,6 +151,37 @@ export interface Database {
           expires_at?: string;
         };
       };
+
+      stock_rotation: {
+  Row: {
+    id: number;
+    slot1: string | null;
+    slot2: string | null;
+    slot3: string | null;
+    slot4: string | null;
+    expires_at: string;
+    updated_for_cycle: boolean;
+  };
+  Insert: {
+    id?: number;
+    slot1?: string | null;
+    slot2?: string | null;
+    slot3?: string | null;
+    slot4?: string | null;
+    expires_at: string;
+    updated_for_cycle?: boolean;
+  };
+  Update: {
+    id?: number;
+    slot1?: string | null;
+    slot2?: string | null;
+    slot3?: string | null;
+    slot4?: string | null;
+    expires_at?: string;
+    updated_for_cycle?: boolean;
+  };
+};
+
     };
   };
 }
