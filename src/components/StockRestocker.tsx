@@ -27,33 +27,35 @@ export const StockRestocker: React.FC = () => {
   }
 
   // --- COUNTDOWN TIMER ---
-  function startTimer() {
-    const target = getNextUKResetDate();
+ function startTimer() {
+  let target = getNextUKResetDate();
 
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const diff = target.getTime() - now;
+  const interval = setInterval(() => {
+    const now = new Date().getTime();
+    const diff = target.getTime() - now;
 
-      if (diff <= 0) {
-        clearInterval(interval);
-        setTimeLeft("00:00:00");
-        clearSlots();
-        startTimer(); // Restart timer for next cycle
-        return;
-      }
+    // Reset reached
+    if (diff <= 0) {
+      clearInterval(interval);
+      clearSlots();                // Clear items
+      target = getNextUKResetDate(); // Get the NEXT reset, NOT the same one again
+      startTimer();                // Restart fresh timer
+      return;
+    }
 
-      const h = Math.floor(diff / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
+    // Convert ms to h:m:s
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
 
-      setTimeLeft(
-        `${String(h).padStart(2, "0")}:${String(m).padStart(
-          2,
-          "0"
-        )}:${String(s).padStart(2, "0")}`
-      );
-    }, 1000);
-  }
+    setTimeLeft(
+      `${String(h).padStart(2, "0")}:${String(m).padStart(
+        2,
+        "0"
+      )}:${String(s).padStart(2, "0")}`
+    );
+  }, 1000);
+}
 
   // --- LOAD ITEMS FROM SUPABASE ---
   async function loadStock() {
