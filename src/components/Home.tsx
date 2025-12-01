@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Item } from "../types/Item";
 import { FAQSection } from "./FAQSection";
 import { VideoSlider } from "./VideoSlider";
+import { StockRestocker } from "../components/StockRestocker";
 
 interface HomeProps {
   items: Item[];
@@ -67,6 +68,9 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
         <VideoSlider />
       </section>
+
+      {/* STOCK RESTOCKER */}
+      <StockRestocker />
 
       {/* FEATURES */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
