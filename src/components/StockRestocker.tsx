@@ -21,6 +21,9 @@ export const StockRestocker: React.FC = () => {
       .eq("id", 1)
       .single();
 
+    console.log("SUPABASE RESPONSE:", data);
+    console.log("SUPABASE ERROR:", error);
+
     if (!data) return;
 
     const now = new Date();
