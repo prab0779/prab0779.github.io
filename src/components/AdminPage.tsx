@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from 'react';
+import { useContext } from "react";
+import { PresenceContext } from "../components/OnlinePresenceProvider";
 import { Plus, CreditCard as Edit, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useItems } from '../hooks/useItems';
@@ -17,7 +19,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const { user, signOut } = useAuth();
   const { items, loading, error, createItem, updateItem, deleteItem } = useItems();
   const { valueChanges, loading: changesLoading, deleteValueChange } = useValueChanges();
-  const { onlineCount, loading: usersLoading } = useOnlineUsers();
+  const { onlineCount, loading: usersLoading } = useContext(PresenceContext);
   const { scamLogs, loading: scamLogsLoading } = useScamLogs();
   const { createScamLog, deleteScamLog } = useScamLogsAdmin();
   const [editingItem, setEditingItem] = useState<Item | null>(null);
