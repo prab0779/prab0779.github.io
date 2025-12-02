@@ -6,6 +6,7 @@ import { MaintenancePopup } from "./components/MaintenancePopup";
 import { Home } from "./components/Home";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useItems } from "./hooks/useItems";
+import { OnlinePresenceProvider } from "./components/OnlinePresenceProvider";
 
 const TradeCalculator = lazy(() =>
   import("./components/TradeCalculator").then(m => ({ default: m.TradeCalculator }))
@@ -101,8 +102,14 @@ export const AppContent: React.FC = () => {
 );
 };
 
-// THIS MUST EXIST
+// THIS MUST EXIS
+
 export default function App() {
-  return <AppContent />;
+  return (
+    <OnlinePresenceProvider>
+      <AppContent />
+    </OnlinePresenceProvider>
+  );
 }
+
 
