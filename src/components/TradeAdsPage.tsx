@@ -123,16 +123,31 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       user?.email ||
       "Unknown User";
 
-    const discordAvatar = user?.user_metadata?.avatar_url || null;
+    const getDiscordAvatarUrl = () => {
+      if (!user?.user_metadata) return null;
+
+      const avatarHash = user.user_metadata.avatar_url;
+      const providerId = user.user_metadata.provider_id || user.user_metadata.sub;
+
+      if (!avatarHash || !providerId) return null;
+
+      if (avatarHash.startsWith('http')) {
+        return avatarHash;
+      }
+
+      return `https://cdn.discordapp.com/avatars/${providerId}/${avatarHash}.png`;
+    };
+
+    const discordAvatar = getDiscordAvatarUrl();
     console.log("Discord metadata:", user?.user_metadata);
+    console.log("Constructed avatar URL:", discordAvatar);
 
     const [formData, setFormData] = useState<CreateTradeAdData>({
-      authorAvatar: discordAvatar,
       title: "",
       itemsWanted: [],
       itemsOffering: [],
       tags: [],
-      authorAvatar: user?.user_metadata?.avatar_url || null,
+      authorAvatar: discordAvatar,
       authorName: discordName,
       contactInfo: discordName,
       description: ""
@@ -199,8 +214,9 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       onSubmit({
         ...formData,
         authorName: discordName,
+        authorAvatar: discordAvatar,
         contactInfo: discordName,
-        description: "" // forced empty
+        description: ""
       });
     };
 
@@ -569,8 +585,13 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
              <div className="flex items-center space-x-3 mt-2 mb-4">
   <img
-    src={ad.authorAvatar || "/default-avatar.png"}
-    className="w-8 h-8 rounded-full border border-gray-700"
+    src={ad.authorAvatar || "https://cdn.discordapp.com/embed/avatars/0.png"}
+    alt={`${ad.authorName}'s avatar`}
+    className="w-8 h-8 rounded-full border border-gray-700 bg-gray-800"
+    onError={(e) => {
+      const target = e.target as HTMLImageElement;
+      target.src = "https://cdn.discordapp.com/embed/avatars/0.png";
+    }}
   />
   <div>
     <p className="text-white text-sm font-semibold">{ad.authorName}</p>

@@ -14,6 +14,7 @@ export interface TradeAd {
   tags: string[];
   status: 'active' | 'completed' | 'cancelled';
   authorName: string;
+  authorAvatar: string | null;
   contactInfo: string;
   createdAt: string;
   updatedAt: string;
@@ -27,5 +28,6 @@ export interface CreateTradeAdData {
   itemsOffering: TradeAdItem[];
   tags: string[];
   authorName: string;
+  authorAvatar: string | null;
   contactInfo: string;
 }
