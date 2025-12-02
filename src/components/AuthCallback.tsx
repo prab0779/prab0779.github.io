@@ -6,10 +6,25 @@ export default function AuthCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Wait for Supabase to finish processing the OAuth redirect
-    supabase.auth.getSession().then(() => {
-      navigate("/trade-ads"); // redirect after login
-    });
+    const handleLogin = async () => {
+      // Try exchanging the code for a session (if Discord sent a ?code= param)
+      const { data: sessionData, error: exchangeError } =
+        await supabase.auth.exchangeCodeForSession(window.location.href);
+
+      if (exchangeError) {
+        console.warn("No exchange needed or exchange error:", exchangeError.message);
+      }
+
+      // Now fetch session to ensure Supabase stored it
+      const { data, error } = await supabase.auth.getSession();
+
+      console.log("SESSION AFTER CALLBACK:", data?.session, error);
+
+      // Redirect to trade ads (user will be logged in now)
+      navigate("/trade-ads");
+    };
+
+    handleLogin();
   }, []);
 
   return (
