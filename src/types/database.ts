@@ -108,49 +108,53 @@ export interface Database {
         };
       };
       trade_ads: {
-        Row: {
-          id: string;
-          title: string;
-          description: string;
-          items_wanted: any;
-          items_offering: any;
-          tags: string[];
-          status: 'active' | 'completed' | 'cancelled';
-          author_name: string;
-          contact_info: string;
-          created_at: string;
-          updated_at: string;
-          expires_at: string;
-        };
-        Insert: {
-          id: string;
-          title: string;
-          description?: string;
-          items_wanted?: any;
-          items_offering?: any;
-          tags?: string[];
-          status?: 'active' | 'completed' | 'cancelled';
-          author_name: string;
-          contact_info: string;
-          created_at?: string;
-          updated_at?: string;
-          expires_at?: string;
-        };
-        Update: {
-          id?: string;
-          title?: string;
-          description?: string;
-          items_wanted?: any;
-          items_offering?: any;
-          tags?: string[];
-          status?: 'active' | 'completed' | 'cancelled';
-          author_name?: string;
-          contact_info?: string;
-          created_at?: string;
-          updated_at?: string;
-          expires_at?: string;
-        };
-      };
+  Row: {
+    id: string;
+    title: string;
+    description: string;
+    items_wanted: any;
+    items_offering: any;
+    tags: string[];
+    status: 'active' | 'completed' | 'cancelled';
+    author_name: string;
+    author_avatar: string;   // FIXED
+    contact_info: string;
+    created_at: string;
+    updated_at: string;
+    expires_at: string;
+  };
+  Insert: {
+    id?: string;
+    title: string;
+    description?: string;
+    items_wanted?: any;
+    items_offering?: any;
+    tags?: string[];
+    status?: 'active' | 'completed' | 'cancelled';
+    author_name: string;
+    author_avatar?: string;  // FIXED
+    contact_info: string;
+    created_at?: string;
+    updated_at?: string;
+    expires_at?: string;
+  };
+  Update: {
+    id?: string;
+    title?: string;
+    description?: string;
+    items_wanted?: any;
+    items_offering?: any;
+    tags?: string[];
+    status?: 'active' | 'completed' | 'cancelled';
+    author_name?: string;
+    author_avatar?: string;  // FIXED
+    contact_info?: string;
+    created_at?: string;
+    updated_at?: string;
+    expires_at?: string;
+  };
+};
+
 
       stock_rotation: {
   Row: {
