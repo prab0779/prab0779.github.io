@@ -1,3 +1,6 @@
+// 👇 DEFINE THIS OUTSIDE THE COMPONENT
+let hasRun = false;
+
 import { useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
@@ -9,22 +12,25 @@ export default function AuthCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
+
     const handleLogin = async () => {
-      // Try exchanging the code for a session (if Discord sent a ?code= param)
+      if (hasRun) return;
+      hasRun = true;
+
+      const url = window.location.href;
+
       const { data: sessionData, error: exchangeError } =
-        await supabase.auth.exchangeCodeForSession(window.location.href);
+        await supabase.auth.exchangeCodeForSession(url);
 
       if (exchangeError) {
-        console.warn("No exchange needed or exchange error:", exchangeError.message);
+        console.warn("Exchange error:", exchangeError.message);
       }
 
-      // Now fetch session to ensure Supabase stored it
       const { data, error } = await supabase.auth.getSession();
 
       console.log("SESSION AFTER CALLBACK:", data?.session, error);
 
       if (data?.session?.user) {
-        // Check if user is an admin
         const discordId =
           data.session.user.user_metadata?.provider_id ||
           data.session.user.user_metadata?.sub ||
@@ -32,14 +38,12 @@ export default function AuthCallback() {
 
         console.log("Discord ID from callback:", discordId);
 
-        // If admin, redirect to admin page; otherwise to trade ads
         if (discordId && ALLOWED_ADMIN_IDS.includes(discordId)) {
           navigate("/admin");
         } else {
           navigate("/trade-ads");
         }
       } else {
-        // Fallback to trade ads if no session
         navigate("/trade-ads");
       }
     };
