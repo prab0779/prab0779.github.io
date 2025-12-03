@@ -214,3 +214,20 @@
   display: flex;
   width: max-content;
 }
+
+@keyframes slide-up-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-item {
+  animation: slide-up-fade 0.45s ease-out forwards;
+  opacity: 0;
+}
+
