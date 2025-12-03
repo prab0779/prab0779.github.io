@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-950 border-t border-gray-800 mt-12">
+    <footer className="bg-black border-t border-gray-800 mt-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
         <div className="py-10 sm:py-14">
 
-          {/* GRID — optimized for mobile */}
+          {/* GRID */}
           <div
             className="
               grid
@@ -24,36 +24,39 @@ export const Footer: React.FC = () => {
             {/* Brand */}
             <div className="col-span-2 sm:col-span-1">
               <div className="flex items-center space-x-2 mb-3">
-                <span className="text-3xl">⚔️</span>
-                <h2 className="text-lg font-bold text-white">AOT:R Value Hub</h2>
+                <span className="text-3xl text-[var(--gold-bright)]">⚔️</span>
+                <h2 className="text-lg font-bold text-[var(--gold-bright)]">
+                  AOT:R Value Hub
+                </h2>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-                https://aotrvalue.com is a 3rd party website that is not affiliated or partnered with Attack on Titan Revolution. We are not endorsed by their respective owners.
+                https://aotrvalue.com is a 3rd party website that is not affiliated with Attack on Titan Revolution or Roblox. 
+                We are not endorsed by their respective owners.
               </p>
             </div>
 
             {/* Navigation */}
             <div>
-              <h3 className="text-white font-semibold text-sm mb-3">Navigation</h3>
+              <h3 className="text-[var(--gold-bright)] font-semibold text-sm mb-3">Navigation</h3>
               <ul className="space-y-1.5 text-sm">
-                <li><Link to="/" className="text-gray-400 hover:text-blue-400">Home</Link></li>
-                <li><Link to="/calculator" className="text-gray-400 hover:text-blue-400">Calculator</Link></li>
-                <li><Link to="/value-list" className="text-gray-400 hover:text-blue-400">Value List</Link></li>
-                <li><Link to="/value-changes" className="text-gray-400 hover:text-blue-400">Value Changes</Link></li>
+                <li><Link to="/" className="text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition">Home</Link></li>
+                <li><Link to="/calculator" className="text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition">Calculator</Link></li>
+                <li><Link to="/value-list" className="text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition">Value List</Link></li>
+                <li><Link to="/value-changes" className="text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition">Value Changes</Link></li>
               </ul>
             </div>
 
             {/* Community */}
             <div>
-              <h3 className="text-white font-semibold text-sm mb-3">Community</h3>
+              <h3 className="text-[var(--gold-bright)] font-semibold text-sm mb-3">Community</h3>
               <ul className="space-y-1.5 text-sm">
-                <li><Link to="/trade-ads" className="text-gray-400 hover:text-blue-400">Trade Ads</Link></li>
-                <li><Link to="/scam-logs" className="text-gray-400 hover:text-blue-400">Scam Logs</Link></li>
+                <li><Link to="/trade-ads" className="text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition">Trade Ads</Link></li>
+                <li><Link to="/scam-logs" className="text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition">Scam Logs</Link></li>
                 <li>
                   <a
                     href="https://discord.gg/tradingcorps"
                     target="_blank"
-                    className="inline-flex items-center gap-1 text-gray-400 hover:text-blue-400"
+                    className="inline-flex items-center gap-1 text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition"
                   >
                     Discord <ExternalLink className="w-3 h-3" />
                   </a>
@@ -63,19 +66,20 @@ export const Footer: React.FC = () => {
 
             {/* Support */}
             <div>
-              <h3 className="text-white font-semibold text-sm mb-3">Support</h3>
+              <h3 className="text-[var(--gold-bright)] font-semibold text-sm mb-3">Support</h3>
               <ul className="space-y-1.5 text-sm">
                 <li>
                   <a
                     href="https://discord.gg/tradingcorps"
                     target="_blank"
-                    className="inline-flex items-center gap-2 text-gray-400 hover:text-blue-400"
+                    className="inline-flex items-center gap-2 text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition"
                   >
                     <Mail className="w-4 h-4" /> Contact Us
                   </a>
                 </li>
               </ul>
             </div>
+
           </div>
 
           {/* Divider */}
