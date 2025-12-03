@@ -46,44 +46,52 @@ export const useTradeAds = () => {
     }
   };
 
-  // ✅ FIXED VERSION
   const createTradeAd = async (adData: CreateTradeAdData) => {
-    try {
-      const expiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
+  try {
+    const { data: sessionData } = await supabase.auth.getSession();
 
-      const { data, error } = await supabase
-  .from('trade_ads')
-  .insert([
-    {
-      title: adData.title,
-      description: adData.description,
-      items_wanted: adData.itemsWanted,
-      items_offering: adData.itemsOffering,
-      tags: adData.tags,
-
-      author_name: adData.authorName,
-      author_avatar: adData.authorAvatar,  // 🔥 ADD THIS
-      contact_info: adData.contactInfo,
-
-      status: 'active',
-      expires_at: expiresAt,
+    if (!sessionData?.session) {
+      return { data: null, error: "Not authenticated" };
     }
-  ])
-  .select()
-  .single();
 
+    const userId = sessionData.session.user.id;
 
-      if (error) throw error;
+    const expiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
 
-      await fetchTradeAds();
-      return { data, error: null };
+    const { data, error } = await supabase
+      .from("trade_ads")
+      .insert([
+        {
+          title: adData.title,
+          description: adData.description,
+          items_wanted: adData.itemsWanted,
+          items_offering: adData.itemsOffering,
+          tags: adData.tags,
 
-    } catch (err) {
-      const error = err instanceof Error ? err.message : 'Failed to create trade ad';
-      console.error("Insert error:", err);
-      return { data: null, error };
-    }
-  };
+          author_name: adData.authorName,
+          author_avatar: adData.authorAvatar, // after you rename DB column
+          contact_info: adData.contactInfo,
+
+          user_id: userId,                   // ✅ ADD THIS
+          status: "active",
+          expires_at: expiresAt,
+        }
+      ])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    await fetchTradeAds();
+    return { data, error: null };
+
+  } catch (err) {
+    const error = err instanceof Error ? err.message : "Failed to create trade ad";
+    console.error("Insert error:", err);
+    return { data: null, error };
+  }
+};
+
 
   const updateTradeAdStatus = async (id: string, status: 'completed' | 'cancelled') => {
     try {
