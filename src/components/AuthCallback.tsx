@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
 
+// Admin Discord IDs
+const ALLOWED_ADMIN_IDS = ["512671808886013962"];
+
 export default function AuthCallback() {
   const navigate = useNavigate();
 
@@ -20,12 +23,29 @@ export default function AuthCallback() {
 
       console.log("SESSION AFTER CALLBACK:", data?.session, error);
 
-      // Redirect to trade ads (user will be logged in now)
-      navigate("/trade-ads");
+      if (data?.session?.user) {
+        // Check if user is an admin
+        const discordId =
+          data.session.user.user_metadata?.provider_id ||
+          data.session.user.user_metadata?.sub ||
+          null;
+
+        console.log("Discord ID from callback:", discordId);
+
+        // If admin, redirect to admin page; otherwise to trade ads
+        if (discordId && ALLOWED_ADMIN_IDS.includes(discordId)) {
+          navigate("/admin");
+        } else {
+          navigate("/trade-ads");
+        }
+      } else {
+        // Fallback to trade ads if no session
+        navigate("/trade-ads");
+      }
     };
 
     handleLogin();
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="text-center text-white py-20">
