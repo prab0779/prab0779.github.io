@@ -67,11 +67,16 @@ export const Header: React.FC = () => {
 
           {/* Mobile menu button */}
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-md text-[var(--gold)] hover:text-[var(--gold-bright)] hover:bg-black/40 transition"
-          >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+  onClick={() => setIsMenuOpen(!isMenuOpen)}
+  className="md:hidden p-2 rounded-md text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition"
+>
+  {isMenuOpen ? (
+    <X className="w-6 h-6" />
+  ) : (
+    <Menu className="w-6 h-6" />
+  )}
+</button>
+
 
         </div>
 
