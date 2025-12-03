@@ -25,12 +25,13 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Discord login
+  // Discord login with identity scope
   const signInWithDiscord = async () => {
     return await supabase.auth.signInWithOAuth({
       provider: "discord",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
+        scopes: ["identify"],
       }
     });
   };
