@@ -21,7 +21,7 @@ export const Header: React.FC = () => {
     <header className="bg-black sticky top-0 z-50 py-4 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
 
-        {/* LOGO LEFT */}
+        {/* LEFT LOGO */}
         <Link to="/" className="flex items-center">
           <img
             src="/customdiscordlogo.png"
@@ -30,7 +30,7 @@ export const Header: React.FC = () => {
           />
         </Link>
 
-        {/* NAVBAR DESKTOP */}
+        {/* DESKTOP NAV */}
         <div className="hidden md:flex items-center justify-center flex-1">
           <div className="flex items-center bg-[#111] rounded-full px-10 py-3 gap-4 border border-gray-700 shadow-[0_0_10px_rgba(255,220,150,0.05)]">
             {links.map((l) => (
@@ -49,7 +49,7 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* DISCORD ICON BUTTON RIGHT */}
+        {/* RIGHT DISCORD BUTTON */}
         <a
           href="https://discord.gg/tradingcorps"
           target="_blank"
@@ -59,7 +59,7 @@ export const Header: React.FC = () => {
           <img
             src="/discord-icon.png"
             alt="Discord"
-            className="h-6 w-6 object-contain"
+            className="h-8 w-8 object-contain"
           />
         </a>
 
@@ -74,38 +74,40 @@ export const Header: React.FC = () => {
 
       {/* MOBILE MENU DROPDOWN */}
       {open && (
-  <div className="md:hidden mt-4 bg-[#111] border-t border-gray-800 overflow-hidden">
-    {links.map((l, i) => (
-      <Link
-        key={l.path}
-        to={l.path}
-        onClick={() => setOpen(false)}
-        className={`block px-6 py-3 text-sm mobile-item`}
-        style={{ 
-          animationDelay: `${i * 0.12}s`,
-          color: isActive(l.path) 
-            ? "var(--gold-bright)"
-            : "var(--gold-soft)"
-        }}
-      >
-        {l.name}
-      </Link>
-    ))}
+        <div className="md:hidden mt-4 bg-[#111] border-t border-gray-800 overflow-hidden">
+          {links.map((l, i) => (
+            <Link
+              key={l.path}
+              to={l.path}
+              onClick={() => setOpen(false)}
+              className="block px-6 py-3 text-sm mobile-item"
+              style={{
+                animationDelay: `${i * 0.12}s`,
+                color: isActive(l.path)
+                  ? "var(--gold-bright)"
+                  : "var(--gold-soft)",
+              }}
+            >
+              {l.name}
+            </Link>
+          ))}
 
-    {/* Discord item */}
-    <a
-      href="https://discord.gg/tradingcorps"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block px-6 py-3 text-sm mobile-item"
-      style={{ animationDelay: `${links.length * 0.12}s`, color: "var(--gold-soft)" }}
-    >
-      Discord
-    </a>
-  </div>
-)}
-
+          {/* Discord in mobile */}
+          <a
+            href="https://discord.gg/tradingcorps"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block px-6 py-3 text-sm mobile-item"
+            style={{
+              animationDelay: `${links.length * 0.12}s`,
+              color: "var(--gold-soft)",
+            }}
+          >
+            Discord
+          </a>
+        </div>
       )}
+
     </header>
   );
 };
