@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Menu, X, ExternalLink } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 export const Header: React.FC = () => {
@@ -22,7 +22,7 @@ export const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
 
         {/* LOGO LEFT */}
-        <Link to="/" className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center">
           <img
             src="/customdiscordlogo.png"
             className="h-12 w-auto object-contain"
@@ -32,14 +32,14 @@ export const Header: React.FC = () => {
 
         {/* NAVBAR DESKTOP */}
         <div className="hidden md:flex items-center justify-center flex-1">
-          <div className="flex items-center bg-[#111] rounded-full px-6 py-2 gap-2 border border-gray-700">
+          <div className="flex items-center bg-[#111] rounded-full px-10 py-3 gap-4 border border-gray-700 shadow-[0_0_10px_rgba(255,220,150,0.05)]">
             {links.map((l) => (
               <Link
                 key={l.path}
                 to={l.path}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   isActive(l.path)
-                    ? "bg-[rgba(255,220,150,0.15)] text-[var(--gold-bright)] shadow-[0_0_10px_rgba(255,225,150,0.2)]"
+                    ? "bg-[rgba(255,220,150,0.15)] text-[var(--gold-bright)] shadow-[0_0_10px_rgba(255,225,150,0.25)]"
                     : "text-[var(--gold-soft)] hover:bg-[rgba(255,220,150,0.07)] hover:text-[var(--gold-bright)]"
                 }`}
               >
@@ -49,15 +49,18 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* DISCORD BUTTON RIGHT */}
+        {/* DISCORD ICON BUTTON RIGHT */}
         <a
           href="https://discord.gg/tradingcorps"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden md:flex items-center gap-2 border border-[var(--gold-bright)] text-[var(--gold-bright)] px-5 py-2 rounded-full hover:bg-[rgba(255,220,150,0.15)] transition"
+          className="hidden md:flex items-center justify-center h-12 w-12 rounded-full border border-[var(--gold-bright)] text-[var(--gold-bright)] hover:bg-[rgba(255,220,150,0.15)] transition"
         >
-          <ExternalLink className="w-4 h-4" />
-          Discord
+          <img
+            src="/discord-icon.png"
+            alt="Discord"
+            className="h-6 w-6 object-contain"
+          />
         </a>
 
         {/* MOBILE MENU BUTTON */}
@@ -93,7 +96,7 @@ export const Header: React.FC = () => {
             rel="noopener noreferrer"
             className="block px-6 py-3 text-sm text-[var(--gold-soft)] hover:text-[var(--gold-bright)]"
           >
-            Discord <ExternalLink className="inline w-4 h-4 ml-1" />
+            Discord
           </a>
         </div>
       )}
