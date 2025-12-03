@@ -27,14 +27,20 @@ export const useAuth = () => {
 
   // Discord login with identity scope
   const signInWithDiscord = async () => {
-    return await supabase.auth.signInWithOAuth({
-      provider: "discord",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        scopes: "identify",
-      }
-    });
-  };
+  await supabase.auth.signInWithOAuth({
+    provider: "discord",
+    options: {
+      scope: "identify",
+      redirectTo: `${window.location.origin}/auth/callback`,
+      queryParams: {
+        access_type: "offline",
+        prompt: "consent"
+      },
+      flowType: "pkce"
+    }
+  });
+};
+
 
   const signOut = async () => {
     return await supabase.auth.signOut();
