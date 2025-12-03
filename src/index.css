@@ -2,6 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========================= */
+/*      GOLDEN UI THEME      */
+/* ========================= */
+
+:root {
+  --gold-soft: #c8a96d;
+  --gold-bright: #f0d58a;
+  --gold-border: #b0884d;
+  --gold-dark: #8c6b3d;
+}
+
+/* Text Utilities */
+.text-gold {
+  color: var(--gold-soft);
+}
+.text-gold-bright {
+  color: var(--gold-bright);
+}
+
+/* Background Utilities */
+.bg-gold {
+  background-color: var(--gold-soft);
+}
+.bg-gold-dark {
+  background-color: var(--gold-dark);
+}
+
+/* Border Utilities */
+.border-gold {
+  border-color: var(--gold-border);
+}
+
+/* Gold glow (for active nav, headers, etc.) */
+.gold-glow {
+  text-shadow: 0 0 12px rgba(255, 223, 128, 0.8);
+}
+
+/* Subtle gold underline */
+.gold-underline {
+  position: relative;
+}
+.gold-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: var(--gold-bright);
+  box-shadow: 0 0 6px var(--gold-bright);
+}
+
+
 @keyframes fade-in {
   from {
     opacity: 0;
