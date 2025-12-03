@@ -18,29 +18,32 @@ export const Header: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="bg-black sticky top-0 z-50 py-4 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
+    <header className="bg-black sticky top-0 z-50 py-5 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 
         {/* LEFT LOGO */}
         <Link to="/" className="flex items-center">
           <img
             src="/customdiscordlogo.png"
-            className="h-12 w-auto object-contain"
+            className="h-14 w-auto object-contain"
             alt="AOTR Logo"
           />
         </Link>
 
         {/* DESKTOP NAV */}
         <div className="hidden md:flex items-center justify-center flex-1">
-          <div className="flex items-center bg-[#111] rounded-full px-10 py-3 gap-4 border border-gray-700 shadow-[0_0_10px_rgba(255,220,150,0.05)]">
+          <div className="flex items-center bg-[#111] rounded-full px-14 py-5 gap-6 
+                          border border-gray-700 
+                          shadow-[0_0_15px_rgba(255,220,150,0.1)]
+                          ">
             {links.map((l) => (
               <Link
                 key={l.path}
                 to={l.path}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                className={`px-6 py-3 rounded-full text-[15px] font-medium transition-all duration-200 ${
                   isActive(l.path)
-                    ? "bg-[rgba(255,220,150,0.15)] text-[var(--gold-bright)] shadow-[0_0_10px_rgba(255,225,150,0.25)]"
-                    : "text-[var(--gold-soft)] hover:bg-[rgba(255,220,150,0.07)] hover:text-[var(--gold-bright)]"
+                    ? "bg-[rgba(255,220,150,0.18)] text-[var(--gold-bright)] shadow-[0_0_12px_rgba(255,225,150,0.3)]"
+                    : "text-[var(--gold-soft)] hover:bg-[rgba(255,220,150,0.08)] hover:text-[var(--gold-bright)]"
                 }`}
               >
                 {l.name}
@@ -49,17 +52,22 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* RIGHT DISCORD BUTTON */}
+        {/* DISCORD BUTTON (BIGGER) */}
         <a
           href="https://discord.gg/tradingcorps"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden md:flex items-center justify-center h-12 w-12 rounded-full border border-[var(--gold-bright)] text-[var(--gold-bright)] hover:bg-[rgba(255,220,150,0.15)] transition"
+          className="hidden md:flex items-center justify-center h-16 w-16 
+                     rounded-full border-[2px] 
+                     border-[var(--gold-bright)] 
+                     text-[var(--gold-bright)]
+                     hover:bg-[rgba(255,220,150,0.20)]
+                     transition shadow-[0_0_15px_rgba(255,220,150,0.25)]"
         >
           <img
             src="/discord-icon.png"
             alt="Discord"
-            className="h-8 w-8 object-contain"
+            className="h-9 w-9 object-contain"
           />
         </a>
 
@@ -68,7 +76,7 @@ export const Header: React.FC = () => {
           onClick={() => setOpen(!open)}
           className="md:hidden text-[var(--gold-bright)] p-2"
         >
-          {open ? <X size={28} /> : <Menu size={28} />}
+          {open ? <X size={32} /> : <Menu size={32} />}
         </button>
       </div>
 
@@ -80,7 +88,7 @@ export const Header: React.FC = () => {
               key={l.path}
               to={l.path}
               onClick={() => setOpen(false)}
-              className="block px-6 py-3 text-sm mobile-item"
+              className="block px-6 py-4 text-lg mobile-item"
               style={{
                 animationDelay: `${i * 0.12}s`,
                 color: isActive(l.path)
@@ -92,12 +100,12 @@ export const Header: React.FC = () => {
             </Link>
           ))}
 
-          {/* Discord in mobile */}
+          {/* Discord for mobile */}
           <a
             href="https://discord.gg/tradingcorps"
             target="_blank"
             rel="noopener noreferrer"
-            className="block px-6 py-3 text-sm mobile-item"
+            className="block px-6 py-4 text-lg mobile-item"
             style={{
               animationDelay: `${links.length * 0.12}s`,
               color: "var(--gold-soft)",
@@ -107,7 +115,6 @@ export const Header: React.FC = () => {
           </a>
         </div>
       )}
-
     </header>
   );
 };
