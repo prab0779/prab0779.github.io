@@ -13,7 +13,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
   return (
     <div className="relative bg-black">
 
-      {/* LIGHT GRID BACKGROUND */}
+      {/* GOLD GRID BACKGROUND */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10 pointer-events-none"></div>
 
       {/* HERO SECTION */}
@@ -21,26 +21,31 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
         {/* TEXT */}
         <div className="text-center lg:text-left">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">
-            AOT:R <span className="text-blue-400">Values</span>
+          <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--gold-bright)] leading-tight drop-shadow-lg">
+            AOT:R <span className="text-[var(--gold-soft)]">Values</span>
           </h1>
 
           <p className="text-gray-300 text-base md:text-lg max-w-md mt-4 mx-auto lg:mx-0">
             The ultimate hub for Attack on Titan Revolution trading.
-            Discover real-time values, analyze trades, and browse community trade ads.
+            Discover values, analyze trades, and browse verified trade ads.
           </p>
 
+          {/* BUTTONS */}
           <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center lg:justify-start">
             <Link
               to="/trade-ads"
-              className="px-6 py-3 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition shadow-lg shadow-blue-600/20"
+              className="px-6 py-3 rounded-xl 
+              bg-[var(--gold-bright)] text-black font-medium 
+              hover:bg-[var(--gold-soft)] transition shadow-lg shadow-[rgba(255,220,150,0.3)]"
             >
               Start Trading →
             </Link>
 
             <Link
               to="/value-list"
-              className="px-6 py-3 rounded-xl bg-gray-800 text-gray-200 font-medium hover:bg-gray-700 transition border border-gray-700"
+              className="px-6 py-3 rounded-xl 
+              bg-[#111] text-[var(--gold-soft)] font-medium 
+              hover:bg-[#1a1a1a] transition border border-gray-700"
             >
               Values ★
             </Link>
@@ -49,7 +54,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
         {/* HERO IMAGE */}
         <div className="relative mx-auto w-full max-w-sm md:max-w-md lg:max-w-full">
-          <div className="rounded-3xl overflow-hidden shadow-xl border border-gray-800 bg-black/40 backdrop-blur">
+          <div className="rounded-3xl overflow-hidden shadow-[0_0_20px_rgba(255,220,150,0.15)] border border-[rgba(255,220,150,0.15)] bg-black/40 backdrop-blur">
             <img
               src="/hero.png"
               alt="AOTR Hero"
@@ -62,7 +67,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
       {/* VIDEO HIGHLIGHTS */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
-        <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+        <h2 className="text-2xl md:text-3xl font-bold text-[var(--gold-bright)] mb-4">
           Popular Highlights
         </h2>
 
@@ -74,7 +79,9 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
       {/* FEATURES */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
-        <h2 className="text-3xl font-bold text-white mb-3">AOTR Values Features</h2>
+        <h2 className="text-3xl font-bold text-[var(--gold-bright)] mb-3">
+          AOTR Values Features
+        </h2>
         <p className="text-gray-400 mb-8 text-sm md:text-base">
           Everything you need for successful Attack on Titan Revolution trading.
         </p>
@@ -89,11 +96,12 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             <Link
               to={feature.link}
               key={i}
-              className="block bg-gray-900/40 backdrop-blur-xl border border-gray-800 rounded-2xl p-5 md:p-6 shadow-lg transition hover:border-blue-500 hover:bg-gray-900/60 hover:-translate-y-1"
+              className="block bg-[#111]/60 backdrop-blur-xl border border-gray-800 rounded-2xl p-5 md:p-6 
+              shadow-lg transition hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] hover:-translate-y-1"
             >
-              <h3 className="text-xl font-semibold text-white mb-1">{feature.title}</h3>
+              <h3 className="text-xl font-semibold text-[var(--gold-bright)] mb-1">{feature.title}</h3>
               <p className="text-gray-400 text-sm mb-3">{feature.desc}</p>
-              <span className="text-blue-400 text-sm">Explore →</span>
+              <span className="text-[var(--gold-soft)] text-sm">Explore →</span>
             </Link>
           ))}
         </div>
