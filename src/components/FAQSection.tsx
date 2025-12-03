@@ -20,42 +20,22 @@ const faqItems: FAQItem[] = [
   {
     question: "How are values determined?",
     answer:
-      "Values are for guidance purposes only and are not official. They change daily and are based on three key factors: Rarity, Demand, and Player Needs. This means an item's value can shift depending on how hard it is to obtain, how many players want it, and what it's worth to the person you're trading with. Trading is about negotiation and finding a deal both sides agree on. We also advise against relying on unofficial value lists made by players, as they often misrepresent true market value.",
+      "Values are for guidance purposes only and are not official. They change daily and are based on three key factors: Rarity, Demand, and Player Needs.",
   },
   {
     question: "How often are values updated?",
     answer:
-      "We update our AOTR trading values daily to reflect current market conditions. Major value changes are tracked and displayed in our value changes section for transparency and market analysis.",
+      "We update our AOTR trading values daily to reflect current market conditions.",
   },
   {
-    question: "What items are included in the AOTR value list?",
+    question: "What items are included in the value list?",
     answer:
-      "Our comprehensive AOTR item database includes over 200+ items from Attack on Titan Revolution, covering weapons, accessories, clothing, consumables, and rare collectibles. Each item includes detailed information about value, demand, rarity, and how to obtain it.",
+      "Our database includes 200+ items with value, demand, rarity, and obtainment info.",
   },
   {
-    question: "How does the AOTR trade calculator work?",
+    question: "How does the trade calculator work?",
     answer:
-      "Our AOTR trade calculator allows you to add items you're sending and receiving, automatically calculating total values, tax costs (gem and gold), and net profit/loss. It helps ensure fair trades and prevents you from losing value in Attack on Titan Revolution exchanges.",
-  },
-  {
-    question: "What do the demand ratings mean in AOTR?",
-    answer:
-      "Demand ratings (1–10) indicate how much players want specific items in Attack on Titan Revolution. Higher demand means items are more sought after and harder to obtain.",
-  },
-  {
-    question: 'What does "Rate of Change" mean for AOTR items?',
-    answer:
-      "Rate of Change indicates whether an item's value is trending upward, downward, stable, or overpriced based on market behavior.",
-  },
-  {
-    question: "How do taxes work in AOTR trading?",
-    answer:
-      "Some AOTR items require gem or gold taxes when trading. Our calculator automatically computes these costs so you know exactly what you'll pay.",
-  },
-  {
-    question: "Can I suggest updates?",
-    answer:
-      "Yes! We welcome community feedback. Join our Discord to suggest value changes or report inaccurate information.",
+      "It automatically calculates totals, tax, and profit/loss.",
   },
 ];
 
@@ -68,15 +48,15 @@ export const FAQSection: React.FC = () => {
 
   return (
     <div className="py-20">
-      {/* Heading Section */}
+
+      {/* Heading */}
       <div className="text-center mb-12">
-        <span className="text-gray-400 tracking-wide uppercase text-sm">
+        <span className="tracking-wide uppercase text-sm text-[var(--gold-soft)]">
           FAQs
         </span>
 
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-3">
-          We’ve Got the Answers <br className="hidden sm:block" />
-          You're Looking For
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--gold-bright)] mt-3 drop-shadow-[0_0_6px_rgba(255,225,150,0.35)]">
+          We’ve Got the Answers
         </h2>
 
         <p className="text-gray-400 mt-4 max-w-xl mx-auto">
@@ -84,30 +64,34 @@ export const FAQSection: React.FC = () => {
         </p>
       </div>
 
-      {/* FAQ Accordion */}
+      {/* FAQ List */}
       <div className="max-w-3xl mx-auto space-y-4">
         {faqItems.map((item, index) => (
           <div
             key={index}
-            className="bg-[#0d0d10] border border-gray-800 rounded-xl overflow-hidden"
+            className="bg-[#0b0b0d] border border-gray-800 rounded-xl overflow-hidden shadow-[0_0_12px_rgba(255,220,150,0.05)] transition-all"
           >
             <button
               onClick={() => toggleFAQ(index)}
-              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-900 transition"
+              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[rgba(255,220,150,0.05)] transition"
             >
-              <span className="text-white font-medium text-base">
+              <span className="text-[var(--gold-soft)] text-base font-medium">
                 {item.question}
               </span>
 
               <ChevronDown
-                className={`w-5 h-5 text-gray-300 transition-transform ${
-                  openIndex === index ? "rotate-180" : ""
+                className={`w-5 h-5 text-[var(--gold-soft)] transition-transform duration-300 ${
+                  openIndex === index ? "rotate-180 text-[var(--gold-bright)]" : ""
                 }`}
               />
             </button>
 
+            {/* Answer */}
             {openIndex === index && (
-              <div className="px-6 py-4 bg-black border-t border-gray-800">
+              <div
+                className="px-6 py-4 bg-black border-t border-gray-800 animate-fade-in"
+                style={{ animationDuration: "0.35s" }}
+              >
                 <p className="text-gray-300 text-sm leading-relaxed">
                   {item.answer}
                 </p>
@@ -116,6 +100,7 @@ export const FAQSection: React.FC = () => {
           </div>
         ))}
       </div>
+
     </div>
   );
 };
