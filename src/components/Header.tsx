@@ -74,31 +74,37 @@ export const Header: React.FC = () => {
 
       {/* MOBILE MENU DROPDOWN */}
       {open && (
-        <div className="md:hidden mt-4 bg-[#111] border-t border-gray-800 animate-fade-in">
-          {links.map((l) => (
-            <Link
-              key={l.path}
-              to={l.path}
-              onClick={() => setOpen(false)}
-              className={`block px-6 py-3 text-sm ${
-                isActive(l.path)
-                  ? "text-[var(--gold-bright)] bg-[rgba(255,220,150,0.12)]"
-                  : "text-[var(--gold-soft)] hover:text-[var(--gold-bright)]"
-              }`}
-            >
-              {l.name}
-            </Link>
-          ))}
+  <div className="md:hidden mt-4 bg-[#111] border-t border-gray-800 overflow-hidden">
+    {links.map((l, i) => (
+      <Link
+        key={l.path}
+        to={l.path}
+        onClick={() => setOpen(false)}
+        className={`block px-6 py-3 text-sm mobile-item`}
+        style={{ 
+          animationDelay: `${i * 0.12}s`,
+          color: isActive(l.path) 
+            ? "var(--gold-bright)"
+            : "var(--gold-soft)"
+        }}
+      >
+        {l.name}
+      </Link>
+    ))}
 
-          <a
-            href="https://discord.gg/tradingcorps"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block px-6 py-3 text-sm text-[var(--gold-soft)] hover:text-[var(--gold-bright)]"
-          >
-            Discord
-          </a>
-        </div>
+    {/* Discord item */}
+    <a
+      href="https://discord.gg/tradingcorps"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block px-6 py-3 text-sm mobile-item"
+      style={{ animationDelay: `${links.length * 0.12}s`, color: "var(--gold-soft)" }}
+    >
+      Discord
+    </a>
+  </div>
+)}
+
       )}
     </header>
   );
