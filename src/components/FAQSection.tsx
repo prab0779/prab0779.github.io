@@ -20,22 +20,42 @@ const faqItems: FAQItem[] = [
   {
     question: "How are values determined?",
     answer:
-      "Values are for guidance purposes only and are not official. They change daily and are based on three key factors: Rarity, Demand, and Player Needs.",
+      "Values are for guidance purposes only and are not official. They change daily and are based on three key factors: Rarity, Demand, and Player Needs. This means an item's value can shift depending on how hard it is to obtain, how many players want it, and what it's worth to the person you're trading with. Trading is about negotiation and finding a deal both sides agree on. We also advise against relying on unofficial value lists made by players, as they often misrepresent true market value.",
   },
   {
     question: "How often are values updated?",
     answer:
-      "We update our AOTR trading values daily to reflect current market conditions.",
+      "We update our AOTR trading values daily to reflect current market conditions. Major value changes are tracked and displayed in our value changes section for transparency and market analysis.",
   },
   {
-    question: "What items are included in the value list?",
+    question: "What items are included in the AOTR value list?",
     answer:
-      "Our database includes 200+ items with value, demand, rarity, and obtainment info.",
+      "Our comprehensive AOTR item database includes over 200+ items from Attack on Titan Revolution, covering weapons, accessories, clothing, consumables, and rare collectibles. Each item includes detailed information about value, demand, rarity, and how to obtain it.",
   },
   {
-    question: "How does the trade calculator work?",
+    question: "How does the AOTR trade calculator work?",
     answer:
-      "It automatically calculates totals, tax, and profit/loss.",
+      "Our AOTR trade calculator allows you to add items you're sending and receiving, automatically calculating total values, tax costs (gem and gold), and net profit/loss. It helps ensure fair trades and prevents you from losing value in Attack on Titan Revolution exchanges.",
+  },
+  {
+    question: "What do the demand ratings mean in AOTR?",
+    answer:
+      "Demand ratings (1–10) indicate how much players want specific items in Attack on Titan Revolution. Higher demand means items are more sought after and harder to obtain.",
+  },
+  {
+    question: 'What does "Rate of Change" mean for AOTR items?',
+    answer:
+      "Rate of Change indicates whether an item's value is trending upward, downward, stable, or overpriced based on market behavior.",
+  },
+  {
+    question: "How do taxes work in AOTR trading?",
+    answer:
+      "Some AOTR items require gem or gold taxes when trading. Our calculator automatically computes these costs so you know exactly what you'll pay.",
+  },
+  {
+    question: "Can I suggest updates?",
+    answer:
+      "Yes! We welcome community feedback. Join our Discord to suggest value changes or report inaccurate information.",
   },
 ];
 
