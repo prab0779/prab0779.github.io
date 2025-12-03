@@ -28,7 +28,7 @@ export const Footer: React.FC = () => {
                 <h2 className="text-lg font-bold text-white">AOT:R Value Hub</h2>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-                Your trusted source for Attack on Titan Revolution trading values.
+                https://aotrvalue.com is a 3rd party website that is not affiliated or partnered with Attack on Titan Revolution. We are not endorsed by their respective owners.
               </p>
             </div>
 
