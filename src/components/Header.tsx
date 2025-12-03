@@ -8,9 +8,9 @@ export const Header: React.FC = () => {
 
   // ACTIVE LINK STYLE
   const isActive = (path: string) =>
-    location.pathname === path
-      ? 'text-[var(--gold-bright)] gold-underline'
-      : 'text-[var(--gold)] opacity-80 hover:opacity-100';
+  location.pathname === path
+    ? 'text-[var(--gold-bright)] gold-underline'
+    : 'text-[var(--gold-soft)] hover:text-[var(--gold-bright)]';
 
   return (
     <header className="bg-[#0d0d0d] border-b border-[var(--gold-border)] sticky top-0 z-50 backdrop-blur-sm bg-opacity-95 shadow-lg shadow-black/40">
