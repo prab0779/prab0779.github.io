@@ -8,6 +8,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useItems } from "./hooks/useItems";
 import { OnlinePresenceProvider } from "./components/OnlinePresenceProvider";
 
+/* Lazy-loaded pages */
 const TradeCalculator = lazy(() =>
   import("./components/TradeCalculator").then(m => ({ default: m.TradeCalculator }))
 );
@@ -26,12 +27,11 @@ const ScamLogsPage = lazy(() =>
 const AdminPage = lazy(() =>
   import("./components/AdminPage").then(m => ({ default: m.AdminPage }))
 );
-
-/* ⭐ ADD THIS NEW ONE ⭐ */
 const AuthCallback = lazy(() =>
   import("./components/AuthCallback").then(m => ({ default: m.default }))
 );
 
+/* Loading spinner */
 const LoadingFallback = () => (
   <div className="flex items-center justify-center min-h-[400px]">
     <div className="text-center">
@@ -41,11 +41,22 @@ const LoadingFallback = () => (
   </div>
 );
 
+/* ⭐ MAIN DEFAULT EXPORT */
+export default function App() {
+  return (
+    <OnlinePresenceProvider>
+      <AppContent />
+    </OnlinePresenceProvider>
+  );
+}
+
+/* ⭐ APP CONTENT */
 export const AppContent: React.FC = () => {
   const { items } = useItems();
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const location = useLocation();
 
+  /* Load maintenance mode from localStorage */
   useEffect(() => {
     const saved = localStorage.getItem("maintenanceMode");
     if (saved) setMaintenanceMode(JSON.parse(saved));
@@ -58,58 +69,78 @@ export const AppContent: React.FC = () => {
 
   const isAdminPage = location.pathname === "/admin";
 
-  return (
-  <div className="min-h-screen bg-black">   {/* ← FIX: FULL PAGE BLACK BACKGROUND */}
-
-    {!isAdminPage && <Header />}
-    {maintenanceMode && !isAdminPage && <MaintenancePopup />}
-
-    <main className="bg-black">   {/* removed bg-black since wrapper handles it */}
-      <div className="container mx-auto px-4 py-4">
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-  <Route path="/" element={<Home items={items} />} />
-  <Route path="/calculator" element={<TradeCalculator items={items} />} />
-  <Route path="/value-list" element={<ValueListPage items={items} />} />
-  <Route path="/value-changes" element={<ValueChangesPage />} />
-  <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
-  <Route path="/scam-logs" element={<ScamLogsPage />} />
-
-  {/* ⭐ Discord OAuth callback */}
-  <Route path="/auth/callback" element={<AuthCallback />} />
-
-  <Route
-    path="/admin"
-    element={
-      <ProtectedRoute>
-        <AdminPage
-          maintenanceMode={maintenanceMode}
-          onMaintenanceModeChange={toggleMaintenanceMode}
-        />
-      </ProtectedRoute>
+  /* ⭐ Generate starfield shadows (tiny pixel stars) */
+  useEffect(() => {
+    function generateStars(count: number) {
+      let result = "";
+      for (let i = 0; i < count; i++) {
+        result += `${Math.random() * 2000}px ${Math.random() * 2000}px #FFF, `;
+      }
+      return result.slice(0, -2);
     }
-  />
 
-  <Route path="*" element={<Navigate to="/" replace />} />
-</Routes>
+    document.documentElement.style.setProperty(
+      "--shadows-small",
+      generateStars(700)
+    );
+    document.documentElement.style.setProperty(
+      "--shadows-medium",
+      generateStars(200)
+    );
+    document.documentElement.style.setProperty(
+      "--shadows-big",
+      generateStars(100)
+    );
+  }, []);
 
-        </Suspense>
-      </div>
-    </main>
-
-    {!isAdminPage && <Footer />}
-  </div>
-);
-};
-
-// THIS MUST EXIS
-
-export default function App() {
   return (
-    <OnlinePresenceProvider>
-      <AppContent />
-    </OnlinePresenceProvider>
+    <div className="min-h-screen relative overflow-hidden bg-[radial-gradient(ellipse_at_bottom,#1B2735_0%,#090A0F_100%)]">
+
+      {/* ⭐ PIXEL STARFIELD LAYERS (GOES HERE AT THE VERY TOP) */}
+      <div id="stars"></div>
+      <div id="stars2"></div>
+      <div id="stars3"></div>
+
+      {/* ⭐ CONTENT ABOVE STARFIELD */}
+      <div className="relative z-10">
+
+        {!isAdminPage && <Header />}
+        {maintenanceMode && !isAdminPage && <MaintenancePopup />}
+
+        <main>
+          <div className="container mx-auto px-4 py-4">
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+                <Route path="/" element={<Home items={items} />} />
+                <Route path="/calculator" element={<TradeCalculator items={items} />} />
+                <Route path="/value-list" element={<ValueListPage items={items} />} />
+                <Route path="/value-changes" element={<ValueChangesPage />} />
+                <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
+                <Route path="/scam-logs" element={<ScamLogsPage />} />
+
+                {/* OAuth callback */}
+                <Route path="/auth/callback" element={<AuthCallback />} />
+
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute>
+                      <AdminPage
+                        maintenanceMode={maintenanceMode}
+                        onMaintenanceModeChange={toggleMaintenanceMode}
+                      />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
+          </div>
+        </main>
+
+        {!isAdminPage && <Footer />}
+      </div>
+    </div>
   );
-}
-
-
+};
