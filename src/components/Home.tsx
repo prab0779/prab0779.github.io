@@ -11,7 +11,7 @@ interface HomeProps {
 
 export const Home: React.FC<HomeProps> = ({ items }) => {
   return (
-    <div className="relative bg-black">
+    <div className="relative">
 
       {/* GOLD GRID BACKGROUND */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10 pointer-events-none"></div>
