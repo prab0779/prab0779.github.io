@@ -11,6 +11,7 @@
   --gold-bright: #f0d58a;
   --gold-border: #b0884d;
   --gold-dark: #8c6b3d;
+  --star-color: #f0d58a;
 }
 
 /* Text Utilities */
@@ -231,3 +232,61 @@
   opacity: 0;
 }
 
+/* === Stars Background (3 layers parallax) === */
+
+#stars, #stars2, #stars3 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#stars {
+  box-shadow: var(--shadows-small);
+  animation: animStar 50s linear infinite;
+}
+
+#stars2 {
+  width: 2px;
+  height: 2px;
+  box-shadow: var(--shadows-medium);
+  animation: animStar 100s linear infinite;
+}
+
+#stars3 {
+  width: 3px;
+  height: 3px;
+  box-shadow: var(--shadows-big);
+  animation: animStar 150s linear infinite;
+}
+
+/* Repeated stars */
+#stars:after, #stars2:after, #stars3:after {
+  content: "";
+  position: absolute;
+  top: 2000px;
+  width: inherit;
+  height: inherit;
+  box-shadow: inherit;
+}
+
+/* Animation */
+@keyframes animStar {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2000px);
+  }
+}
+
+/* === JS-generated star shadows === */
+:root {
+  --shadows-small: 0 0 #fff;
+  --shadows-medium: 0 0 #fff;
+  --shadows-big: 0 0 #fff;
+}
