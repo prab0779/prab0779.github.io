@@ -18,21 +18,39 @@ export const Header: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="bg-black sticky top-0 z-50 py-5 backdrop-blur-xl">
+    <header
+      className="
+        sticky top-0 z-50 py-5 backdrop-blur-xl
+        bg-black                /* mobile */
+        md:bg-transparent       /* desktop transparent */
+      "
+    >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 
-        {/* LEFT LOGO */}
-        <Link to="/" className="flex items-center">
+        {/* ⭐ LEFT LOGO WITH GLOW */}
+        <Link to="/" className="relative flex items-center">
+          <div className="
+              absolute inset-0 
+              rounded-full 
+              blur-xl 
+              opacity-40 
+              bg-[var(--gold-bright)]
+            "
+          ></div>
+
           <img
             src="/customdiscordlogo.png"
-            className="h-14 w-auto object-contain"
+            className="relative h-14 w-auto object-contain"
             alt="AOTR Logo"
           />
         </Link>
 
-        {/* DESKTOP NAV */}
+        {/* ⭐ DESKTOP NAV */}
         <div className="hidden md:flex items-center justify-center flex-1">
-          <div className="flex items-center bg-[#111] rounded-full px-14 py-5 gap-6 
+          <div className="flex items-center 
+                          bg-[#111]/70           /* slightly transparent */
+                          backdrop-blur-xl
+                          rounded-full px-14 py-5 gap-6 
                           border border-gray-700 
                           shadow-[0_0_15px_rgba(255,220,150,0.1)]
                           ">
@@ -52,17 +70,19 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* DISCORD BUTTON (BIGGER) */}
+        {/* ⭐ DISCORD BUTTON (BIGGER + GLOW) */}
         <a
           href="https://discord.gg/tradingcorps"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden md:flex items-center justify-center h-16 w-16 
-                     rounded-full border-[2px] 
-                     border-[var(--gold-bright)] 
-                     text-[var(--gold-bright)]
-                     hover:bg-[rgba(255,220,150,0.20)]
-                     transition shadow-[0_0_15px_rgba(255,220,150,0.25)]"
+          className="
+            hidden md:flex items-center justify-center h-16 w-16 
+            rounded-full border-[2px] 
+            border-[var(--gold-bright)] 
+            text-[var(--gold-bright)]
+            hover:bg-[rgba(255,220,150,0.20)]
+            transition shadow-[0_0_18px_rgba(255,220,150,0.45)]
+          "
         >
           <img
             src="/discord-icon.png"
@@ -71,7 +91,7 @@ export const Header: React.FC = () => {
           />
         </a>
 
-        {/* MOBILE MENU BUTTON */}
+        {/* ⭐ MOBILE MENU ICON */}
         <button
           onClick={() => setOpen(!open)}
           className="md:hidden text-[var(--gold-bright)] p-2"
@@ -80,9 +100,9 @@ export const Header: React.FC = () => {
         </button>
       </div>
 
-      {/* MOBILE MENU DROPDOWN */}
+      {/* ⭐ MOBILE MENU DROPDOWN */}
       {open && (
-        <div className="md:hidden mt-4 bg-[#111] border-t border-gray-800 overflow-hidden">
+        <div className="md:hidden mt-4 bg-black border-t border-gray-800 overflow-hidden">
           {links.map((l, i) => (
             <Link
               key={l.path}
@@ -100,7 +120,7 @@ export const Header: React.FC = () => {
             </Link>
           ))}
 
-          {/* Discord for mobile */}
+          {/* Mobile Discord */}
           <a
             href="https://discord.gg/tradingcorps"
             target="_blank"
