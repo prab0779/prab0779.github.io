@@ -94,7 +94,7 @@ export const Header: React.FC = () => {
           <img
             src="/discord-icon.png"
             alt="Discord"
-            className="h-24 w-24 object-contain"
+            className="h-30 w-30 object-contain"
           />
         </a>
 
