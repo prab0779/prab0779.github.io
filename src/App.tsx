@@ -69,29 +69,25 @@ export const AppContent: React.FC = () => {
 
   const isAdminPage = location.pathname === "/admin";
 
-  /* ⭐ Generate starfield shadows (tiny pixel stars) */
-  useEffect(() => {
-    function generateStars(count: number) {
-      let result = "";
-      for (let i = 0; i < count; i++) {
-        result += `${Math.random() * 2000}px ${Math.random() * 2000}px #FFF, `;
-      }
-      return result.slice(0, -2);
-    }
+  /* ⭐ Generate starfield shadows that scale with screen */
+useEffect(() => {
+  function generateStars(count: number) {
+    let result = "";
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
-    document.documentElement.style.setProperty(
-      "--shadows-small",
-      generateStars(700)
-    );
-    document.documentElement.style.setProperty(
-      "--shadows-medium",
-      generateStars(200)
-    );
-    document.documentElement.style.setProperty(
-      "--shadows-big",
-      generateStars(100)
-    );
-  }, []);
+    for (let i = 0; i < count; i++) {
+      const x = Math.random() * width;
+      const y = Math.random() * height;
+      result += `${x}px ${y}px #FFF, `;
+    }
+    return result.slice(0, -2);
+  }
+
+  document.documentElement.style.setProperty("--shadows-small", generateStars(700));
+  document.documentElement.style.setProperty("--shadows-medium", generateStars(200));
+  document.documentElement.style.setProperty("--shadows-big", generateStars(100));
+}, []);
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-[radial-gradient(ellipse_at_bottom,#1B2735_0%,#090A0F_100%)]">
