@@ -246,13 +246,6 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
         {/* FAQ SECTION */}
         <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-16">
-          <h2 className="text-3xl font-bold text-[var(--gold-bright)] mb-2">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-gray-400 mb-6 text-sm md:text-base max-w-xl">
-            New to AOT:R trading or this website? Here are some quick answers.
-          </p>
-
           <FAQSection />
         </section>
       </div>
