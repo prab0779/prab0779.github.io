@@ -133,13 +133,23 @@ export const Header: React.FC = () => {
           })}
 
           <a
-            href="https://discord.gg/tradingcorps"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block px-6 py-4 text-lg text-[var(--gold-soft)] hover:text-[var(--gold-bright)]"
-          >
-            Discord
-          </a>
+  href="https://discord.gg/tradingcorps"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="
+    block mx-4 my-4 
+    px-6 py-4 text-center text-lg font-semibold 
+    rounded-xl
+    bg-[var(--gold-bright)] text-black
+    shadow-[0_0_15px_rgba(255,220,150,0.3)]
+    hover:bg-[var(--gold-soft)]
+    transition-all duration-200
+    active:scale-95
+  "
+>
+  Join Discord →
+</a>
+
         </div>
       )}
     </header>
