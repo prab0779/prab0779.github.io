@@ -259,3 +259,4 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
     </div>
   );
 };
+
