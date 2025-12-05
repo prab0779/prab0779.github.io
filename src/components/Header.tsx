@@ -24,7 +24,7 @@ export const Header: React.FC = () => {
         <Link to="/" className="flex items-center">
           <img
             src="/customdiscordlogo.png"
-            className="h-18 w-auto object-contain"
+            className="h-14 w-auto object-contain"
             alt="AOTR Logo"
           />
         </Link>
