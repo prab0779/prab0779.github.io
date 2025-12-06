@@ -50,7 +50,6 @@ export default function App() {
   );
 }
 
-/* ⭐ APP CONTENT */
 export const AppContent: React.FC = () => {
   const { items } = useItems();
   const [maintenanceMode, setMaintenanceMode] = useState(false);
@@ -69,35 +68,10 @@ export const AppContent: React.FC = () => {
 
   const isAdminPage = location.pathname === "/admin";
 
-  /* ⭐ Generate starfield shadows that scale with screen */
-useEffect(() => {
-  function generateStars(count: number) {
-    let result = "";
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    for (let i = 0; i < count; i++) {
-      const x = Math.random() * width;
-      const y = Math.random() * height;
-      result += `${x}px ${y}px #FFF, `;
-    }
-    return result.slice(0, -2);
-  }
-
-  document.documentElement.style.setProperty("--shadows-small", generateStars(700));
-  document.documentElement.style.setProperty("--shadows-medium", generateStars(200));
-  document.documentElement.style.setProperty("--shadows-big", generateStars(100));
-}, []);
-
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[radial-gradient(ellipse_at_bottom,#1B2735_0%,#090A0F_100%)]">
+    <div className="min-h-screen relative aotr-background">
 
-      {/* ⭐ PIXEL STARFIELD LAYERS (GOES HERE AT THE VERY TOP) */}
-      <div id="stars"></div>
-      <div id="stars2"></div>
-      <div id="stars3"></div>
-
-      {/* ⭐ CONTENT ABOVE STARFIELD */}
+      {/* CONTENT ABOVE BACKGROUND */}
       <div className="relative z-10">
 
         {!isAdminPage && <Header />}
@@ -113,8 +87,6 @@ useEffect(() => {
                 <Route path="/value-changes" element={<ValueChangesPage />} />
                 <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
                 <Route path="/scam-logs" element={<ScamLogsPage />} />
-
-                {/* OAuth callback */}
                 <Route path="/auth/callback" element={<AuthCallback />} />
 
                 <Route
