@@ -1,25 +1,23 @@
-// 👇 DEFINE THIS OUTSIDE THE COMPONENT
-let hasRun = false;
-
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
 
-// Admin Discord IDs
+// Allowed admin Discord IDs
 const ALLOWED_ADMIN_IDS = ["512671808886013962"];
 
 export default function AuthCallback() {
   const navigate = useNavigate();
+  const hasRun = useRef(false);
 
   useEffect(() => {
-
     const handleLogin = async () => {
-      if (hasRun) return;
-      hasRun = true;
+      if (hasRun.current) return;
+      hasRun.current = true;
 
       const url = window.location.href;
 
-      const { data: sessionData, error: exchangeError } =
+      // Exchange OAuth code for session
+      const { error: exchangeError } =
         await supabase.auth.exchangeCodeForSession(url);
 
       if (exchangeError) {
@@ -27,16 +25,19 @@ export default function AuthCallback() {
       }
 
       const { data, error } = await supabase.auth.getSession();
+      const session = data?.session;
 
-      console.log("SESSION AFTER CALLBACK:", data?.session, error);
+      console.log("SESSION AFTER CALLBACK:", session, error);
 
-      if (data?.session?.user) {
-        const discordId =
-          data.session.user.user_metadata?.provider_id ||
-          data.session.user.user_metadata?.sub ||
-          null;
+      if (session?.user) {
+        const sub = session.user.user_metadata?.sub || "";
 
-        console.log("Discord ID from callback:", discordId);
+        // Extract Discord ID from "discord|1234567890"
+        const discordId = sub.startsWith("discord|")
+          ? sub.replace("discord|", "")
+          : null;
+
+        console.log("Parsed Discord ID:", discordId);
 
         if (discordId && ALLOWED_ADMIN_IDS.includes(discordId)) {
           navigate("/admin");
