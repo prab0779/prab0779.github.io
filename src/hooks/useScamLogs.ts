@@ -20,25 +20,28 @@ export const useScamLogs = () => {
   }, []);
 
   const fetchScamLogs = useCallback(async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('scam_logs')
-        .select('*')
-        .order('created_at', { ascending: false });
+  try {
+    setLoading(true);
 
-      if (error) throw error;
+    const { data, error } = await supabase
+      .from('scam_logs')
+      .select('id, roblox_id, discord_id, reason, evidence, created_at')
+      .order('created_at', { ascending: false })
+      .range(0, 24); // 🔥 Only load first 25 logs
 
-      const transformedLogs = transformScamLogs(data);
-      setScamLogs(transformedLogs);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch scam logs');
-      console.error('Error fetching scam logs:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [transformScamLogs]);
+    if (error) throw error;
+
+    const transformedLogs = transformScamLogs(data);
+    setScamLogs(transformedLogs);
+    setError(null);
+
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Failed to fetch scam logs');
+    console.error('Error fetching scam logs:', err);
+  } finally {
+    setLoading(false);
+  }
+}, [transformScamLogs]);
 
   useEffect(() => {
     fetchScamLogs();
