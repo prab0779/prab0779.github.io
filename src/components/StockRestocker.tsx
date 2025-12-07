@@ -7,7 +7,7 @@ export const StockRestocker: React.FC = () => {
 
   const RESET_HOURS = [0, 6, 12, 18];
 
-  // Load items from Supabase (manual cosmetics you set)
+  // Load stock from Supabase
   async function loadStock() {
     const { data, error } = await supabase
       .from("stock_rotation")
@@ -20,31 +20,23 @@ export const StockRestocker: React.FC = () => {
       return;
     }
 
-    if (!data) {
-      setSlots([null, null, null, null]);
-      return;
-    }
+    if (!data) return setSlots([null, null, null, null]);
 
     setSlots([data.slot1, data.slot2, data.slot3, data.slot4]);
   }
 
-  // Compute time until next reset from "now"
+  // Countdown timer
   function updateCountdown() {
     const now = new Date();
-
-    // UK time
     const ukNow = new Date(
       now.toLocaleString("en-GB", { timeZone: "Europe/London" })
     );
 
     const currentHour = ukNow.getHours();
-
-    // Find next reset hour
     let nextHour = RESET_HOURS.find((h) => h > currentHour);
-    const nextReset = new Date(ukNow);
 
+    const nextReset = new Date(ukNow);
     if (nextHour === undefined) {
-      // Past 18:00 → next reset is 00:00 next day
       nextHour = 0;
       nextReset.setDate(nextReset.getDate() + 1);
     }
@@ -52,7 +44,6 @@ export const StockRestocker: React.FC = () => {
     nextReset.setHours(nextHour, 0, 0, 0);
 
     const diffMs = nextReset.getTime() - ukNow.getTime();
-
     const h = Math.floor(diffMs / 3600000);
     const m = Math.floor((diffMs % 3600000) / 60000);
     const s = Math.floor((diffMs % 60000) / 1000);
@@ -63,17 +54,21 @@ export const StockRestocker: React.FC = () => {
   }
 
   useEffect(() => {
-    // Initial load of cosmetics
     loadStock();
-
-    // Start countdown, recalculating every second
     updateCountdown();
-    const interval = setInterval(() => {
-      updateCountdown();
-    }, 1000);
 
+    const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Helper to extract parts
+  const parseItem = (entry: string | null) => {
+    if (!entry) return { img: null, name: null };
+    const parts = entry.split(" ");
+    const img = parts[0]; // `/aincradblade.png`
+    const name = parts.slice(1).join(" "); // `Aincrad Blade`
+    return { img, name };
+  };
 
   return (
     <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14 mt-10">
@@ -81,29 +76,43 @@ export const StockRestocker: React.FC = () => {
         Cosmetic Market
       </h2>
 
-      <p className="text-gray-400 mb-6">
-        Next restock in: {timeLeft}
-      </p>
+      <p className="text-gray-400 mb-6">Next restock in: {timeLeft}</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {slots.map((item, i) => (
-          <div
-            key={i}
-            className="relative bg-black border border-yellow-600 rounded-xl p-5 shadow-xl flex flex-col items-center justify-between transition hover:scale-[1.02]"
-          >
-            {/* Cosmetic name or ? */}
-            <div className="text-yellow-300 text-lg font-bold mb-4 tracking-wide text-center">
-              {item ?? "?"}
-            </div>
+        {slots.map((item, i) => {
+          const { img, name } = parseItem(item);
 
-            {/* Bottom bar (could later be price, etc.) */}
-            <div className="w-full">
-              <div className="bg-gray-800 text-blue-300 text-center font-bold py-2 rounded-md">
-                {item ? "In Stock" : "?"}
+          return (
+            <div
+              key={i}
+              className="relative bg-black border border-yellow-600 rounded-xl p-5 shadow-xl flex flex-col items-center justify-between transition hover:scale-[1.02]"
+            >
+              {/* Display image + name */}
+              {img ? (
+                <>
+                  <img
+                    src={img}
+                    alt={name ?? ""}
+                    className="w-20 h-20 object-contain mb-3"
+                  />
+
+                  <div className="text-yellow-300 text-lg font-bold text-center">
+                    {name}
+                  </div>
+                </>
+              ) : (
+                <div className="text-yellow-300 text-3xl font-bold mb-3">?</div>
+              )}
+
+              {/* Bottom bar */}
+              <div className="w-full">
+                <div className="bg-gray-800 text-blue-300 text-center font-bold py-2 rounded-md">
+                  {item ? "In Stock" : "?"}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
