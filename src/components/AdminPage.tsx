@@ -8,6 +8,7 @@ import { useValueChanges } from '../hooks/useValueChanges';
 import { useOnlineUsers } from '../hooks/useOnlineUsers';
 import { useScamLogs } from '../hooks/useScamLogs';
 import { useScamLogsAdmin } from '../hooks/useScamLogsAdmin';
+import { StockRestockerAdmin } from "./StockRestockerAdmin";
 import { Item } from '../types/Item';
 
 interface AdminPageProps {
@@ -569,6 +570,16 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
             >
               Settings
             </button>
+            <button
+  onClick={() => setCurrentView('stock')}
+  className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap ${
+    currentView === 'stock'
+      ? 'border-purple-500 text-purple-400'
+      : 'border-transparent text-gray-400 hover:text-gray-300'
+  }`}
+>
+  Stock Rotation
+</button>
           </div>
         </div>
       </div>
@@ -1130,7 +1141,18 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
               </div>
             )}
           </div>
-        ) : null}
+        ) currentView === 'stock' ? (
+  <div>
+    <h1 className="text-2xl sm:text-3xl font-bold text-white mb-6">Stock Rotation</h1>
+
+    <p className="text-gray-400 mb-6">
+      Set the 4 cosmetics that will appear on the homepage stock restock panel.
+    </p>
+
+    <StockRestockerAdmin />
+  </div>
+) :
+ null}
       </main>
 
       {/* Forms */}
