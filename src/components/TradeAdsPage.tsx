@@ -116,31 +116,25 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
     onSubmit: (data: CreateTradeAdData) => void;
     onCancel: () => void;
   }> = ({ onSubmit, onCancel }) => {
-    const discordName =
-      user?.user_metadata?.preferred_username ||
-      user?.user_metadata?.full_name ||
-      user?.user_metadata?.name ||
-      user?.email ||
-      "Unknown User";
+    // Get username from Discord metadata
+const discordName =
+  user?.user_metadata?.preferred_username ||
+  user?.user_metadata?.full_name ||
+  user?.user_metadata?.name ||
+  "Unknown User";
 
-    const getDiscordAvatarUrl = () => {
-      if (!user?.user_metadata) return null;
+// Build Discord avatar URL correctly
+const getDiscordAvatarUrl = () => {
+  const sub = user?.user_metadata?.sub;        // "discord|123456789"
+  const avatar = user?.user_metadata?.avatar_url; // avatar hash
 
-      const avatarHash = user.user_metadata.avatar_url;
-      const providerId = user.user_metadata.provider_id || user.user_metadata.sub;
+  if (!sub || !avatar) return null;
 
-      if (!avatarHash || !providerId) return null;
+  const discordId = sub.replace("discord|", "");
+  return `https://cdn.discordapp.com/avatars/${discordId}/${avatar}.png`;
+};
 
-      if (avatarHash.startsWith('http')) {
-        return avatarHash;
-      }
-
-      return `https://cdn.discordapp.com/avatars/${providerId}/${avatarHash}.png`;
-    };
-
-    const discordAvatar = getDiscordAvatarUrl();
-    console.log("Discord metadata:", user?.user_metadata);
-    console.log("Constructed avatar URL:", discordAvatar);
+const discordAvatar = getDiscordAvatarUrl();
 
     const [formData, setFormData] = useState<CreateTradeAdData>({
       title: "",
