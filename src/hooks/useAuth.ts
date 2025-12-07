@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
+import { useState, useEffect } from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase";
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -8,14 +8,16 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Load session on page load
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
+    // Listen for sign-in changes
     const {
-      data: { subscription }
+      data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -25,38 +27,29 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Discord login with identity scope
+  // FIXED DISCORD OAuth login
   const signInWithDiscord = async () => {
-  await supabase.auth.signInWithOAuth({
-    provider: "discord",
-    options: {
-      scope: "identify",
-      redirectTo: `${window.location.origin}/auth/callback`,
-      queryParams: {
-        access_type: "offline",
-        prompt: "consent"
+    await supabase.auth.signInWithOAuth({
+      provider: "discord",
+      options: {
+        scope: "identify",
+        redirectTo: `${window.location.origin}/auth/callback?type=oauth`,
       },
-      flowType: "pkce"
-    }
-  });
-};
-
-
-  const signOut = async () => {
-    return await supabase.auth.signOut();
+    });
   };
 
-  // safer discord metadata
+  const signOut = async () => {
+    await supabase.auth.signOut();
+  };
+
+  // FIXED Discord metadata extraction
   const discord = user
     ? {
-        id: user.id,
+        id: user.user_metadata?.sub?.replace("discord|", "") || null,
         username:
-          user.user_metadata?.preferred_username ??
-          user.user_metadata?.full_name ??
           user.user_metadata?.name ??
           "Unknown",
         avatar: user.user_metadata?.avatar_url ?? null,
-        banner: user.user_metadata?.banner ?? null
       }
     : null;
 
@@ -66,6 +59,6 @@ export const useAuth = () => {
     session,
     loading,
     signInWithDiscord,
-    signOut
+    signOut,
   };
 };
