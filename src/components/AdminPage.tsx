@@ -9,6 +9,7 @@ import { useOnlineUsers } from '../hooks/useOnlineUsers';
 import { useScamLogs } from '../hooks/useScamLogs';
 import { useScamLogsAdmin } from '../hooks/useScamLogsAdmin';
 import StockRotationAdmin from "./StockRotationAdmin";
+
 import { Item } from '../types/Item';
 
 interface AdminPageProps {
@@ -26,7 +27,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showScamLogForm, setShowScamLogForm] = useState(false);
-  const [currentView, setCurrentView] = useState<'items' | 'changes' | 'scam-logs' | 'stock'>('items');
+  const [currentView, setCurrentView] = useState<
+  'items' | 'changes' | 'scam-logs' | 'settings' | 'stock'
+>('items');
+
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   
   // Search and filter states for items
