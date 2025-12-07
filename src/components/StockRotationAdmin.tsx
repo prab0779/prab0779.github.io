@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
-
+import { useItems } from "../hooks/useItems";
 
 export const StockRotationAdmin: React.FC = () => {
+  const { items, loading: itemsLoading } = useItems();
+
   const [slots, setSlots] = useState(["", "", "", ""]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Load current stock rotation
   const loadStock = async () => {
     const { data, error } = await supabase
       .from("stock_rotation")
@@ -48,9 +51,14 @@ export const StockRotationAdmin: React.FC = () => {
     loadStock();
   }, []);
 
-  if (loading) {
+  if (loading || itemsLoading) {
     return <p className="text-gray-300">Loading stock rotation...</p>;
   }
+
+  // Sort cosmetics alphabetically
+  const sortedItems = [...items].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
 
   return (
     <div>
@@ -59,7 +67,7 @@ export const StockRotationAdmin: React.FC = () => {
       </h1>
 
       <p className="text-gray-400 mb-6">
-        Update the 4 cosmetic items shown in the Cosmetic Market.
+        Choose 4 items from the value list to appear in the Cosmetic Market.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -71,17 +79,25 @@ export const StockRotationAdmin: React.FC = () => {
             <label className="block text-gray-300 text-sm mb-2">
               Slot {i + 1}
             </label>
-            <input
-              type="text"
+
+            {/* Dropdown listing all items */}
+            <select
               value={slot}
               onChange={(e) => {
-                const newSlots = [...slots];
-                newSlots[i] = e.target.value;
-                setSlots(newSlots);
+                const updated = [...slots];
+                updated[i] = e.target.value;
+                setSlots(updated);
               }}
-              placeholder="Cosmetic Name"
               className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-lg"
-            />
+            >
+              <option value="">— Empty —</option>
+
+              {sortedItems.map((item) => (
+                <option key={item.id} value={item.name}>
+                  {item.emoji} {item.name}
+                </option>
+              ))}
+            </select>
           </div>
         ))}
       </div>
@@ -96,3 +112,5 @@ export const StockRotationAdmin: React.FC = () => {
     </div>
   );
 };
+
+export default StockRotationAdmin;
