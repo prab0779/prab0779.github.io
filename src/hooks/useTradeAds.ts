@@ -8,43 +8,42 @@ export const useTradeAds = () => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchTradeAds = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('trade_ads')
-        .select('*')
-        .eq('status', 'active')
-        .gte('expires_at', new Date().toISOString())
-        .order('created_at', { ascending: false });
+  try {
+    setLoading(true);
 
-      if (error) throw error;
+    const { data, error } = await supabase
+      .from('trade_ads')
+      .select('id, title, items_wanted, items_offering, tags, author_name, author_avatar, contact_info, created_at')
+      .eq('status', 'active')
+      .gte('expires_at', new Date().toISOString())
+      .order('created_at', { ascending: false })
+      .range(0, 29); // 🔥 loads only 30 ads instead of whole database
 
-      const transformedAds: TradeAd[] = (data || []).map(row => ({
-        id: row.id,
-        title: row.title,
-        description: row.description,
-        itemsWanted: row.items_wanted || [],
-        itemsOffering: row.items_offering || [],
-        tags: row.tags || [],
-        status: row.status,
-        authorName: row.author_name,
-        authorAvatar: row.author_avatar,
-        contactInfo: row.contact_info,
-        createdAt: row.created_at,
-        updatedAt: row.updated_at,
-        expiresAt: row.expires_at,
-      }));
+    if (error) throw error;
 
-      setTradeAds(transformedAds);
-      setError(null);
+    const transformedAds: TradeAd[] = (data || []).map(row => ({
+      id: row.id,
+      title: row.title,
+      itemsWanted: row.items_wanted || [],
+      itemsOffering: row.items_offering || [],
+      tags: row.tags || [],
+      authorName: row.author_name,
+      authorAvatar: row.author_avatar,
+      contactInfo: row.contact_info,
+      createdAt: row.created_at,
+    }));
 
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch trade ads');
-      console.error('Error fetching trade ads:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setTradeAds(transformedAds);
+    setError(null);
+
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Failed to fetch trade ads');
+    console.error('Error fetching trade ads:', err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const createTradeAd = async (adData: CreateTradeAdData) => {
   try {
