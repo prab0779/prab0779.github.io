@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 
+
 export const StockRotationAdmin: React.FC = () => {
   const [slots, setSlots] = useState(["", "", "", ""]);
   const [saving, setSaving] = useState(false);
