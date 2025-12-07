@@ -5,7 +5,7 @@ import { useItems } from "../../hooks/useItems";
 import { Item } from "../../types/Item";
 
 // Import the shared ItemForm modal
-import ItemFormModal from "../compnents/ItemFormModal";
+import ItemFormModal from "../components/ItemFormModal";
 
 export default function Items() {
   const { items, loading, error, createItem, updateItem, deleteItem } = useItems();
