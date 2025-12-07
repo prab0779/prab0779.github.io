@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 import { Item } from '../types/Item';
 
 const CACHE_KEY = 'aotr_items_cache';
-const CACHE_TTL = 5 * 60 * 1000;
+const CACHE_TTL = 60 * 60 * 1000; // ✅ 1 hour cache
 
 export const useItems = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -48,12 +48,15 @@ export const useItems = () => {
 
   const setCachedItems = useCallback((items: Item[]) => {
     try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify({
-        data: items,
-        timestamp: Date.now(),
-      }));
+      localStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({
+          data: items,
+          timestamp: Date.now(),
+        })
+      );
     } catch {
-      // Silently fail cache write
+      // Ignore errors
     }
   }, []);
 
@@ -67,10 +70,28 @@ export const useItems = () => {
 
     try {
       setLoading(true);
+
       const { data, error } = await supabase
         .from('items')
-        .select('*')
-        .order('value', { ascending: false });
+        .select(
+          `
+          id,
+          name,
+          value,
+          demand,
+          rate_of_change,
+          prestige,
+          status,
+          obtained_from,
+          gem_tax,
+          gold_tax,
+          category,
+          rarity,
+          emoji
+        `
+        )
+        .order('value', { ascending: false })
+        .range(0, 199); // ✅ Limit to 200 items for safety
 
       if (error) throw error;
 
@@ -78,6 +99,7 @@ export const useItems = () => {
       setItems(transformedItems);
       setCachedItems(transformedItems);
       setError(null);
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch items');
     } finally {
@@ -88,31 +110,34 @@ export const useItems = () => {
   const createItem = async (item: Omit<Item, 'id'>) => {
     try {
       const id = `item_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
+
       const { data, error } = await supabase
         .from('items')
-        .insert([{
-          id,
-          name: item.name,
-          value: item.value,
-          demand: item.demand,
-          rate_of_change: item.rateOfChange,
-          prestige: item.prestige,
-          status: item.status,
-          obtained_from: item.obtainedFrom,
-          gem_tax: item.gemTax,
-          gold_tax: item.goldTax,
-          category: item.category,
-          rarity: item.rarity,
-          emoji: item.emoji,
-        }])
+        .insert([
+          {
+            id,
+            name: item.name,
+            value: item.value,
+            demand: item.demand,
+            rate_of_change: item.rateOfChange,
+            prestige: item.prestige,
+            status: item.status,
+            obtained_from: item.obtainedFrom,
+            gem_tax: item.gemTax,
+            gold_tax: item.goldTax,
+            category: item.category,
+            rarity: item.rarity,
+            emoji: item.emoji,
+          },
+        ])
         .select()
         .single();
 
       if (error) throw error;
 
-      await fetchItems(); // Refresh the list
+      await fetchItems();
       return { data, error: null };
+
     } catch (err) {
       const error = err instanceof Error ? err.message : 'Failed to create item';
       return { data: null, error };
@@ -121,7 +146,6 @@ export const useItems = () => {
 
   const updateItem = async (id: string, updates: Partial<Item>) => {
     try {
-      // First, get the current item to track changes
       const { data: currentItem, error: fetchError } = await supabase
         .from('items')
         .select('*')
@@ -130,7 +154,6 @@ export const useItems = () => {
 
       if (fetchError) throw fetchError;
 
-      // Update the item
       const { data, error } = await supabase
         .from('items')
         .update({
@@ -153,29 +176,24 @@ export const useItems = () => {
 
       if (error) throw error;
 
-      // Check if there are significant changes to track
       const hasValueChange = currentItem.value !== updates.value;
       const hasDemandChange = currentItem.demand !== updates.demand;
       const hasRateChange = currentItem.rate_of_change !== updates.rateOfChange;
 
       if (hasValueChange || hasDemandChange || hasRateChange) {
-        // Calculate change type and percentage
         let changeType: 'increase' | 'decrease' | 'stable' = 'stable';
         let percentageChange = 0;
 
         if (hasValueChange && updates.value !== undefined) {
-          if (updates.value > currentItem.value) {
-            changeType = 'increase';
-          } else if (updates.value < currentItem.value) {
-            changeType = 'decrease';
-          }
-          percentageChange = ((updates.value - currentItem.value) / currentItem.value) * 100;
+          if (updates.value > currentItem.value) changeType = 'increase';
+          else if (updates.value < currentItem.value) changeType = 'decrease';
+
+          percentageChange =
+            ((updates.value - currentItem.value) / currentItem.value) * 100;
         }
 
-        // Record the change
-        await supabase
-          .from('value_changes')
-          .insert([{
+        await supabase.from('value_changes').insert([
+          {
             id: `change_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
             item_id: id,
             item_name: updates.name || currentItem.name,
@@ -189,11 +207,13 @@ export const useItems = () => {
             change_date: new Date().toISOString(),
             change_type: changeType,
             percentage_change: percentageChange,
-          }]);
+          },
+        ]);
       }
 
-      await fetchItems(); // Refresh the list
+      await fetchItems();
       return { data, error: null };
+
     } catch (err) {
       const error = err instanceof Error ? err.message : 'Failed to update item';
       return { data: null, error };
@@ -209,7 +229,7 @@ export const useItems = () => {
 
       if (error) throw error;
 
-      await fetchItems(); // Refresh the list
+      await fetchItems();
       return { error: null };
     } catch (err) {
       const error = err instanceof Error ? err.message : 'Failed to delete item';
