@@ -8,7 +8,7 @@ import { useValueChanges } from '../hooks/useValueChanges';
 import { useOnlineUsers } from '../hooks/useOnlineUsers';
 import { useScamLogs } from '../hooks/useScamLogs';
 import { useScamLogsAdmin } from '../hooks/useScamLogsAdmin';
-import StockRotationAdmin from "../components/StockRotationAdmin";
+import StockRotationAdmin from "./StockRotationAdmin";
 import { Item } from '../types/Item';
 
 interface AdminPageProps {
