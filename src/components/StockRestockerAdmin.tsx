@@ -10,6 +10,7 @@ export const StockRestockerAdmin: React.FC = () => {
   });
 
   const [saving, setSaving] = useState(false);
+  
   const [message, setMessage] = useState("");
 
   async function loadStock() {
