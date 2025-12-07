@@ -8,6 +8,7 @@ import { useValueChanges } from '../hooks/useValueChanges';
 import { useOnlineUsers } from '../hooks/useOnlineUsers';
 import { useScamLogs } from '../hooks/useScamLogs';
 import { useScamLogsAdmin } from '../hooks/useScamLogsAdmin';
+import StockRotationAdmin from "../components/StockRotationAdmin";
 import { Item } from '../types/Item';
 
 interface AdminPageProps {
@@ -25,7 +26,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showScamLogForm, setShowScamLogForm] = useState(false);
-  const [currentView, setCurrentView] = useState<'items' | 'changes' | 'scam-logs'>('items');
+  const [currentView, setCurrentView] = useState<'items' | 'changes' | 'scam-logs' | 'stock'>('items');
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   
   // Search and filter states for items
@@ -569,6 +570,17 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
             >
               Settings
             </button>
+            <button
+  onClick={() => setCurrentView('stock')}
+  className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap ${
+    currentView === 'stock'
+      ? 'border-yellow-500 text-yellow-400'
+      : 'border-transparent text-gray-400 hover:text-gray-300'
+  }`}
+>
+  Stock
+</button>
+
           </div>
         </div>
       </div>
@@ -591,7 +603,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        {currentView === 'settings' ? (
+        {currentView === 'stock' ? (
+  <StockRotationAdmin />
+) : currentView === 'settings' ? (
+
+      
           /* Settings View */
           <div>
             <div className="mb-6 sm:mb-8">
@@ -1249,97 +1265,4 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
       )}
     </div>
   );
-
-  const StockRotationAdmin = () => {
-  const [slots, setSlots] = useState(["", "", "", ""]);
-  const [saving, setSaving] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  // Load current rotation from DB
-  const loadStock = async () => {
-    const { data, error } = await supabase
-      .from("stock_rotation")
-      .select("slot1, slot2, slot3, slot4")
-      .eq("id", 1)
-      .single();
-
-    if (!error && data) {
-      setSlots([data.slot1 || "", data.slot2 || "", data.slot3 || "", data.slot4 || ""]);
-    }
-    setLoading(false);
-  };
-
-  // Save updated stock
-  const saveStock = async () => {
-    setSaving(true);
-
-    const { error } = await supabase
-      .from("stock_rotation")
-      .update({
-        slot1: slots[0] || null,
-        slot2: slots[1] || null,
-        slot3: slots[2] || null,
-        slot4: slots[3] || null,
-      })
-      .eq("id", 1);
-
-    setSaving(false);
-
-    if (error) {
-      alert("Failed to save stock rotation");
-    } else {
-      alert("Stock rotation updated!");
-    }
-  };
-
-  useEffect(() => {
-    loadStock();
-  }, []);
-
-  if (loading) {
-    return <p className="text-gray-300">Loading stock rotation...</p>;
-  }
-
-  return (
-    <div>
-      <h1 className="text-2xl sm:text-3xl font-bold text-white mb-6">
-        Stock Rotation
-      </h1>
-
-      <p className="text-gray-400 mb-6">
-        Update the 4 cosmetic items shown in the Cosmetic Market.
-      </p>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        {slots.map((slot, i) => (
-          <div key={i} className="bg-gray-900 p-4 rounded-lg border border-gray-700">
-            <label className="block text-gray-300 text-sm mb-2">
-              Slot {i + 1}
-            </label>
-            <input
-              type="text"
-              value={slot}
-              onChange={(e) => {
-                const newSlots = [...slots];
-                newSlots[i] = e.target.value;
-                setSlots(newSlots);
-              }}
-              placeholder="Cosmetic Name"
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-lg"
-            />
-          </div>
-        ))}
-      </div>
-
-      <button
-        onClick={saveStock}
-        disabled={saving}
-        className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-medium"
-      >
-        {saving ? "Saving..." : "Save Rotation"}
-      </button>
-    </div>
-  );
-};
-
 };
