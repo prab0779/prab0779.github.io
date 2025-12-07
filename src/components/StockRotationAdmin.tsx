@@ -9,7 +9,6 @@ export const StockRotationAdmin: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Load current stock rotation
   const loadStock = async () => {
     const { data, error } = await supabase
       .from("stock_rotation")
@@ -55,10 +54,7 @@ export const StockRotationAdmin: React.FC = () => {
     return <p className="text-gray-300">Loading stock rotation...</p>;
   }
 
-  // Sort cosmetics alphabetically
-  const sortedItems = [...items].sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
+  const sortedItems = [...items].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div>
@@ -67,7 +63,7 @@ export const StockRotationAdmin: React.FC = () => {
       </h1>
 
       <p className="text-gray-400 mb-6">
-        Choose 4 items from the value list to appear in the Cosmetic Market.
+        Update the 4 cosmetic items shown in the Cosmetic Market.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -80,7 +76,7 @@ export const StockRotationAdmin: React.FC = () => {
               Slot {i + 1}
             </label>
 
-            {/* Dropdown listing all items */}
+            {/* FIXED: TRUE DROPDOWN */}
             <select
               value={slot}
               onChange={(e) => {
@@ -88,9 +84,9 @@ export const StockRotationAdmin: React.FC = () => {
                 updated[i] = e.target.value;
                 setSlots(updated);
               }}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-lg"
+              className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-lg cursor-pointer"
             >
-              <option value="">— Empty —</option>
+              <option value="">— Select Item —</option>
 
               {sortedItems.map((item) => (
                 <option key={item.id} value={item.name}>
