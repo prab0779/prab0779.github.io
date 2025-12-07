@@ -19,9 +19,9 @@ export const useStockRotation = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Load data once
   const loadRotation = async () => {
     setLoading(true);
+
     const { data, error } = await supabase
       .from("stock_rotation")
       .select("slot1_id, slot2_id, slot3_id, slot4_id")
@@ -40,20 +40,17 @@ export const useStockRotation = () => {
     setLoading(false);
   };
 
-  // Save to DB
-  const saveRotation = async (r: StockRotation) => {
+  const saveRotation = async (updated: StockRotation) => {
     setSaving(true);
 
     const { error } = await supabase
       .from("stock_rotation")
-      .update(r)
+      .update(updated)
       .eq("id", 1);
 
     setSaving(false);
 
-    if (!error) {
-      setRotation(r);
-    }
+    if (!error) setRotation(updated);
 
     return { error };
   };
