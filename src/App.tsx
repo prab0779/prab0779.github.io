@@ -28,7 +28,7 @@ const AdminPage = lazy(() =>
   import("./components/AdminPage").then(m => ({ default: m.AdminPage }))
 );
 const AuthCallback = lazy(() =>
-  import("./components/AuthCallback").then(m => ({ default: m.default }))
+  import("./routes/auth/callback").then(m => ({ default: m.default }))
 );
 
 /* Loading spinner */
