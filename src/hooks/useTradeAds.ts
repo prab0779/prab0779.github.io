@@ -17,7 +17,6 @@ export const useTradeAds = () => {
       .eq('status', 'active')
       .gte('expires_at', new Date().toISOString())
       .order('created_at', { ascending: false })
-      .range(0, 29); // 🔥 loads only 30 ads instead of whole database
 
     if (error) throw error;
 
