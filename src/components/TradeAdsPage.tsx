@@ -279,17 +279,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="text-sm text-gray-300">Trade Title *</label>
-              <input
-                required
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
-                placeholder="Looking for Vizard Mask..."
-              />
-            </div>
-
-            <div>
               <label className="text-sm text-gray-300">Discord Username</label>
               <input
                 value={discordName}
