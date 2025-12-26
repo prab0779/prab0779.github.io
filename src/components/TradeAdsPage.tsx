@@ -541,112 +541,120 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       </div>
 
       {/* LIST */}
-      {filteredTradeAds.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">No ads found</div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredTradeAds.map((ad) => (
-            <div key={ad.id} className="bg-gray-900 rounded border border-gray-700 p-6">
-              <h3 className="text-lg text-white font-semibold">{ad.title}</h3>
+{filteredTradeAds.length === 0 ? (
+  <div className="text-center py-12 text-gray-500">No ads found</div>
+) : (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    {filteredTradeAds.map((ad) => (
+      <div
+        key={ad.id}
+        className="bg-gray-900 rounded border border-gray-700 p-6"
+      >
+        <h3 className="text-lg text-white font-semibold">{ad.title}</h3>
 
-              <div className="flex items-center space-x-3 mt-2 mb-4">
-                <img
-                  src={ad.authorAvatar || "https://cdn.discordapp.com/embed/avatars/0.png"}
-                  alt={`${ad.authorName}'s avatar`}
-                  className="w-8 h-8 rounded-full border border-gray-700 bg-gray-800"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = "https://cdn.discordapp.com/embed/avatars/0.png";
-                  }}
-                />
-                <div>
-                  <p className="text-white text-sm font-semibold">{ad.authorName}</p>
-                  <p className="text-gray-500 text-xs">{getRelativeTime(ad.createdAt)}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-800 p-3 rounded">
-                  <h4 className="text-blue-400 font-medium text-sm mb-2">💎 Offering</h4>
-                  {ad.itemsOffering.length === 0 ? (
-                    <p className="text-gray-500 text-xs">Open to offers</p>
-                  ) : (
-                    ad.itemsOffering.map((it, i) => (
-                      <div key={i} className="flex items-center space-x-2 text-xs">
-                        {renderItemIcon(it.emoji, it.itemName)}
-                        <span className="text-white">{it.itemName}</span>
-                        {it.quantity > 1 && (
-                          <span className="text-gray-400">x{it.quantity}</span>
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
-
-                <div className="bg-gray-800 p-3 rounded">
-                  <h4 className="text-green-400 font-medium text-sm mb-2">🔍 Looking For</h4>
-                  {ad.itemsWanted.length === 0 ? (
-                    <p className="text-gray-500 text-xs">Open to offers</p>
-                  ) : (
-                    ad.itemsWanted.map((it, i) => (
-                      <div key={i} className="flex items-center space-x-2 text-xs">
-                        {renderItemIcon(it.emoji, it.itemName)}
-                        <span className="text-white">{it.itemName}</span>
-                        {it.quantity > 1 && (
-                          <span className="text-gray-400">x{it.quantity}</span>
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              {ad.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {ad.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="px-2 py-1 bg-blue-900 bg-opacity-30 text-blue-300 rounded-full text-xs font-medium border border-blue-700"
-                    >
-                      <Tag className="w-3 h-3 inline mr-1" />
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* PAGINATION (OUTSIDE the cards) */}
-      {totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900 p-4 rounded border border-gray-700">
-          <div className="text-gray-300 text-sm">
-            Page <span className="text-white font-semibold">{page}</span> of{" "}
-            <span className="text-white font-semibold">{totalPages}</span> •{" "}
-            <span className="text-white font-semibold">{total}</span> total ads
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              disabled={page <= 1}
-              onClick={() => setPage(page - 1)}
-              className="px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white disabled:opacity-40"
-            >
-              ← Prev
-            </button>
-
-            <button
-              disabled={page >= totalPages}
-              onClick={() => setPage(page + 1)}
-              className="px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white disabled:opacity-40"
-            >
-              Next →
-            </button>
+        <div className="flex items-center space-x-3 mt-2 mb-4">
+          <img
+            src={ad.authorAvatar || "https://cdn.discordapp.com/embed/avatars/0.png"}
+            alt={`${ad.authorName}'s avatar`}
+            className="w-8 h-8 rounded-full border border-gray-700 bg-gray-800"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = "https://cdn.discordapp.com/embed/avatars/0.png";
+            }}
+          />
+          <div>
+            <p className="text-white text-sm font-semibold">{ad.authorName}</p>
+            <p className="text-gray-500 text-xs">{getRelativeTime(ad.createdAt)}</p>
           </div>
         </div>
-      )}
+
+        {/* ITEMS */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* OFFERING */}
+          <div className="bg-gray-800 p-3 rounded">
+            <h4 className="text-blue-400 font-medium text-sm mb-2">💎 Offering</h4>
+            {ad.itemsOffering.length === 0 ? (
+              <p className="text-gray-500 text-xs">Open to offers</p>
+            ) : (
+              ad.itemsOffering.map((item, i) => (
+                <div key={i} className="flex items-center space-x-2 text-xs">
+                  {renderItemIcon(item.emoji, item.itemName)}
+                  <span className="text-white">{item.itemName}</span>
+                  {item.quantity > 1 && (
+                    <span className="text-gray-400">x{item.quantity}</span>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* WANTING */}
+          <div className="bg-gray-800 p-3 rounded">
+            <h4 className="text-green-400 font-medium text-sm mb-2">🔍 Looking For</h4>
+            {ad.itemsWanted.length === 0 ? (
+              <p className="text-gray-500 text-xs">Open to offers</p>
+            ) : (
+              ad.itemsWanted.map((item, i) => (
+                <div key={i} className="flex items-center space-x-2 text-xs">
+                  {renderItemIcon(item.emoji, item.itemName)}
+                  <span className="text-white">{item.itemName}</span>
+                  {item.quantity > 1 && (
+                    <span className="text-gray-400">x{item.quantity}</span>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* TAGS */}
+        {ad.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-4">
+            {ad.tags.map((tag, i) => (
+              <span
+                key={i}
+                className="px-2 py-1 bg-blue-900 bg-opacity-30 text-blue-300 rounded-full text-xs font-medium border border-blue-700"
+              >
+                <Tag className="w-3 h-3 inline mr-1" />
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+)}
+
+{/* PAGINATION (ONLY HERE) */}
+{totalPages > 1 && (
+  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900 p-4 rounded border border-gray-700">
+    <div className="text-gray-300 text-sm">
+      Page <span className="text-white font-semibold">{page}</span> of{" "}
+      <span className="text-white font-semibold">{totalPages}</span> •{" "}
+      <span className="text-white font-semibold">{total}</span> total ads
+    </div>
+
+    <div className="flex items-center gap-2">
+      <button
+        disabled={page <= 1}
+        onClick={() => setPage(page - 1)}
+        className="px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white disabled:opacity-40"
+      >
+        ← Prev
+      </button>
+
+      <button
+        disabled={page >= totalPages}
+        onClick={() => setPage(page + 1)}
+        className="px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white disabled:opacity-40"
+      >
+        Next →
+      </button>
+    </div>
+  </div>
+)}
+
 
       {/* FORM MODAL */}
       {showCreateForm && (
