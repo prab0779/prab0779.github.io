@@ -335,7 +335,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       </div>
 
       {/* Main board */}
-      <div className="rounded-2xl border border-yellow-700/20 bg-black/20 shadow-2xl overflow-hidden">
+      <div className="rounded-2xl border border-gold bg-black/25 shadow-2xl overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
           <div className="p-5 sm:p-6 border-b lg:border-b-0 lg:border-r border-yellow-700/15">
             <Side side="sent" />
