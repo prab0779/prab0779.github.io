@@ -114,7 +114,7 @@ return { data, error: null };
 
       if (error) throw error;
 
-      await fetchTradeAds();
+      setTradeAds((prev) => prev.filter((ad) => ad.id !== id));
       return { error: null };
 
     } catch (err) {
