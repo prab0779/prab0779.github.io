@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "../lib/supabase";
 
 export interface StockRotation {
@@ -8,56 +8,108 @@ export interface StockRotation {
   slot4_id: string | null;
 }
 
-export const useStockRotation = () => {
-  const [rotation, setRotation] = useState<StockRotation>({
-    slot1_id: null,
-    slot2_id: null,
-    slot3_id: null,
-    slot4_id: null,
-  });
+const EMPTY: StockRotation = {
+  slot1_id: null,
+  slot2_id: null,
+  slot3_id: null,
+  slot4_id: null,
+};
 
+export const useStockRotation = () => {
+  const [rotation, setRotation] = useState<StockRotation>(EMPTY);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  const loadRotation = async () => {
+  const loadRotation = useCallback(async () => {
     setLoading(true);
 
     const { data, error } = await supabase
       .from("stock_rotation")
       .select("slot1_id, slot2_id, slot3_id, slot4_id")
       .eq("id", 1)
-      .single();
+      .maybeSingle();
 
-    if (!error && data) {
-      setRotation({
-        slot1_id: data.slot1_id,
-        slot2_id: data.slot2_id,
-        slot3_id: data.slot3_id,
-        slot4_id: data.slot4_id,
-      });
+    if (error) {
+      console.error("loadRotation error:", error);
+      setRotation(EMPTY);
+      setLoading(false);
+      return;
     }
 
-    setLoading(false);
-  };
+    if (!data) {
+      // row missing; keep empty (you can upsert later if you want)
+      setRotation(EMPTY);
+      setLoading(false);
+      return;
+    }
 
-  const saveRotation = async (updated: StockRotation) => {
+    setRotation({
+      slot1_id: data.slot1_id ?? null,
+      slot2_id: data.slot2_id ?? null,
+      slot3_id: data.slot3_id ?? null,
+      slot4_id: data.slot4_id ?? null,
+    });
+
+    setLoading(false);
+  }, []);
+
+  const saveRotation = useCallback(async (updated: StockRotation) => {
     setSaving(true);
 
-    const { error } = await supabase
+    // UPDATE row id=1 (you already have it)
+    const { data, error } = await supabase
       .from("stock_rotation")
       .update(updated)
-      .eq("id", 1);
+      .eq("id", 1)
+      .select("slot1_id, slot2_id, slot3_id, slot4_id")
+      .single();
 
     setSaving(false);
 
-    if (!error) setRotation(updated);
+    console.log("saveRotation:", { data, error });
 
-    return { error };
-  };
+    if (error) {
+      console.error("saveRotation error:", error);
+      return { error };
+    }
 
-  useEffect(() => {
-    loadRotation();
+    if (data) {
+      setRotation({
+        slot1_id: data.slot1_id ?? null,
+        slot2_id: data.slot2_id ?? null,
+        slot3_id: data.slot3_id ?? null,
+        slot4_id: data.slot4_id ?? null,
+      });
+    }
+
+    return { error: null };
   }, []);
 
-  return { rotation, loading, saving, saveRotation, reload: loadRotation };
+  // Initial load + realtime updates
+  useEffect(() => {
+    loadRotation();
+
+    const channel = supabase
+      .channel("stock_rotation_changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "stock_rotation", filter: "id=eq.1" },
+        () => {
+          loadRotation();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadRotation]);
+
+  return {
+    rotation,
+    loading,
+    saving,
+    saveRotation,
+    reload: loadRotation,
+  };
 };
