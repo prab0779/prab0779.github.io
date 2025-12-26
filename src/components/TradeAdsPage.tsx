@@ -4,9 +4,6 @@ import {
   Plus,
   Search,
   Filter,
-  Clock,
-  User,
-  MessageCircle,
   Tag,
   X,
   Save,
@@ -15,12 +12,8 @@ import {
 
 import { useTradeAds } from "../hooks/useTradeAds";
 import { useAuth } from "../hooks/useAuth";
-import { supabase } from "../lib/supabase";
 
-import {
-  CreateTradeAdData,
-  TradeAdItem
-} from "../types/TradeAd";
+import { CreateTradeAdData, TradeAdItem } from "../types/TradeAd";
 import { Item } from "../types/Item";
 
 interface TradeAdsPageProps {
@@ -45,19 +38,29 @@ const AVAILABLE_TAGS = [
 
 export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const { user, signInWithDiscord } = useAuth();
-  const { tradeAds, loading, error, createTradeAd, page, totalPages, setPage, total } = useTradeAds();
+  const {
+    tradeAds,
+    loading,
+    error,
+    createTradeAd,
+    page,
+    totalPages,
+    setPage,
+    total
+  } = useTradeAds();
 
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
-  useEffect(() => {
-  setPage(1);
-}, [searchTerm, selectedTag, setPage]);
-
   const [notification, setNotification] = useState<{
     type: "success" | "error";
     message: string;
   } | null>(null);
+
+  // Reset to page 1 when filters change (since filtering is client-side per page)
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, selectedTag, setPage]);
 
   const showNotification = (type: "success" | "error", message: string) => {
     setNotification({ type, message });
@@ -76,25 +79,22 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   }, [tradeAds, searchTerm, selectedTag]);
 
   const renderItemIcon = (emoji: string, itemName: string) => {
-  if (!emoji || typeof emoji !== "string") {
-    return <span className="text-xl">👹</span>;
-  }
+    if (!emoji || typeof emoji !== "string") return <span className="text-xl">👹</span>;
 
-  // Image file support: /file.png or ./file.png
-  if (emoji.startsWith("/") || emoji.startsWith("./")) {
-    return (
-      <img
-        src={emoji}
-        alt={itemName}
-        className="w-6 h-6 object-contain inline-block rounded-sm"
-      />
-    );
-  }
+    // Image file support: /file.png or ./file.png
+    if (emoji.startsWith("/") || emoji.startsWith("./")) {
+      return (
+        <img
+          src={emoji}
+          alt={itemName}
+          className="w-6 h-6 object-contain inline-block rounded-sm"
+        />
+      );
+    }
 
-  // Unicode emoji support
-  return <span className="text-xl">{emoji}</span>;
-};
-
+    // Unicode emoji support
+    return <span className="text-xl">{emoji}</span>;
+  };
 
   const getRelativeTime = (dateString: string) => {
     const now = new Date();
@@ -116,30 +116,26 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   // ---------------------------
   // Create Trade Form Component
   // ---------------------------
-
   const CreateTradeAdForm: React.FC<{
     onSubmit: (data: CreateTradeAdData) => void;
     onCancel: () => void;
   }> = ({ onSubmit, onCancel }) => {
-    // Get username from Discord metadata
-const discordName =
-  user?.user_metadata?.preferred_username ||
-  user?.user_metadata?.full_name ||
-  user?.user_metadata?.name ||
-  "Unknown User";
+    const discordName =
+      user?.user_metadata?.preferred_username ||
+      user?.user_metadata?.full_name ||
+      user?.user_metadata?.name ||
+      "Unknown User";
 
-// Build Discord avatar URL correctly
-const getDiscordAvatarUrl = () => {
-  const sub = user?.user_metadata?.sub;        // "discord|123456789"
-  const avatar = user?.user_metadata?.avatar_url; // avatar hash
+    const getDiscordAvatarUrl = () => {
+      const sub = user?.user_metadata?.sub; // "discord|123"
+      const avatar = user?.user_metadata?.avatar_url; // hash
+      if (!sub || !avatar) return null;
 
-  if (!sub || !avatar) return null;
+      const discordId = sub.replace("discord|", "");
+      return `https://cdn.discordapp.com/avatars/${discordId}/${avatar}.png`;
+    };
 
-  const discordId = sub.replace("discord|", "");
-  return `https://cdn.discordapp.com/avatars/${discordId}/${avatar}.png`;
-};
-
-const discordAvatar = getDiscordAvatarUrl();
+    const discordAvatar = getDiscordAvatarUrl();
 
     const [formData, setFormData] = useState<CreateTradeAdData>({
       title: "",
@@ -189,7 +185,7 @@ const discordAvatar = getDiscordAvatarUrl();
         ...prev,
         [type === "wanted" ? "itemsWanted" : "itemsOffering"]: (
           type === "wanted" ? prev.itemsWanted : prev.itemsOffering
-        ).map((item, i) => (i === index ? { ...item, quantity } : item))
+        ).map((it, i) => (i === index ? { ...it, quantity } : it))
       }));
     };
 
@@ -230,11 +226,11 @@ const discordAvatar = getDiscordAvatarUrl();
       onSelect: (item: Item) => void;
       title: string;
     }) => {
-      const [searchTerm, setSearchTerm] = useState("");
+      const [term, setTerm] = useState("");
       if (!isOpen) return null;
 
       const filteredItems = items.filter((i) =>
-        i.name.toLowerCase().includes(searchTerm.toLowerCase())
+        i.name.toLowerCase().includes(term.toLowerCase())
       );
 
       return (
@@ -249,8 +245,8 @@ const discordAvatar = getDiscordAvatarUrl();
 
             <input
               placeholder="Search items..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={term}
+              onChange={(e) => setTerm(e.target.value)}
               className="w-full px-3 py-2 mb-4 bg-gray-800 border border-gray-600 rounded text-white"
             />
 
@@ -282,21 +278,17 @@ const discordAvatar = getDiscordAvatarUrl();
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* TITLE */}
             <div>
               <label className="text-sm text-gray-300">Trade Title *</label>
               <input
                 required
                 value={formData.title}
-                onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white"
                 placeholder="Looking for Vizard Mask..."
               />
             </div>
 
-            {/* AUTO-FILLED DISCORD USERNAME */}
             <div>
               <label className="text-sm text-gray-300">Discord Username</label>
               <input
@@ -306,7 +298,6 @@ const discordAvatar = getDiscordAvatarUrl();
               />
             </div>
 
-            {/* ITEMS */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Wanted */}
               <div>
@@ -323,27 +314,20 @@ const discordAvatar = getDiscordAvatarUrl();
 
                 <div className="space-y-2 bg-gray-800 p-3 rounded">
                   {formData.itemsWanted.length === 0 ? (
-                    <p className="text-gray-500 text-sm text-center">
-                      No items yet
-                    </p>
+                    <p className="text-gray-500 text-sm text-center">No items yet</p>
                   ) : (
-                    formData.itemsWanted.map((item, i) => (
-                      <div
-                        key={i}
-                        className="flex justify-between bg-gray-700 p-2 rounded"
-                      >
+                    formData.itemsWanted.map((it, i) => (
+                      <div key={i} className="flex justify-between bg-gray-700 p-2 rounded">
                         <div className="flex space-x-2 items-center">
-                          {renderItemIcon(item.emoji, item.itemName)}
-                          <span className="text-white text-sm">
-                            {item.itemName}
-                          </span>
+                          {renderItemIcon(it.emoji, it.itemName)}
+                          <span className="text-white text-sm">{it.itemName}</span>
                         </div>
 
                         <div className="flex items-center space-x-2">
                           <input
                             type="number"
                             min={1}
-                            value={item.quantity}
+                            value={it.quantity}
                             onChange={(e) =>
                               updateQuantity(i, parseInt(e.target.value), "wanted")
                             }
@@ -378,27 +362,20 @@ const discordAvatar = getDiscordAvatarUrl();
 
                 <div className="space-y-2 bg-gray-800 p-3 rounded">
                   {formData.itemsOffering.length === 0 ? (
-                    <p className="text-gray-500 text-sm text-center">
-                      No items yet
-                    </p>
+                    <p className="text-gray-500 text-sm text-center">No items yet</p>
                   ) : (
-                    formData.itemsOffering.map((item, i) => (
-                      <div
-                        key={i}
-                        className="flex justify-between bg-gray-700 p-2 rounded"
-                      >
+                    formData.itemsOffering.map((it, i) => (
+                      <div key={i} className="flex justify-between bg-gray-700 p-2 rounded">
                         <div className="flex space-x-2 items-center">
-                          {renderItemIcon(item.emoji, item.itemName)}
-                          <span className="text-white text-sm">
-                            {item.itemName}
-                          </span>
+                          {renderItemIcon(it.emoji, it.itemName)}
+                          <span className="text-white text-sm">{it.itemName}</span>
                         </div>
 
                         <div className="flex items-center space-x-2">
                           <input
                             type="number"
                             min={1}
-                            value={item.quantity}
+                            value={it.quantity}
                             onChange={(e) =>
                               updateQuantity(i, parseInt(e.target.value), "offering")
                             }
@@ -419,7 +396,7 @@ const discordAvatar = getDiscordAvatarUrl();
               </div>
             </div>
 
-            {/* TAGS */}
+            {/* Tags */}
             <div>
               <label className="text-sm text-gray-300 mb-2">Trade Tags</label>
               <div className="flex flex-wrap gap-2">
@@ -440,7 +417,6 @@ const discordAvatar = getDiscordAvatarUrl();
               </div>
             </div>
 
-            {/* SUBMIT */}
             <div className="flex justify-end space-x-3 pt-4">
               <button
                 type="button"
@@ -481,7 +457,6 @@ const discordAvatar = getDiscordAvatarUrl();
   // ---------------------------
   // MAIN PAGE
   // ---------------------------
-
   const handleCreateTradeAd = async (adData: CreateTradeAdData) => {
     const { error } = await createTradeAd(adData);
     if (error) showNotification("error", error);
@@ -492,11 +467,7 @@ const discordAvatar = getDiscordAvatarUrl();
   };
 
   if (loading)
-    return (
-      <div className="text-center py-12 text-gray-400">
-        Loading trade ads...
-      </div>
-    );
+    return <div className="text-center py-12 text-gray-400">Loading trade ads...</div>;
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
@@ -516,11 +487,8 @@ const discordAvatar = getDiscordAvatarUrl();
       {/* HEADER */}
       <div className="text-center py-8">
         <h1 className="text-3xl text-white font-bold mb-4">Trade Ads</h1>
-        <p className="text-gray-400 text-lg mb-6">
-          Post and browse trade offers
-        </p>
+        <p className="text-gray-400 text-lg mb-6">Post and browse trade offers</p>
 
-        {/* LOGIN / POST BUTTON */}
         <button
           onClick={() => {
             if (!user) {
@@ -534,6 +502,8 @@ const discordAvatar = getDiscordAvatarUrl();
           <Plus className="w-5 h-5" />
           <span>{user ? "Post Trade Ad" : "Login with Discord"}</span>
         </button>
+
+        {error && <p className="text-red-400 mt-3">{error}</p>}
       </div>
 
       {/* SEARCH + FILTERS */}
@@ -576,103 +546,54 @@ const discordAvatar = getDiscordAvatarUrl();
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {filteredTradeAds.map((ad) => (
-            <div
-              key={ad.id}
-              className="bg-gray-900 rounded border border-gray-700 p-6"
-            >
+            <div key={ad.id} className="bg-gray-900 rounded border border-gray-700 p-6">
               <h3 className="text-lg text-white font-semibold">{ad.title}</h3>
 
-             <div className="flex items-center space-x-3 mt-2 mb-4">
-  <img
-    src={ad.authorAvatar || "https://cdn.discordapp.com/embed/avatars/0.png"}
-    alt={`${ad.authorName}'s avatar`}
-    className="w-8 h-8 rounded-full border border-gray-700 bg-gray-800"
-    onError={(e) => {
-      const target = e.target as HTMLImageElement;
-      target.src = "https://cdn.discordapp.com/embed/avatars/0.png";
-    }}
-  />
-  <div>
-    <p className="text-white text-sm font-semibold">{ad.authorName}</p>
-    <p className="text-gray-500 text-xs">{getRelativeTime(ad.createdAt)}</p>
-  </div>
-</div>
+              <div className="flex items-center space-x-3 mt-2 mb-4">
+                <img
+                  src={ad.authorAvatar || "https://cdn.discordapp.com/embed/avatars/0.png"}
+                  alt={`${ad.authorName}'s avatar`}
+                  className="w-8 h-8 rounded-full border border-gray-700 bg-gray-800"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "https://cdn.discordapp.com/embed/avatars/0.png";
+                  }}
+                />
+                <div>
+                  <p className="text-white text-sm font-semibold">{ad.authorName}</p>
+                  <p className="text-gray-500 text-xs">{getRelativeTime(ad.createdAt)}</p>
+                </div>
+              </div>
 
-              {/* PAGINATION */}
-{totalPages > 1 && (
-  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900 p-4 rounded border border-gray-700">
-    <div className="text-gray-300 text-sm">
-      Page <span className="text-white font-semibold">{page}</span> of{" "}
-      <span className="text-white font-semibold">{totalPages}</span> •{" "}
-      <span className="text-white font-semibold">{total}</span> total ads
-    </div>
-
-    <div className="flex items-center gap-2">
-      <button
-        disabled={page <= 1}
-        onClick={() => setPage(page - 1)}
-        className="px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white disabled:opacity-40"
-      >
-        ← Prev
-      </button>
-
-      <button
-        disabled={page >= totalPages}
-        onClick={() => setPage(page + 1)}
-        className="px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white disabled:opacity-40"
-      >
-        Next →
-      </button>
-    </div>
-  </div>
-)}
-
-
-
-              {/* ITEMS */}
               <div className="grid grid-cols-2 gap-4">
-                {/* OFFERING */}
                 <div className="bg-gray-800 p-3 rounded">
-                  <h4 className="text-blue-400 font-medium text-sm mb-2">
-                    💎 Offering
-                  </h4>
-
+                  <h4 className="text-blue-400 font-medium text-sm mb-2">💎 Offering</h4>
                   {ad.itemsOffering.length === 0 ? (
                     <p className="text-gray-500 text-xs">Open to offers</p>
                   ) : (
-                    ad.itemsOffering.map((item, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        {renderItemIcon(item.emoji, item.itemName)}
-                        <span className="text-white">{item.itemName}</span>
-                        {item.quantity > 1 && (
-                          <span className="text-gray-400">x{item.quantity}</span>
+                    ad.itemsOffering.map((it, i) => (
+                      <div key={i} className="flex items-center space-x-2 text-xs">
+                        {renderItemIcon(it.emoji, it.itemName)}
+                        <span className="text-white">{it.itemName}</span>
+                        {it.quantity > 1 && (
+                          <span className="text-gray-400">x{it.quantity}</span>
                         )}
                       </div>
                     ))
                   )}
                 </div>
 
-                {/* WANTING */}
                 <div className="bg-gray-800 p-3 rounded">
-                  <h4 className="text-green-400 font-medium text-sm mb-2">
-                    🔍 Looking For
-                  </h4>
-
+                  <h4 className="text-green-400 font-medium text-sm mb-2">🔍 Looking For</h4>
                   {ad.itemsWanted.length === 0 ? (
                     <p className="text-gray-500 text-xs">Open to offers</p>
                   ) : (
-                    ad.itemsWanted.map((item, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center space-x-2 text-xs"
-                      >
-                        {renderItemIcon(item.emoji, item.itemName)}
-                        <span className="text-white">{item.itemName}</span>
-                        {item.quantity > 1 && (
-                          <span className="text-gray-400">x{item.quantity}</span>
+                    ad.itemsWanted.map((it, i) => (
+                      <div key={i} className="flex items-center space-x-2 text-xs">
+                        {renderItemIcon(it.emoji, it.itemName)}
+                        <span className="text-white">{it.itemName}</span>
+                        {it.quantity > 1 && (
+                          <span className="text-gray-400">x{it.quantity}</span>
                         )}
                       </div>
                     ))
@@ -680,7 +601,6 @@ const discordAvatar = getDiscordAvatarUrl();
                 </div>
               </div>
 
-              {/* TAGS */}
               {ad.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-4">
                   {ad.tags.map((tag, i) => (
@@ -696,6 +616,35 @@ const discordAvatar = getDiscordAvatarUrl();
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* PAGINATION (OUTSIDE the cards) */}
+      {totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900 p-4 rounded border border-gray-700">
+          <div className="text-gray-300 text-sm">
+            Page <span className="text-white font-semibold">{page}</span> of{" "}
+            <span className="text-white font-semibold">{totalPages}</span> •{" "}
+            <span className="text-white font-semibold">{total}</span> total ads
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              disabled={page <= 1}
+              onClick={() => setPage(page - 1)}
+              className="px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white disabled:opacity-40"
+            >
+              ← Prev
+            </button>
+
+            <button
+              disabled={page >= totalPages}
+              onClick={() => setPage(page + 1)}
+              className="px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white disabled:opacity-40"
+            >
+              Next →
+            </button>
+          </div>
         </div>
       )}
 
