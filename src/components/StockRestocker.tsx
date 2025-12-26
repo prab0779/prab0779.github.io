@@ -1,71 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useStockRotation } from "../hooks/useStockRotation";
 import { useItems } from "../hooks/useItems";
 
 export const StockRestocker: React.FC = () => {
   const { rotation } = useStockRotation();
   const { items } = useItems();
-
   const [timeLeft, setTimeLeft] = useState("00:00:00");
 
   const RESET_HOURS = [0, 6, 12, 18];
 
   const getDisplayItem = (id: string | null) => {
     if (!id) return null;
-    return items.find((i) => i.id === id) || null;
+    return items.find((i) => String(i.id) === String(id)) || null;
   };
 
-  const activeItems = [
-    getDisplayItem(rotation.slot1_id),
-    getDisplayItem(rotation.slot2_id),
-    getDisplayItem(rotation.slot3_id),
-    getDisplayItem(rotation.slot4_id),
-  ];
+  const activeItems = useMemo(
+    () => [
+      getDisplayItem(rotation.slot1_id),
+      getDisplayItem(rotation.slot2_id),
+      getDisplayItem(rotation.slot3_id),
+      getDisplayItem(rotation.slot4_id),
+    ],
+    [rotation, items]
+  );
 
-  function updateCountdown() {
-  const RESET_HOURS = [0, 6, 12, 18];
+  const updateCountdown = () => {
+    // London time
+    const now = new Date();
+    const ukNow = new Date(
+      now.toLocaleString("en-GB", { timeZone: "Europe/London" })
+    );
 
-  // Current time in ms (UTC-based)
-  const now = new Date();
+    const currentHour = ukNow.getHours();
 
-  // Get "current hour in London" safely via Intl
-  const parts = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Europe/London",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(now);
+    let nextHour = RESET_HOURS.find((h) => h > currentHour);
+    const nextReset = new Date(ukNow);
 
-  const getPart = (type: string) => parts.find((p) => p.type === type)?.value ?? "00";
-  const currentHour = Number(getPart("hour"));
-  const currentMinute = Number(getPart("minute"));
-  const currentSecond = Number(getPart("second"));
+    if (nextHour === undefined) {
+      nextHour = 0;
+      nextReset.setDate(nextReset.getDate() + 1);
+    }
 
-  // Find next reset hour
-  let nextHour = RESET_HOURS.find((h) => h > currentHour);
-  let addDays = 0;
+    nextReset.setHours(nextHour, 0, 0, 0);
 
-  if (nextHour === undefined) {
-    nextHour = 0;
-    addDays = 1;
-  }
+    const diffMs = nextReset.getTime() - ukNow.getTime();
+    const safe = Math.max(0, diffMs);
 
-  // Compute seconds until next reset in "London clock time"
-  const secondsNow = currentHour * 3600 + currentMinute * 60 + currentSecond;
-  const secondsTarget = (nextHour * 3600) + 0; // at :00:00
+    const h = Math.floor(safe / 3600000);
+    const m = Math.floor((safe % 3600000) / 60000);
+    const s = Math.floor((safe % 60000) / 1000);
 
-  let diffSeconds = (addDays * 86400) + (secondsTarget - secondsNow);
-  if (diffSeconds < 0) diffSeconds += 86400; // safety
-
-  const h = Math.floor(diffSeconds / 3600);
-  const m = Math.floor((diffSeconds % 3600) / 60);
-  const s = diffSeconds % 60;
-
-  const pad = (n: number) => String(n).padStart(2, "0");
-  setTimeLeft(`${pad(h)}:${pad(m)}:${pad(s)}`);
-}
-
+    const pad = (n: number) => String(n).padStart(2, "0");
+    setTimeLeft(`${pad(h)}:${pad(m)}:${pad(s)}`);
+  };
 
   useEffect(() => {
     updateCountdown();
@@ -79,9 +66,7 @@ export const StockRestocker: React.FC = () => {
         Cosmetic Market
       </h2>
 
-      <p className="text-gray-400 mb-6">
-        Next restock in: {timeLeft}
-      </p>
+      <p className="text-gray-400 mb-6">Next restock in: {timeLeft}</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {activeItems.map((item, i) => (
@@ -92,7 +77,7 @@ export const StockRestocker: React.FC = () => {
             {item ? (
               <>
                 {/* ICON / PNG */}
-                {item.emoji.startsWith("/") ? (
+                {typeof item.emoji === "string" && item.emoji.startsWith("/") ? (
                   <img
                     src={item.emoji}
                     alt={item.name}
