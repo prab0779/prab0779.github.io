@@ -50,6 +50,10 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
+  useEffect(() => {
+  setPage(1);
+}, [searchTerm, selectedTag, setPage]);
+
   const [notification, setNotification] = useState<{
     type: "success" | "error";
     message: string;
