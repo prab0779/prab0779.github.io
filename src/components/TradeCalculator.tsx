@@ -373,15 +373,21 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
           </div>
 
           {/* red -> green bar */}
-          <div className="h-3 rounded-full bg-gradient-to-r from-red-500 via-yellow-500 to-emerald-500 overflow-hidden border border-yellow-700/20">
-            <div
-              className="h-full bg-black/35"
-              style={{
-                width: `${Math.max(0, Math.min(100, 100 - pct))}%`,
-                marginLeft: `${Math.max(0, Math.min(100, pct))}%`,
-              }}
-            />
-          </div>
+          {/* red -> green bar (center marker) */}
+<div className="relative h-3 rounded-full overflow-hidden border border-yellow-700/20 bg-zinc-900">
+  {/* base gradient */}
+  <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-yellow-500 to-emerald-500" />
+
+  {/* center line */}
+  <div className="absolute left-1/2 top-0 h-full w-[2px] bg-black/60" />
+
+  {/* marker */}
+  <div
+    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border border-black/60 bg-white/80 shadow"
+    style={{ left: `calc(${pct}% - 6px)` }}
+  />
+</div>
+
         </div>
       </div>
 
