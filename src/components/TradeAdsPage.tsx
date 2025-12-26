@@ -560,7 +560,7 @@ const discordAvatar = getDiscordAvatarUrl();
 
           <div className="flex items-center px-3 py-2 bg-gray-800 border border-gray-600 rounded">
             <Eye className="w-4 h-4 text-gray-400 mr-2" />
-            <span className="text-white">{filteredTradeAds.length} ads</span>
+            <span className="text-white">{total} ads</span>
           </div>
         </div>
       </div>
@@ -592,6 +592,36 @@ const discordAvatar = getDiscordAvatarUrl();
     <p className="text-gray-500 text-xs">{getRelativeTime(ad.createdAt)}</p>
   </div>
 </div>
+
+              {/* PAGINATION */}
+{totalPages > 1 && (
+  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-900 p-4 rounded border border-gray-700">
+    <div className="text-gray-300 text-sm">
+      Page <span className="text-white font-semibold">{page}</span> of{" "}
+      <span className="text-white font-semibold">{totalPages}</span> •{" "}
+      <span className="text-white font-semibold">{total}</span> total ads
+    </div>
+
+    <div className="flex items-center gap-2">
+      <button
+        disabled={page <= 1}
+        onClick={() => setPage(page - 1)}
+        className="px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white disabled:opacity-40"
+      >
+        ← Prev
+      </button>
+
+      <button
+        disabled={page >= totalPages}
+        onClick={() => setPage(page + 1)}
+        className="px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white disabled:opacity-40"
+      >
+        Next →
+      </button>
+    </div>
+  </div>
+)}
+
 
 
               {/* ITEMS */}
