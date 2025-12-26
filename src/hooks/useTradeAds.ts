@@ -80,8 +80,22 @@ export const useTradeAds = () => {
 
     if (error) throw error;
 
-    await fetchTradeAds();
-    return { data, error: null };
+    setTradeAds((prev) => [
+  {
+    id: data.id,
+    title: data.title,
+    itemsWanted: data.items_wanted || [],
+    itemsOffering: data.items_offering || [],
+    tags: data.tags || [],
+    authorName: data.author_name,
+    authorAvatar: data.author_avatar,
+    contactInfo: data.contact_info,
+    createdAt: data.created_at,
+  },
+  ...prev,
+]);
+return { data, error: null };
+
 
   } catch (err) {
     const error = err instanceof Error ? err.message : "Failed to create trade ad";
