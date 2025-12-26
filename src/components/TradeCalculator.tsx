@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Plus, X, Search } from "lucide-react";
+import { Plus, X, Search, RotateCcw, ArrowRightLeft } from "lucide-react";
 import { Item, TradeItem, TradeCalculation } from "../types/Item";
 
 interface TradeCalculatorProps {
@@ -65,7 +65,6 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     };
   }, [itemsSent, itemsReceived]);
 
-  // ======= UI helpers =======
   const resetAll = () => {
     setItemsSent([]);
     setItemsReceived([]);
@@ -74,7 +73,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
   const renderItemIcon = (emoji: string, itemName: string) => {
     if (!emoji || typeof emoji !== "string") return <span className="text-4xl leading-none">👹</span>;
     if (emoji.startsWith("/") || emoji.startsWith("./")) {
-      const src = emoji.startsWith("./") ? emoji.slice(2) : emoji; // keep leading /
+      const src = emoji.startsWith("./") ? emoji.slice(2) : emoji;
       return (
         <img
           src={src}
@@ -91,42 +90,26 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     return <span className="text-4xl leading-none">{emoji}</span>;
   };
 
-  const diff = calculation.totalValueReceived - calculation.totalValueSent;
+  // ====== status math ======
   const hasTrade = calculation.totalValueSent > 0 || calculation.totalValueReceived > 0;
+  const diff = calculation.totalValueReceived - calculation.totalValueSent;
 
-  // Fairness label
-  const tradeLabel = !hasTrade
-    ? "—"
-    : Math.abs(diff) === 0
-    ? "FAIR TRADE"
-    : diff > 0
-    ? "YOU WIN"
-    : "YOU LOSE";
-
-  // progress bar: 0..100, center at 50
   const maxSpan = Math.max(1, Math.max(calculation.totalValueSent, calculation.totalValueReceived));
-  const normalized = hasTrade ? (diff / maxSpan) : 0; // -1..+1-ish
-  const pct = Math.max(0, Math.min(100, 50 + normalized * 50)); // center 50
+  const percent = hasTrade ? (diff / maxSpan) * 100 : 0;
 
-  const StatusPill = () => {
-    const cls =
-      tradeLabel === "FAIR TRADE"
-        ? "bg-emerald-900/40 text-emerald-300 border-emerald-700/60"
-        : tradeLabel === "YOU WIN"
-        ? "bg-emerald-900/25 text-emerald-200 border-emerald-700/50"
-        : tradeLabel === "YOU LOSE"
-        ? "bg-red-900/25 text-red-200 border-red-700/50"
-        : "bg-zinc-900/40 text-zinc-300 border-zinc-700/60";
+  const status =
+    !hasTrade ? "NO TRADE" : Math.abs(percent) < 2 ? "FAIR" : percent > 0 ? "WIN" : "LOSE";
 
-    return (
-      <div className={`w-full rounded-xl border px-4 py-3 text-center font-bold tracking-wide ${cls}`}>
-        <span className="inline-flex items-center gap-2">
-          <span className="text-sm sm:text-base">●</span>
-          <span className="text-sm sm:text-base">{tradeLabel}</span>
-        </span>
-      </div>
-    );
-  };
+  const statusStyles =
+    status === "FAIR"
+      ? "border-emerald-700/40 bg-emerald-950/30 text-emerald-200"
+      : status === "WIN"
+      ? "border-emerald-700/30 bg-emerald-950/20 text-emerald-200"
+      : status === "LOSE"
+      ? "border-red-700/35 bg-red-950/20 text-red-200"
+      : "border-zinc-700/40 bg-zinc-950/30 text-zinc-200";
+
+  const barPos = Math.max(0, Math.min(100, 50 + (diff / maxSpan) * 50)); // 0..100 center 50
 
   // ======= Searchable modal =======
   const ItemModal: React.FC<{
@@ -145,8 +128,8 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-        <div className="w-full max-w-lg rounded-2xl border border-yellow-700/40 bg-zinc-950 shadow-2xl">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-yellow-700/20">
+        <div className="w-full max-w-xl rounded-2xl border border-zinc-800 bg-zinc-950 shadow-2xl">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800">
             <h3 className="text-white font-bold text-lg">{title}</h3>
             <button onClick={onClose} className="text-zinc-400 hover:text-white">
               <X className="w-5 h-5" />
@@ -160,7 +143,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search items..."
-                className="w-full rounded-xl bg-zinc-900/60 border border-zinc-700 pl-10 pr-3 py-2 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                className="w-full rounded-xl bg-zinc-900/60 border border-zinc-700 pl-10 pr-3 py-2 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
             </div>
 
@@ -178,7 +161,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                     <div className="text-white font-semibold leading-tight">{it.name}</div>
                     <div className="text-xs text-zinc-400">{it.category}</div>
                   </div>
-                  <div className="text-yellow-300 font-bold">🔑 {it.value}</div>
+                  <div className="text-amber-300 font-bold">🔑 {it.value}</div>
                 </button>
               ))}
 
@@ -192,195 +175,250 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     );
   };
 
-  // ======= 3x3 side grid =======
-  const Side: React.FC<{
-    side: "sent" | "received";
-  }> = ({ side }) => {
+  // ======= Slot card =======
+  const SlotCard: React.FC<{
+    tradeItem?: TradeItem;
+    onRemove?: () => void;
+    onQty?: (q: number) => void;
+  }> = ({ tradeItem, onRemove, onQty }) => {
+    return (
+      <div
+        className={[
+          "relative aspect-square rounded-2xl border overflow-hidden",
+          "bg-gradient-to-b from-black/40 to-black/20",
+          "border-amber-700/20",
+          tradeItem ? "hover:border-amber-600/40" : "hover:border-zinc-700/50",
+          "transition",
+        ].join(" ")}
+      >
+        {/* subtle corner glow */}
+        <div className="absolute -top-10 -left-10 w-24 h-24 rounded-full bg-amber-500/10 blur-2xl" />
+
+        {tradeItem ? (
+          <>
+            <button
+              onClick={onRemove}
+              className="absolute top-2 right-2 z-10 rounded-lg bg-black/60 border border-zinc-700/60 p-1 text-zinc-200 hover:text-white"
+              title="Remove"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="h-full w-full p-3 flex flex-col">
+              <div className="flex-1 flex items-center justify-center">
+                <div className="w-16 h-16 sm:w-20 sm:h-20">{renderItemIcon(tradeItem.item.emoji, tradeItem.item.name)}</div>
+              </div>
+
+              {/* footer strip */}
+              <div className="mt-2 rounded-xl border border-zinc-800 bg-zinc-950/40 px-2 py-2">
+                <div className="text-[11px] sm:text-xs text-white font-semibold line-clamp-1">
+                  {tradeItem.item.name}
+                </div>
+                <div className="mt-2 flex items-center justify-between">
+                  <span className="text-[11px] text-zinc-400">x</span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onQty?.(tradeItem.quantity - 1);
+                      }}
+                      className="w-6 h-6 rounded-lg bg-zinc-900 border border-zinc-700 text-white hover:bg-zinc-800 disabled:opacity-40"
+                      disabled={tradeItem.quantity <= 1}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      min={1}
+                      max={999}
+                      value={tradeItem.quantity}
+                      onChange={(e) => onQty?.(parseInt(e.target.value) || 1)}
+                      className="w-12 h-6 rounded-lg bg-zinc-900 border border-zinc-700 text-white text-center text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onQty?.(tradeItem.quantity + 1);
+                      }}
+                      className="w-6 h-6 rounded-lg bg-zinc-900 border border-zinc-700 text-white hover:bg-zinc-800 disabled:opacity-40"
+                      disabled={tradeItem.quantity >= 999}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="h-full w-full" />
+        )}
+      </div>
+    );
+  };
+
+  // ======= Side panel =======
+  const Side: React.FC<{ side: "sent" | "received" }> = ({ side }) => {
     const selected = side === "sent" ? itemsSent : itemsReceived;
-    const openModal = () => (side === "sent" ? setShowSentModal(true) : setShowReceivedModal(true));
+    const open = () => (side === "sent" ? setShowSentModal(true) : setShowReceivedModal(true));
 
     const value = side === "sent" ? calculation.totalValueSent : calculation.totalValueReceived;
     const gemTax = side === "sent" ? calculation.sentGemTax : calculation.receivedGemTax;
-    const goldTax = side === "sent" ? calculation.sentGoldTax : calculation.receivedGoldTax;
+
+    const title = side === "sent" ? "You Offer" : "You Receive";
+    const accent = side === "sent" ? "text-red-200" : "text-emerald-200";
+    const sub = side === "sent" ? "Items you’re giving" : "Items you’re getting";
+
+    // 3x3: first tile is Add (different from screenshot)
+    const tiles = Array.from({ length: 9 }, (_, i) => {
+      if (i === 0) {
+        return (
+          <button
+            key="add"
+            onClick={open}
+            className="aspect-square rounded-2xl border border-amber-700/25 bg-amber-500/5 hover:bg-amber-500/10 transition flex flex-col items-center justify-center gap-2"
+          >
+            <div className="w-10 h-10 rounded-2xl border border-amber-600/30 bg-black/40 flex items-center justify-center">
+              <Plus className="w-5 h-5 text-amber-200" />
+            </div>
+            <span className="text-xs text-amber-100/90 font-semibold">Add Item</span>
+          </button>
+        );
+      }
+
+      const tradeItem = selected[i - 1];
+      return (
+        <SlotCard
+          key={i}
+          tradeItem={tradeItem}
+          onRemove={() => removeItem(i - 1, side)}
+          onQty={(q) => updateQuantity(i - 1, q, side)}
+        />
+      );
+    });
 
     return (
-      <div className="rounded-2xl border border-yellow-700/25 bg-black/35 shadow-[0_0_0_1px_rgba(0,0,0,0.4),0_20px_60px_rgba(0,0,0,0.6)] p-4 sm:p-5">
-        <div className="grid grid-cols-3 gap-3 sm:gap-4">
-          {/* 3x3 slots, plus button is slot 2 like the screenshot */}
-          {Array.from({ length: 9 }, (_, idx) => {
-            if (idx === 1) {
-              return (
-                <button
-                  key={idx}
-                  onClick={openModal}
-                  className="aspect-square rounded-xl border border-yellow-700/30 bg-black/25 hover:bg-black/40 transition flex items-center justify-center"
-                  title="Add item"
-                >
-                  <Plus className="w-7 h-7 text-yellow-300/90" />
-                </button>
-              );
-            }
-
-            // map to selected items: skip the plus slot
-            const mapIndex = idx < 1 ? idx : idx - 1;
-            const tradeItem = selected[mapIndex];
-
-            return (
-              <div
-                key={idx}
-                className="aspect-square rounded-xl border border-yellow-700/20 bg-black/25 hover:bg-black/35 transition relative overflow-hidden"
-              >
-                {tradeItem ? (
-                  <>
-                    <button
-                      onClick={() => removeItem(mapIndex, side)}
-                      className="absolute top-2 right-2 z-10 rounded-md bg-black/60 border border-yellow-700/25 p-1 text-zinc-200 hover:text-white"
-                      title="Remove"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-
-                    <div className="h-full w-full p-3 flex flex-col items-center justify-between">
-                      <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
-                        <div className="w-14 h-14 sm:w-16 sm:h-16">
-                          {renderItemIcon(tradeItem.item.emoji, tradeItem.item.name)}
-                        </div>
-                      </div>
-
-                      <div className="w-full text-center">
-                        <div className="text-[11px] sm:text-xs text-white/90 font-semibold leading-tight line-clamp-2 min-h-[28px]">
-                          {tradeItem.item.name}
-                        </div>
-
-                        <div className="mt-1 flex items-center justify-center gap-1">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              updateQuantity(mapIndex, tradeItem.quantity - 1, side);
-                            }}
-                            className="w-6 h-6 rounded bg-zinc-900/70 border border-zinc-700 text-white hover:bg-zinc-800"
-                            disabled={tradeItem.quantity <= 1}
-                          >
-                            -
-                          </button>
-                          <input
-                            type="number"
-                            min={1}
-                            max={999}
-                            value={tradeItem.quantity}
-                            onChange={(e) => updateQuantity(mapIndex, parseInt(e.target.value) || 1, side)}
-                            className="w-10 h-6 rounded bg-zinc-900/70 border border-zinc-700 text-white text-center text-xs focus:outline-none focus:ring-2 focus:ring-yellow-600"
-                          />
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              updateQuantity(mapIndex, tradeItem.quantity + 1, side);
-                            }}
-                            className="w-6 h-6 rounded bg-zinc-900/70 border border-zinc-700 text-white hover:bg-zinc-800"
-                            disabled={tradeItem.quantity >= 999}
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="h-full w-full" />
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Bottom totals panel like screenshot */}
-        <div className="mt-5 rounded-xl border border-yellow-700/20 bg-black/35 px-4 py-3">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-yellow-300/90 font-semibold">🔑 Value:</span>
-            <span className="text-yellow-200 font-bold">{value.toLocaleString()}</span>
+      <div className="rounded-3xl border border-zinc-800 bg-black/30 p-5 sm:p-6 shadow-[0_30px_80px_rgba(0,0,0,0.55)]">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <div className={`text-lg sm:text-xl font-extrabold ${accent}`}>{title}</div>
+            <div className="text-xs text-zinc-400">{sub}</div>
           </div>
-          <div className="mt-2 flex items-center justify-between text-sm">
-            <span className="text-zinc-300 font-semibold">💎 Gem Tax:</span>
-            <span className="text-zinc-200">{gemTax.toLocaleString()}</span>
-          </div>
-          <div className="mt-2 flex items-center justify-between text-sm">
-            <span className="text-zinc-300 font-semibold">🪙 Gold Tax:</span>
-            <span className="text-zinc-200">{goldTax.toLocaleString()}</span>
+
+          <div className="text-right">
+            <div className="text-xs text-zinc-400">🔑 Value</div>
+            <div className="text-amber-200 font-extrabold text-lg">{value.toLocaleString()}</div>
+            <div className="text-xs text-zinc-400 mt-1">💎 Gem Tax</div>
+            <div className="text-zinc-200 font-semibold">{gemTax.toLocaleString()}</div>
           </div>
         </div>
+
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">{tiles}</div>
       </div>
     );
   };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
-      {/* Title */}
-      <div className="text-center mb-6">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight" style={{ textShadow: "0 6px 20px rgba(0,0,0,0.8)" }}>
-          AoTR Trade Calculator
-        </h1>
+      {/* Header (different structure) */}
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-7">
+        <div>
+          <div className="text-xs text-zinc-400 tracking-widest uppercase">
+            AOTR • Trading Tools
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
+            Trade Calculator
+          </h1>
+          <p className="text-zinc-400 text-sm mt-1">
+            Build a trade, compare values, and see net tax instantly.
+          </p>
+        </div>
 
-        <div className="mt-3 inline-flex items-center gap-3 rounded-full border border-yellow-700/30 bg-black/30 px-4 py-2">
-          <span className="text-yellow-300 font-bold text-sm">⇦</span>
-          <span className="text-yellow-200/90 text-xs sm:text-sm font-semibold tracking-wide">
-            ATTACK ON TITAN REVOLUTION VALUE CALCULATOR (AOTR)
-          </span>
-          <span className="text-yellow-300 font-bold text-sm">⇨</span>
+        <div className={`rounded-2xl border px-4 py-3 ${statusStyles}`}>
+          <div className="flex items-center gap-2">
+            <ArrowRightLeft className="w-4 h-4 opacity-80" />
+            <div className="font-extrabold tracking-wide">{status}</div>
+          </div>
+          <div className="text-xs opacity-80 mt-1">
+            {hasTrade ? `${percent > 0 ? "+" : ""}${percent.toFixed(1)}% swing` : "Add items to start"}
+          </div>
         </div>
       </div>
 
-      {/* Status bar */}
-      <div className="mb-6">
-        <StatusPill />
-      </div>
-
-      {/* Main board */}
-      <div className="rounded-2xl border border-yellow-700/20 bg-black/20 shadow-2xl overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-          <div className="p-5 sm:p-6 border-b lg:border-b-0 lg:border-r border-yellow-700/15">
-            <Side side="sent" />
-          </div>
-          <div className="p-5 sm:p-6">
-            <Side side="received" />
-          </div>
+      {/* Main layout (different spacing + separators) */}
+      <div className="rounded-3xl border border-zinc-800 bg-gradient-to-b from-black/35 to-black/10 p-5 sm:p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+          <Side side="sent" />
+          <Side side="received" />
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-yellow-700/15 bg-black/30 p-5 sm:p-6">
-          <div className="flex items-center justify-between gap-4 mb-4">
+        {/* Bottom summary (different from screenshot) */}
+        <div className="mt-6 rounded-3xl border border-zinc-800 bg-black/35 p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span className="text-yellow-200 font-semibold">Value Difference:</span>
-              <span
-                className={`px-3 py-1 rounded-lg font-bold text-sm border ${
+              <div className="text-sm text-zinc-300 font-semibold">Value Difference</div>
+              <div
+                className={[
+                  "px-3 py-1 rounded-xl border text-sm font-bold",
                   diff === 0
-                    ? "bg-emerald-900/30 text-emerald-300 border-emerald-700/40"
+                    ? "bg-emerald-950/30 text-emerald-200 border-emerald-700/40"
                     : diff > 0
-                    ? "bg-emerald-900/20 text-emerald-200 border-emerald-700/35"
-                    : "bg-red-900/20 text-red-200 border-red-700/35"
-                }`}
+                    ? "bg-emerald-950/20 text-emerald-200 border-emerald-700/30"
+                    : "bg-red-950/20 text-red-200 border-red-700/35",
+                ].join(" ")}
               >
-                {diff.toLocaleString()} ({hasTrade && maxSpan ? ((diff / maxSpan) * 100).toFixed(1) : "0.0"}%)
-              </span>
+                {diff > 0 ? "+" : ""}
+                {diff.toLocaleString()}
+              </div>
             </div>
 
             <button
               onClick={resetAll}
-              className="inline-flex items-center gap-2 rounded-lg bg-red-800/70 hover:bg-red-700 text-white font-semibold px-4 py-2 border border-red-700/40 transition"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900/70 hover:bg-zinc-900 border border-zinc-700 px-4 py-2 text-white font-semibold"
             >
-              <X className="w-4 h-4" />
+              <RotateCcw className="w-4 h-4" />
               Reset
             </button>
           </div>
 
-          {/* red -> green bar */}
-          <div className="h-3 rounded-full bg-gradient-to-r from-red-500 via-yellow-500 to-emerald-500 overflow-hidden border border-yellow-700/20">
-            <div
-              className="h-full bg-black/35"
-              style={{
-                width: `${Math.max(0, Math.min(100, 100 - pct))}%`,
-                marginLeft: `${Math.max(0, Math.min(100, pct))}%`,
-              }}
-            />
+          {/* Different bar style: slimmer + marker */}
+          <div className="mt-4">
+            <div className="h-2 rounded-full bg-gradient-to-r from-red-500 via-amber-400 to-emerald-500 relative overflow-hidden border border-zinc-800">
+              {/* center marker */}
+              <div className="absolute left-1/2 top-0 h-full w-[2px] bg-black/55" />
+              {/* position marker */}
+              <div
+                className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white/90 border border-black/30 shadow"
+                style={{ left: `calc(${barPos}% - 8px)` }}
+                title="Trade balance"
+              />
+            </div>
+            <div className="mt-2 text-xs text-zinc-500 flex justify-between">
+              <span>Lose</span>
+              <span>Fair</span>
+              <span>Win</span>
+            </div>
+          </div>
+
+          {/* Optional: show net taxes in a unique layout */}
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4">
+              <div className="text-xs text-zinc-400 mb-1">Net Gem Tax</div>
+              <div className={`text-lg font-extrabold ${calculation.totalGemTax >= 0 ? "text-amber-200" : "text-emerald-200"}`}>
+                {calculation.totalGemTax >= 0
+                  ? calculation.totalGemTax.toLocaleString()
+                  : `+${Math.abs(calculation.totalGemTax).toLocaleString()} (they owe)`}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/40 p-4">
+              <div className="text-xs text-zinc-400 mb-1">Net Gold Tax</div>
+              <div className={`text-lg font-extrabold ${calculation.totalGoldTax >= 0 ? "text-amber-200" : "text-emerald-200"}`}>
+                {calculation.totalGoldTax >= 0
+                  ? calculation.totalGoldTax.toLocaleString()
+                  : `+${Math.abs(calculation.totalGoldTax).toLocaleString()} (they owe)`}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -390,13 +428,13 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
         isOpen={showSentModal}
         onClose={() => setShowSentModal(false)}
         onSelect={(item) => addItem(item, "sent")}
-        title="Select item to send"
+        title="Add item to offer"
       />
       <ItemModal
         isOpen={showReceivedModal}
         onClose={() => setShowReceivedModal(false)}
         onSelect={(item) => addItem(item, "received")}
-        title="Select item to receive"
+        title="Add item to receive"
       />
     </div>
   );
