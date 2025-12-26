@@ -69,9 +69,15 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
   const filteredTradeAds = useMemo(() => {
     return tradeAds.filter((ad) => {
-      const matchesSearch =
-        ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ad.authorName.toLowerCase().includes(searchTerm.toLowerCase());
+      const q = searchTerm.toLowerCase().trim();
+
+const matchesSearch =
+  !q ||
+  ad.authorName.toLowerCase().includes(q) ||
+  ad.itemsOffering.some((it) => it.itemName.toLowerCase().includes(q)) ||
+  ad.itemsWanted.some((it) => it.itemName.toLowerCase().includes(q)) ||
+  ad.tags.some((t) => t.toLowerCase().includes(q));
+
 
       const matchesTag = !selectedTag || ad.tags.includes(selectedTag);
       return matchesSearch && matchesTag;
