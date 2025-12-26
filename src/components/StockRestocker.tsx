@@ -24,31 +24,53 @@ export const StockRestocker: React.FC = () => {
     [rotation, items]
   );
 
+  // ✅ reliable London time parts (no Date parsing)
+  const getLondonParts = () => {
+    const parts = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/London",
+      hour12: false,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    }).formatToParts(new Date());
+
+    const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
+
+    return {
+      year: get("year"),
+      month: get("month"),
+      day: get("day"),
+      hour: get("hour"),
+      minute: get("minute"),
+      second: get("second"),
+    };
+  };
+
   const updateCountdown = () => {
-    // London time
-    const now = new Date();
-    const ukNow = new Date(
-      now.toLocaleString("en-GB", { timeZone: "Europe/London" })
-    );
+    const uk = getLondonParts();
+    const nowSeconds = uk.hour * 3600 + uk.minute * 60 + uk.second;
 
-    const currentHour = ukNow.getHours();
+    // find next reset hour
+    let nextHour = RESET_HOURS.find((h) => h > uk.hour);
+    let secondsUntilNext = 0;
 
-    let nextHour = RESET_HOURS.find((h) => h > currentHour);
-    const nextReset = new Date(ukNow);
-
-    if (nextHour === undefined) {
-      nextHour = 0;
-      nextReset.setDate(nextReset.getDate() + 1);
+    if (nextHour !== undefined) {
+      // later today
+      secondsUntilNext = nextHour * 3600 - nowSeconds;
+    } else {
+      // tomorrow at 00:00
+      secondsUntilNext = 24 * 3600 - nowSeconds;
     }
 
-    nextReset.setHours(nextHour, 0, 0, 0);
+    // safety
+    secondsUntilNext = Math.max(0, secondsUntilNext);
 
-    const diffMs = nextReset.getTime() - ukNow.getTime();
-    const safe = Math.max(0, diffMs);
-
-    const h = Math.floor(safe / 3600000);
-    const m = Math.floor((safe % 3600000) / 60000);
-    const s = Math.floor((safe % 60000) / 1000);
+    const h = Math.floor(secondsUntilNext / 3600);
+    const m = Math.floor((secondsUntilNext % 3600) / 60);
+    const s = Math.floor(secondsUntilNext % 60);
 
     const pad = (n: number) => String(n).padStart(2, "0");
     setTimeLeft(`${pad(h)}:${pad(m)}:${pad(s)}`);
@@ -76,7 +98,6 @@ export const StockRestocker: React.FC = () => {
           >
             {item ? (
               <>
-                {/* ICON / PNG */}
                 {typeof item.emoji === "string" && item.emoji.startsWith("/") ? (
                   <img
                     src={item.emoji}
@@ -87,12 +108,10 @@ export const StockRestocker: React.FC = () => {
                   <span className="text-5xl mb-4">{item.emoji}</span>
                 )}
 
-                {/* NAME */}
                 <div className="text-yellow-300 text-lg font-bold mb-4 tracking-wide text-center">
                   {item.name}
                 </div>
 
-                {/* STATUS */}
                 <div className="bg-gray-800 text-blue-300 text-center font-bold py-2 rounded-md w-full">
                   In Stock
                 </div>
