@@ -146,7 +146,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
         <div className="w-full max-w-lg rounded-2xl border border-yellow-700/40 bg-zinc-950 shadow-2xl">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-yellow-700/20">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gold/60">
             <h3 className="text-white font-bold text-lg">{title}</h3>
             <button onClick={onClose} className="text-zinc-400 hover:text-white">
               <X className="w-5 h-5" />
@@ -160,7 +160,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search items..."
-                className="w-full rounded-xl bg-zinc-900/60 border border-zinc-700 pl-10 pr-3 py-2 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                className="w-full rounded-xl bg-zinc-900/60 border border-zinc-700 pl-10 pr-3 py-2 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-[var(--gold-bright)]"
               />
             </div>
 
@@ -228,7 +228,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             return (
               <div
                 key={idx}
-                className="aspect-square rounded-xl border border-yellow-700/20 bg-black/25 hover:bg-black/35 transition relative overflow-hidden"
+                className="aspect-square rounded-xl border border-gold/60 bg-black/25 hover:bg-black/35 transition relative overflow-hidden"
               >
                 {tradeItem ? (
                   <>
@@ -269,7 +269,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                             max={999}
                             value={tradeItem.quantity}
                             onChange={(e) => updateQuantity(mapIndex, parseInt(e.target.value) || 1, side)}
-                            className="no-arrows w-10 h-6 rounded bg-zinc-900/70 border border-zinc-700 text-white text-center text-xs focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                            className="no-arrows w-10 h-6 rounded bg-zinc-900/70 border border-zinc-700 text-white text-center text-xs focus:outline-none focus:ring-2 focus:ring-[var(--gold-bright)]"
                           />
                           <button
                             onClick={(e) => {
@@ -294,7 +294,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
         </div>
 
         {/* Bottom totals panel like screenshot */}
-        <div className="mt-5 rounded-xl border border-yellow-700/20 bg-black/35 px-4 py-3">
+        <div className="mt-5 rounded-xl border border-gold/60 bg-black/35 px-4 py-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-yellow-300/90 font-semibold">🔑 Value:</span>
             <span className="text-yellow-200 font-bold">{value.toLocaleString()}</span>
@@ -316,7 +316,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     <div className="max-w-6xl mx-auto px-4 py-10">
       {/* Title */}
       <div className="text-center mb-6">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight" style={{ textShadow: "0 6px 20px rgba(0,0,0,0.8)" }}>
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-gold-bright gold-glow tracking-tight" style={{ textShadow: "0 6px 20px rgba(0,0,0,0.8)" }}>
           AoTR Trade Calculator
         </h1>
 
@@ -374,7 +374,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
 
           {/* red -> green bar */}
           {/* red -> green bar (center marker) */}
-<div className="relative h-3 rounded-full overflow-hidden border border-yellow-700/20 bg-zinc-900">
+<div className="relative h-3 rounded-full overflow-hidden border border-gold/60 bg-zinc-900">
   {/* base gradient */}
   <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-yellow-500 to-emerald-500" />
 
