@@ -269,7 +269,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                             max={999}
                             value={tradeItem.quantity}
                             onChange={(e) => updateQuantity(mapIndex, parseInt(e.target.value) || 1, side)}
-                            className="w-10 h-6 rounded bg-zinc-900/70 border border-zinc-700 text-white text-center text-xs focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                            className="no-arrows w-10 h-6 rounded bg-zinc-900/70 border border-zinc-700 text-white text-center text-xs focus:outline-none focus:ring-2 focus:ring-yellow-600"
                           />
                           <button
                             onClick={(e) => {
