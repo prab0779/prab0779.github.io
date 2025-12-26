@@ -550,7 +550,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         key={ad.id}
         className="bg-gray-900 rounded border border-gray-700 p-6"
       >
-        <h3 className="text-lg text-white font-semibold">{ad.title}</h3>
 
         <div className="flex items-center space-x-3 mt-2 mb-4">
           <img
