@@ -44,7 +44,7 @@ const AVAILABLE_TAGS = [
 
 export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const { user, signInWithDiscord } = useAuth();
-  const { tradeAds, loading, error, createTradeAd } = useTradeAds();
+  const { tradeAds, loading, error, createTradeAd, page, totalPages, setPage, total } = useTradeAds();
 
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
