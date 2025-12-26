@@ -215,7 +215,7 @@ export const Header: React.FC = () => {
                   <img
                     src="/discord-icon.png"
                     alt=""
-                    className="h-5 w-5 object-contain"
+                    className="h-10 w-10 object-contain"
                   />
                   Join Discord
                   <span className="opacity-70">→</span>
