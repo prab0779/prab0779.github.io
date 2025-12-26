@@ -212,13 +212,22 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         return;
       }
 
-      onSubmit({
-        ...formData,
-        authorName: discordName,
-        authorAvatar: discordAvatar,
-        contactInfo: discordName,
-        description: ""
-      });
+     const autoTitle =
+  formData.itemsOffering[0]?.itemName
+    ? `Offering ${formData.itemsOffering[0].itemName}`
+    : formData.itemsWanted[0]?.itemName
+    ? `LF ${formData.itemsWanted[0].itemName}`
+    : "Trade Ad";
+
+onSubmit({
+  ...formData,
+  title: autoTitle,
+  authorName: discordName,
+  authorAvatar: discordAvatar,
+  contactInfo: discordName,
+  description: ""
+});
+
     };
 
     const ItemModal = ({
