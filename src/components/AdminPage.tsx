@@ -508,10 +508,15 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
               </div>
               
               <div className="hidden sm:block">
-                <span className="text-gray-400 text-sm">
-                  {user?.email}
-                </span>
-              </div>
+  <span className="text-gray-400 text-sm">
+    {user?.user_metadata?.preferred_username ||
+      user?.user_metadata?.full_name ||
+      user?.user_metadata?.name ||
+      user?.email ||
+      "Signed in"}
+  </span>
+</div>
+
               
               <button
                 onClick={handleSignOut}
