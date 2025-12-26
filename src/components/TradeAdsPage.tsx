@@ -551,7 +551,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         className="bg-gray-900 rounded border border-gray-700 p-6"
       >
 
-        <div className="flex items-center space-x-3 mt-2 mb-4">
+        <div className="flex items-center space-x-3 mb-4">
           <img
             src={ad.authorAvatar || "https://cdn.discordapp.com/embed/avatars/0.png"}
             alt={`${ad.authorName}'s avatar`}
