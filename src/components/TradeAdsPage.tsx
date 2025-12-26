@@ -68,21 +68,21 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   };
 
   const filteredTradeAds = useMemo(() => {
-    return tradeAds.filter((ad) => {
-      const q = searchTerm.toLowerCase().trim();
+  return tradeAds.filter((ad) => {
+    const q = searchTerm.toLowerCase().trim();
 
-const matchesSearch =
-  !q ||
-  ad.authorName.toLowerCase().includes(q) ||
-  ad.itemsOffering.some((it) => it.itemName.toLowerCase().includes(q)) ||
-  ad.itemsWanted.some((it) => it.itemName.toLowerCase().includes(q)) ||
-  ad.tags.some((t) => t.toLowerCase().includes(q));
+    const matchesSearch =
+      !q ||
+      ad.authorName.toLowerCase().includes(q) ||
+      ad.itemsOffering.some((it) => it.itemName.toLowerCase().includes(q)) ||
+      ad.itemsWanted.some((it) => it.itemName.toLowerCase().includes(q)) ||
+      ad.tags.some((t) => t.toLowerCase().includes(q));
 
+    const matchesTag = !selectedTag || ad.tags.includes(selectedTag);
+    return matchesSearch && matchesTag;
+  });
+}, [tradeAds, searchTerm, selectedTag]);
 
-      const matchesTag = !selectedTag || ad.tags.includes(selectedTag);
-      return matchesSearch && matchesTag;
-    });
-  }, [tradeAds, searchTerm, selectedTag]);
 
   const renderItemIcon = (emoji: string, itemName: string) => {
     if (!emoji || typeof emoji !== "string") return <span className="text-xl">👹</span>;
