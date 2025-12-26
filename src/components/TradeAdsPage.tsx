@@ -144,7 +144,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
     const discordAvatar = getDiscordAvatarUrl();
 
     const [formData, setFormData] = useState<CreateTradeAdData>({
-      title: "",
+      title: "Trade Ad",
       itemsWanted: [],
       itemsOffering: [],
       tags: [],
