@@ -11,15 +11,16 @@ interface HomeProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ items }) => {
+  // TODO: replace with your real invite
+  const DISCORD_INVITE = "https://discord.gg/YOURCODE";
+
   return (
     <div className="relative">
-
       {/* GOLD GRID BACKGROUND */}
       <div className="absolute inset-0 bg-[url('/gridd.svg')] opacity-10 mix-blend-soft-light pointer-events-none" />
 
       {/* MAIN CONTENT */}
       <div className="relative z-10">
-
         {/* HERO SECTION */}
         <section className="max-w-7xl mx-auto px-4 md:px-6 py-14 md:py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* TEXT */}
@@ -29,16 +30,53 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
                 AOT:R Trading Hub
               </p>
 
-              <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--gold-bright)] leading-tight drop-shadow-lg">
-                AOT:R <span className="text-[var(--gold-soft)]">Values</span>
-              </h1>
+              {/* TITLE ROW + DISCORD BUTTON (DESKTOP ONLY) */}
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div>
+                  <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--gold-bright)] leading-tight drop-shadow-lg">
+                    AOT:R <span className="text-[var(--gold-soft)]">Values</span>
+                  </h1>
 
-              <div className="h-0.5 w-20 bg-gradient-to-r from-[var(--gold-soft)] via-[var(--gold-bright)] to-transparent rounded-full mt-3 mx-auto lg:mx-0" />
+                  <div className="h-0.5 w-20 bg-gradient-to-r from-[var(--gold-soft)] via-[var(--gold-bright)] to-transparent rounded-full mt-3 mx-auto lg:mx-0" />
+                </div>
+
+                {/* Desktop-only (NOT on mobile topbar) */}
+                <a
+                  href={DISCORD_INVITE}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl
+                    bg-[#0b0b10]/70 backdrop-blur
+                    border border-[rgba(255,220,150,0.22)]
+                    shadow-[0_10px_30px_rgba(0,0,0,0.35)]
+                    text-[var(--gold-bright)] font-semibold
+                    hover:border-[var(--gold-bright)] hover:bg-[#12121a]
+                    hover:-translate-y-0.5 active:translate-y-0 transition"
+                >
+                  {/* Discord icon (SVG, no image) */}
+                  <span
+                    className="grid place-items-center w-8 h-8 rounded-lg
+                      bg-gradient-to-br from-[var(--gold-bright)] to-[var(--gold-soft)]
+                      text-black shadow-inner"
+                    aria-hidden="true"
+                  >
+                    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+                      <path d="M19.54 6.83A16.4 16.4 0 0 0 15.7 5.5c-.18.33-.38.77-.52 1.12a15.2 15.2 0 0 0-4.37 0c-.14-.35-.35-.79-.53-1.12A16.2 16.2 0 0 0 6.46 6.83C4.1 10.3 3.46 13.68 3.78 17c1.56 1.16 3.06 1.87 4.54 2.34.36-.5.68-1.03.96-1.6-.52-.2-1.02-.45-1.5-.74.13-.1.25-.2.37-.3 2.9 1.36 6.04 1.36 8.9 0 .12.1.25.2.37.3-.48.29-.98.54-1.5.74.28.57.6 1.1.96 1.6 1.48-.47 2.98-1.18 4.54-2.34.38-3.88-.65-7.23-2.46-10.17ZM9.35 14.7c-.87 0-1.58-.8-1.58-1.79 0-.98.7-1.78 1.58-1.78s1.6.8 1.58 1.78c0 .99-.7 1.79-1.58 1.79Zm5.3 0c-.87 0-1.58-.8-1.58-1.79 0-.98.7-1.78 1.58-1.78s1.6.8 1.58 1.78c0 .99-.7 1.79-1.58 1.79Z" />
+                    </svg>
+                  </span>
+                  <span className="tracking-wide">Discord</span>
+                </a>
+              </div>
 
               <p className="text-gray-300 text-base md:text-lg max-w-md mt-4 mx-auto lg:mx-0">
-                The ultimate hub for Attack on Titan Revolution trading.
-                Discover values, analyze trades, and browse verified trade ads —
-                all in one place.
+                The ultimate hub for Attack on Titan Revolution trading. Discover
+                values, analyze trades, and browse verified trade ads — all in
+                one place.
+              </p>
+
+              {/* Mobile-only note (puts Discord in NAV only, so give a tiny hint here if you want) */}
+              <p className="md:hidden text-xs text-gray-400 mt-3">
+                Join the Discord from the menu.
               </p>
             </div>
 
@@ -80,11 +118,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           <div className="relative mx-auto w-full max-w-sm md:max-w-md lg:max-w-full">
             <div className="absolute -inset-6 rounded-3xl bg-[var(--gold-bright)] opacity-10 blur-3xl pointer-events-none" />
             <div className="relative rounded-3xl overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.7)] border border-[rgba(255,220,150,0.15)] bg-black/40 backdrop-blur">
-              <img
-                src="/hero.png"
-                alt="AOTR Hero"
-                className="w-full h-auto object-cover"
-              />
+              <img src="/hero.png" alt="AOTR Hero" className="w-full h-auto object-cover" />
             </div>
           </div>
         </section>
@@ -252,4 +286,3 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
     </div>
   );
 };
-
