@@ -26,7 +26,6 @@ export const useTradeAds = () => {
           { count: "exact" }
         )
         .eq("status", "active")
-        .gte("expires_at", new Date().toISOString())
         .order("created_at", { ascending: false })
         .range(from, to);
 
