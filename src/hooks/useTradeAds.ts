@@ -61,6 +61,31 @@ export const useTradeAds = () => {
       if (!sessionData?.session) return { data: null, error: "Not authenticated" };
 
       const userId = sessionData.session.user.id;
+
+      const { data: recentAd, error: recentError } = await supabase
+        .from("trade_ads")
+        .select("created_at")
+        .eq("user_id", userId)
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .maybeSingle();
+
+      if (recentError) throw recentError;
+
+      if (recentAd) {
+        const createdTime = new Date(recentAd.created_at).getTime();
+        const now = Date.now();
+        const diffMinutes = Math.floor((now - createdTime) / 60000);
+
+        if (diffMinutes < 60) {
+          const waitMinutes = 60 - diffMinutes;
+          return {
+            data: null,
+            error: `You can post again in ${waitMinutes} minute${waitMinutes !== 1 ? 's' : ''}`
+          };
+        }
+      }
+
       const expiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
 
       const { data, error } = await supabase
@@ -85,7 +110,6 @@ export const useTradeAds = () => {
 
       if (error) throw error;
 
-      // If you're on page 1, prepend instantly. Otherwise just bump total.
       setTotal((t) => t + 1);
       if (page === 1) {
         setTradeAds((prev) => {
