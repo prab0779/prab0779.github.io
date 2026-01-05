@@ -13,11 +13,13 @@ interface HomeProps {
 export const Home: React.FC<HomeProps> = ({ items }) => {
   return (
     <div className="relative">
+
       {/* GOLD GRID BACKGROUND */}
       <div className="absolute inset-0 bg-[url('/gridd.svg')] opacity-10 mix-blend-soft-light pointer-events-none" />
 
       {/* MAIN CONTENT */}
       <div className="relative z-10">
+
         {/* HERO SECTION */}
         <section className="max-w-7xl mx-auto px-4 md:px-6 py-14 md:py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* TEXT */}
@@ -34,9 +36,9 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
               <div className="h-0.5 w-20 bg-gradient-to-r from-[var(--gold-soft)] via-[var(--gold-bright)] to-transparent rounded-full mt-3 mx-auto lg:mx-0" />
 
               <p className="text-gray-300 text-base md:text-lg max-w-md mt-4 mx-auto lg:mx-0">
-                The ultimate hub for Attack on Titan Revolution trading. Discover
-                values, analyze trades, and browse verified trade ads — all in
-                one place.
+                The ultimate hub for Attack on Titan Revolution trading.
+                Discover values, analyze trades, and browse verified trade ads —
+                all in one place.
               </p>
             </div>
 
@@ -78,7 +80,11 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           <div className="relative mx-auto w-full max-w-sm md:max-w-md lg:max-w-full">
             <div className="absolute -inset-6 rounded-3xl bg-[var(--gold-bright)] opacity-10 blur-3xl pointer-events-none" />
             <div className="relative rounded-3xl overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.7)] border border-[rgba(255,220,150,0.15)] bg-black/40 backdrop-blur">
-              <img src="/hero.png" alt="AOTR Hero" className="w-full h-auto object-cover" />
+              <img
+                src="/hero.png"
+                alt="AOTR Hero"
+                className="w-full h-auto object-cover"
+              />
             </div>
           </div>
         </section>
@@ -102,8 +108,10 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           </div>
 
           <div className="relative">
+            {/* Side fades for premium look */}
             <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#090A0F] to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#090A0F] to-transparent" />
+
             <VideoSlider />
           </div>
         </section>
@@ -243,4 +251,4 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       </div>
     </div>
   );
-};
+}; 
