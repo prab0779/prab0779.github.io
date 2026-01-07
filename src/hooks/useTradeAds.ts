@@ -33,14 +33,16 @@ export const useTradeAds = () => {
 
       const transformedAds: TradeAd[] = (data || []).map((row: any) => ({
         id: row.id,
-        title: row.title,
         itemsWanted: row.items_wanted || [],
         itemsOffering: row.items_offering || [],
         tags: row.tags || [],
+        status: row.status || 'active',
         authorName: row.author_name,
         authorAvatar: row.author_avatar,
         contactInfo: row.contact_info,
         createdAt: row.created_at,
+        updatedAt: row.updated_at,
+        expiresAt: row.expires_at,
       }));
 
       setTradeAds(transformedAds);
@@ -91,8 +93,6 @@ export const useTradeAds = () => {
         .from("trade_ads")
         .insert([
           {
-            title: adData.title,
-            description: adData.description,
             items_wanted: adData.itemsWanted,
             items_offering: adData.itemsOffering,
             tags: adData.tags,
@@ -115,14 +115,16 @@ export const useTradeAds = () => {
           if (prev.some((a) => a.id === data.id)) return prev;
           const mapped: TradeAd = {
             id: data.id,
-            title: data.title,
             itemsWanted: data.items_wanted || [],
             itemsOffering: data.items_offering || [],
             tags: data.tags || [],
+            status: data.status || 'active',
             authorName: data.author_name,
             authorAvatar: data.author_avatar,
             contactInfo: data.contact_info,
             createdAt: data.created_at,
+            updatedAt: data.updated_at,
+            expiresAt: data.expires_at,
           };
           return [mapped, ...prev].slice(0, pageSize);
         });

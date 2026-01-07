@@ -52,20 +52,13 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
-  const [notification, setNotification] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Reset to page 1 when filters change (since filtering is client-side per page)
   useEffect(() => {
     setPage(1);
   }, [searchTerm, selectedTag, setPage]);
 
-  const showNotification = (type: "success" | "error", message: string) => {
-    setNotification({ type, message });
-    setTimeout(() => setNotification(null), 3000);
-  };
 
   const filteredTradeAds = useMemo(() => {
   return tradeAds.filter((ad) => {
@@ -144,14 +137,12 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
     const discordAvatar = getDiscordAvatarUrl();
 
     const [formData, setFormData] = useState<CreateTradeAdData>({
-      title: "Trade Ad",
       itemsWanted: [],
       itemsOffering: [],
       tags: [],
       authorAvatar: discordAvatar,
       authorName: discordName,
       contactInfo: discordName,
-      description: ""
     });
 
     const [showItemModal, setShowItemModal] = useState<"wanted" | "offering" | null>(null);
@@ -208,26 +199,16 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       e.preventDefault();
 
       if (formData.itemsWanted.length === 0 && formData.itemsOffering.length === 0) {
-        showNotification("error", "Please add at least one item");
+        setErrorMessage("Please add at least one item");
         return;
       }
 
-     const autoTitle =
-  formData.itemsOffering[0]?.itemName
-    ? `Offering ${formData.itemsOffering[0].itemName}`
-    : formData.itemsWanted[0]?.itemName
-    ? `LF ${formData.itemsWanted[0].itemName}`
-    : "Trade Ad";
-
-onSubmit({
-  ...formData,
-  title: autoTitle,
-  authorName: discordName,
-  authorAvatar: discordAvatar,
-  contactInfo: discordName,
-  description: ""
-});
-
+      onSubmit({
+        ...formData,
+        authorName: discordName,
+        authorAvatar: discordAvatar,
+        contactInfo: discordName,
+      });
     };
 
     const ItemModal = ({
@@ -458,14 +439,12 @@ onSubmit({
     );
   };
 
-  // ---------------------------
-  // MAIN PAGE
-  // ---------------------------
   const handleCreateTradeAd = async (adData: CreateTradeAdData) => {
     const { error } = await createTradeAd(adData);
-    if (error) showNotification("error", error);
-    else {
-      showNotification("success", "Trade posted!");
+    if (error) {
+      setErrorMessage(error);
+    } else {
+      setErrorMessage(null);
       setShowCreateForm(false);
     }
   };
@@ -475,16 +454,19 @@ onSubmit({
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
-      {/* NOTIFICATION */}
-      {notification && (
-        <div
-          className={`fixed top-20 right-4 p-4 rounded border ${
-            notification.type === "success"
-              ? "bg-green-900 border-green-700 text-green-300"
-              : "bg-red-900 border-red-700 text-red-300"
-          }`}
-        >
-          {notification.message}
+      {/* ERROR MODAL */}
+      {errorMessage && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 border border-red-700 rounded-lg p-6 max-w-md w-full">
+            <h3 className="text-lg font-semibold text-red-400 mb-3">Error</h3>
+            <p className="text-gray-300 mb-4">{errorMessage}</p>
+            <button
+              onClick={() => setErrorMessage(null)}
+              className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
+            >
+              Dismiss
+            </button>
+          </div>
         </div>
       )}
 

@@ -7,8 +7,6 @@ export interface TradeAdItem {
 
 export interface TradeAd {
   id: string;
-  title: string;
-  description: string;
   itemsWanted: TradeAdItem[];
   itemsOffering: TradeAdItem[];
   tags: string[];
@@ -22,8 +20,6 @@ export interface TradeAd {
 }
 
 export interface CreateTradeAdData {
-  title: string;
-  description: string;
   itemsWanted: TradeAdItem[];
   itemsOffering: TradeAdItem[];
   tags: string[];
