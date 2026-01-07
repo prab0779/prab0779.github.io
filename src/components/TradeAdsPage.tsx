@@ -53,11 +53,25 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState<number>(0);
 
-  // Reset to page 1 when filters change (since filtering is client-side per page)
   useEffect(() => {
     setPage(1);
   }, [searchTerm, selectedTag, setPage]);
+
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        const newVal = prev - 1;
+        if (newVal <= 0) {
+          setErrorMessage(null);
+        }
+        return newVal;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [countdown]);
 
 
   const filteredTradeAds = useMemo(() => {
@@ -443,8 +457,14 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
     const { error } = await createTradeAd(adData);
     if (error) {
       setErrorMessage(error);
+      const match = error.match(/in (\d+) minute/);
+      if (match) {
+        const minutes = parseInt(match[1]);
+        setCountdown(minutes * 60);
+      }
     } else {
       setErrorMessage(null);
+      setCountdown(0);
       setShowCreateForm(false);
     }
   };
@@ -460,8 +480,19 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
           <div className="bg-gray-900 border border-red-700 rounded-lg p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold text-red-400 mb-3">Error</h3>
             <p className="text-gray-300 mb-4">{errorMessage}</p>
+            {countdown > 0 && (
+              <div className="mb-4 p-3 bg-gray-800 rounded text-center">
+                <p className="text-sm text-gray-400">Time until retry available:</p>
+                <p className="text-2xl font-mono font-bold text-yellow-400">
+                  {Math.floor(countdown / 60)}:{String(countdown % 60).padStart(2, '0')}
+                </p>
+              </div>
+            )}
             <button
-              onClick={() => setErrorMessage(null)}
+              onClick={() => {
+                setErrorMessage(null);
+                setCountdown(0);
+              }}
               className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
             >
               Dismiss
