@@ -457,11 +457,22 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
     const { error } = await createTradeAd(adData);
     if (error) {
       setErrorMessage(error);
-      const match = error.match(/in (\d+) minute/);
-      if (match) {
-        const minutes = parseInt(match[1]);
-        setCountdown(minutes * 60);
-      }
+      const match = error.match(/Time left:\s*([0-9:]+)/i);
+if (match) {
+  const parts = match[1].split(":").map(Number);
+
+  let seconds = 0;
+  if (parts.length === 2) {
+    // mm:ss
+    seconds = parts[0] * 60 + parts[1];
+  } else if (parts.length === 3) {
+    // hh:mm:ss
+    seconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
+  }
+
+  setCountdown(seconds);
+}
+
     } else {
       setErrorMessage(null);
       setCountdown(0);
