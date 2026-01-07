@@ -19,16 +19,18 @@ export const useTradeAds = () => {
       const from = (pageToLoad - 1) * pageSize;
       const to = from + pageSize - 1;
 
-      const { data, error, count } = await supabase
+      const cutoff = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
+
+const { data, error, count } = await supabase
   .from("trade_ads")
   .select(
     "id, items_wanted, items_offering, tags, status, author_name, author_avatar, contact_info, created_at, updated_at, expires_at",
     { count: "exact" }
   )
   .eq("status", "active")
+  .gte("created_at", cutoff) // ✅ only last 3 days
   .order("created_at", { ascending: false })
   .range(from, to);
-
 
       if (error) throw error;
 
