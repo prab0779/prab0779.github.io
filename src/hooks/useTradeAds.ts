@@ -79,13 +79,16 @@ const { data, error, count } = await supabase
       if (recentAd) {
         const createdTime = new Date(recentAd.created_at).getTime();
         const now = Date.now();
-        const diffMinutes = Math.floor((now - createdTime) / 60000);
+        const diffMs = now - createdTime;
+        const diffMinutes = Math.floor(diffMs / 60000);
+        const diffSeconds = Math.floor((diffMs % 60000) / 1000);
 
         if (diffMinutes < 60) {
           const waitMinutes = 60 - diffMinutes;
+          const waitSeconds = diffMinutes === 59 ? 60 - diffSeconds : 0;
           return {
             data: null,
-            error: `You can post again in ${waitMinutes} minute${waitMinutes !== 1 ? 's' : ''}`
+            error: `You're on a 60-minute posting cooldown. Try again in ${waitMinutes}m${waitSeconds > 0 ? ` ${waitSeconds}s` : ''}.`
           };
         }
       }
@@ -110,7 +113,13 @@ const { data, error, count } = await supabase
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        const errorMsg = error.message || "";
+        if (errorMsg.includes("violates row level security policy")) {
+          return { data: null, error: "Unable to post. Please try logging out and back in." };
+        }
+        throw error;
+      }
 
       setTotal((t) => t + 1);
       if (page === 1) {
