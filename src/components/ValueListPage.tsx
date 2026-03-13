@@ -17,9 +17,23 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
       </h1>
 
       <p className="text-gray-400 max-w-2xl mx-auto mb-12">
-  Browse our complete AOT:R value list ({items.length}+ items).  
-  <span className="text-yellow-400 font-semibold">Warning:</span> Values are temporarily outdated — join Discord for verified prices.
-      </p>
+  Browse our complete AOT:R value list ({items.length}+ items).
+  <span className="text-red-400 font-semibold"> ⚠️ Notice:</span> 
+  These values are <span className="text-yellow-400 font-semibold">UNOFFICIAL and currently OUTDATED</span>. 
+  They are only shown to give a rough visual understanding of item worth.
+
+  <br /><br />
+
+  AOT:R trading is entirely <span className="font-semibold">player-driven</span> and based on 
+  <span className="text-yellow-400 font-semibold"> rarity, demand, and player needs</span>. 
+  Because of this, item values constantly change depending on availability and what players are willing to trade.
+
+  <br /><br />
+
+  Do not rely on value lists for exact pricing. Always negotiate trades yourself and 
+  <span className="text-yellow-400 font-semibold"> join our Discord for the latest community insights.</span>
+</p>
+
 
 
       <div className="mb-12">
