@@ -21,7 +21,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       <div className="relative z-10">
 
         {/* HERO SECTION */}
-        <section className="max-w-7xl mx-auto px-4 md:px-6 py-14 md:py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <section className="max-w-7xl mx-auto px-4 md:px-6 pt-28 md:pt-32 pb-14 md:pb-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* TEXT */}
           <div className="text-center lg:text-left space-y-6">
             <div>
@@ -66,14 +66,45 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             </div>
 
             {/* QUICK STATS / BADGES */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-3 pt-2">
-              <div className="px-3 py-1.5 rounded-full bg-black/40 border border-gray-800 text-xs text-gray-300">
-                Community-driven & frequently updated
-              </div>
-              <div className="px-3 py-1.5 rounded-full bg-black/40 border border-gray-800 text-xs text-gray-300">
-                Trade safer • Value smarter
-              </div>
-            </div>
+            <div className="flex justify-center lg:justify-start gap-4 pt-3">
+  {/* X */}
+  <a
+    href="https://x.com"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="
+      w-12 h-12 flex items-center justify-center
+      rounded-xl
+      border border-blue-500/60
+      text-white
+      hover:border-blue-400 hover:bg-blue-500/10
+      transition
+    "
+  >
+    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+      <path d="M18.9 2H22l-7.6 8.7L23 22h-6.8l-5.3-7-6.1 7H1.7l8.1-9.2L1 2h6.9l4.8 6.4L18.9 2Zm-2.4 18h1.9L7.4 4H5.4l11.1 16Z" />
+    </svg>
+  </a>
+
+  {/* Roblox */}
+  <a
+    href="https://www.roblox.com/games/13379208636/Attack-on-Titan-Revolution"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="
+      w-12 h-12 flex items-center justify-center
+      rounded-xl
+      border border-[#D4AF37]/70
+      text-white
+      hover:border-[#D4AF37] hover:bg-[#D4AF37]/10
+      transition
+    "
+  >
+    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+      <path d="M6 2 2 18l16 4 4-16L6 2Zm6.2 6.2 3.6.9-.9 3.6-3.6-.9.9-3.6Z" />
+    </svg>
+  </a>
+</div>
           </div>
 
           {/* HERO IMAGE */}
