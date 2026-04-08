@@ -49,22 +49,22 @@ export const Footer: React.FC = () => {
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/" className="flex items-center gap-2 text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition-all">
+                <Link to="/" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition-all">
                   <Home className="w-4 h-4" /> Home
                 </Link>
               </li>
               <li>
-                <Link to="/value-list" className="flex items-center gap-2 text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition-all">
+                <Link to="/value-list" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition-all">
                   <List className="w-4 h-4" /> Value List
                 </Link>
               </li>
               <li>
-                <Link to="/calculator" className="flex items-center gap-2 text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition-all">
+                <Link to="/calculator" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition-all">
                   <Calculator className="w-4 h-4" /> Calculator
                 </Link>
               </li>
               <li>
-                <Link to="/value-changes" className="flex items-center gap-2 text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition-all">
+                <Link to="/value-changes" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition-all">
                   <History className="w-4 h-4" /> Value Changes
                 </Link>
               </li>
@@ -78,12 +78,12 @@ export const Footer: React.FC = () => {
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/trade-ads" className="flex items-center gap-2 text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition-all">
+                <Link to="/trade-ads" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition-all">
                   <Shield className="w-4 h-4" /> Trade Ads
                 </Link>
               </li>
               <li>
-                <Link to="/scam-logs" className="flex items-center gap-2 text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition-all">
+                <Link to="/scam-logs" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition-all">
                   <Shield className="w-4 h-4" /> Scam Logs
                 </Link>
               </li>
@@ -91,7 +91,7 @@ export const Footer: React.FC = () => {
                 <a
                   href="https://discord.gg/tradingcorps"
                   target="_blank"
-                  className="inline-flex items-center gap-2 text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition-all"
+                  className="inline-flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition-all"
                 >
                   Discord <ExternalLink className="w-3 h-3" />
                 </a>
@@ -109,7 +109,7 @@ export const Footer: React.FC = () => {
                 <a
                   href="https://discord.gg/tradingcorps"
                   target="_blank"
-                  className="inline-flex items-center gap-2 text-[var(--gold-soft)] hover:text-[var(--gold-bright)] transition-all"
+                  className="inline-flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition-all"
                 >
                   <Mail className="w-4 h-4" /> Contact Us
                 </a>
