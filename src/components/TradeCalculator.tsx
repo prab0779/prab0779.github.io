@@ -108,7 +108,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
   const hasTrade = calculation.totalValueSent > 0 || calculation.totalValueReceived > 0;
 
   const tradeLabel = !hasTrade
-    ? "—"
+    ? ""
     : diff === 0
     ? "FAIR TRADE"
     : diff > 0
@@ -121,28 +121,30 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
   const pct = Math.max(0, Math.min(100, 50 + normalized * 50));
 
   const StatusPill = () => {
-    const base =
-      "w-full rounded-xl border px-4 py-3 text-center font-semibold tracking-wide";
+  if (!tradeLabel) return null;
 
-    // softer, not neon
-    const cls =
-      tradeLabel === "FAIR TRADE"
-        ? "border-emerald-700/35 bg-emerald-950/40 text-emerald-300"
-        : tradeLabel === "YOU WIN"
-        ? "border-emerald-700/25 bg-emerald-950/25 text-emerald-200"
-        : tradeLabel === "YOU LOSE"
-        ? "border-red-800/30 bg-red-950/20 text-red-200"
-        : "border-zinc-700/40 bg-zinc-950/40 text-zinc-300";
+  const styles =
+    tradeLabel === "FAIR TRADE"
+      ? "bg-emerald-900/40 text-emerald-300 border-emerald-700/40"
+      : tradeLabel === "YOU WIN"
+      ? "bg-emerald-800/30 text-emerald-200 border-emerald-700/30"
+      : "bg-red-900/50 text-red-300 border-red-800/40";
 
-    return (
-      <div className={`${base} ${cls}`}>
-        <span className="inline-flex items-center gap-2">
-          <span className="text-sm">●</span>
-          <span className="text-sm sm:text-base">{tradeLabel}</span>
-        </span>
-      </div>
-    );
-  };
+  return (
+     <div
+      className={`w-full text-center py-3 font-semibold tracking-wide border ${styles}`}
+      style={{
+        borderLeft: "none",
+        borderRight: "none",
+      }}
+    >
+      <span className="inline-flex items-center gap-2 justify-center">
+        
+        {tradeLabel}
+      </span>
+    </div>
+  );
+};
 
   // ======= Searchable modal =======
   const ItemModal: React.FC<{
@@ -202,7 +204,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                     <div className="text-xs text-zinc-400">{it.category}</div>
                   </div>
                   <div className="font-semibold" style={{ color: "var(--gold-bright)" }}>
-                    🔑 {it.value}
+                    {it.value}
                   </div>
                 </button>
               ))}
@@ -338,18 +340,18 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
         >
           <div className="flex items-center justify-between text-sm">
             <span className="font-semibold" style={{ color: "var(--gold-bright)" }}>
-              🔑 Value:
+              Value:
             </span>
             <span className="text-white font-semibold">{value.toLocaleString()}</span>
           </div>
 
           <div className="mt-2 flex items-center justify-between text-sm">
-            <span className="text-zinc-300 font-medium">💎 Gem Tax:</span>
+            <span className="text-zinc-300 font-medium">Gem Tax:</span>
             <span className="text-zinc-100">{gemTax.toLocaleString()}</span>
           </div>
 
           <div className="mt-2 flex items-center justify-between text-sm">
-            <span className="text-zinc-300 font-medium">🪙 Gold Tax:</span>
+            <span className="text-zinc-300 font-medium">Gold Tax:</span>
             <span className="text-zinc-100">{goldTax.toLocaleString()}</span>
           </div>
         </div>
@@ -361,7 +363,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
   const percentText = hasTrade && maxSpan ? ((diff / maxSpan) * 100).toFixed(1) : "0.0";
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
+    <div className="max-w-6xl mx-auto px-4 py-14 mt-12">
       {/* Title (less blur, crisp) */}
       <div className="text-center mb-6">
         <h1
@@ -442,20 +444,18 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
 
           {/* muted progress bar */}
           <div
-            className="relative h-3 rounded-full overflow-hidden"
-            style={{ border: "1px solid rgba(255,255,255,0.10)", background: "rgba(24,24,27,0.9)" }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-red-700 via-yellow-600 to-emerald-700 opacity-80" />
-            <div className="absolute left-1/2 top-0 h-full w-[2px] bg-black/60" />
-            <div
-              className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full shadow"
-              style={{
-                left: `calc(${pct}% - 6px)`,
-                background: "rgba(255,255,255,0.75)",
-                border: "1px solid rgba(0,0,0,0.55)",
-              }}
-            />
-          </div>
+  className="relative h-2 rounded-full overflow-hidden"
+  style={{ background: "#1a1a1a" }}
+>
+  {/* red base */}
+  <div className="absolute inset-0 bg-red-600" />
+
+  {/* green overlay (how much YOU win) */}
+  <div
+    className="absolute top-0 left-0 h-full bg-green-500"
+    style={{ width: `${pct}%` }}
+  />
+</div>
         </div>
       </div>
 
