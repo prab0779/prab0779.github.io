@@ -41,108 +41,104 @@ export const Header: React.FC = () => {
       }`}
     >
       <div
-        className="
+        className={`
           w-full max-w-5xl
-          flex items-center justify-between
-          rounded-xl px-5 py-2
+          rounded-xl
           bg-white/5 backdrop-blur-xl
           border border-[#D4AF37]/50
           shadow-[0_8px_30px_rgba(0,0,0,0.6)]
-        "
+          transition-all duration-300
+          ${open ? "pb-4" : ""}
+        `}
       >
-        <Link to="/" className="flex items-center">
-          <img
-            src="/customdiscordlogo.png"
-            className="h-8 w-auto object-contain"
-            alt="logo"
-          />
-        </Link>
+        {/* TOP BAR */}
+        <div className="flex items-center justify-between px-5 py-5">
+          <Link to="/" className="flex items-center">
+            <img src="/customdiscordlogo.png" className="h-8" />
+          </Link>
 
-        <nav className="hidden md:flex items-center gap-7">
-          {links.map((l) => {
-            const active = isActive(l.path);
-            return (
-              <Link
-                key={l.path}
-                to={l.path}
-                className={`
-                  relative text-[15px] font-medium transition
-                  ${
+          <nav className="hidden md:flex items-center gap-7">
+            {links.map((l) => {
+              const active = isActive(l.path);
+              return (
+                <Link
+                  key={l.path}
+                  to={l.path}
+                  className={`relative text-[15px] font-medium ${
                     active
                       ? "text-white"
                       : "text-white/70 hover:text-white"
-                  }
-                `}
-              >
-                {l.name}
-                <span
-                  className={`
-                    absolute left-1/2 -translate-x-1/2 -bottom-1.5
-                    h-[2px] bg-[#D4AF37] rounded-full
-                    transition-all duration-300
-                    ${
-                      active
-                        ? "w-6 opacity-100"
-                        : "w-0 opacity-0 group-hover:w-6 group-hover:opacity-80"
-                    }
-                  `}
-                />
-              </Link>
-            );
-          })}
-        </nav>
+                  }`}
+                >
+                  {l.name}
+                  <span
+                    className={`absolute left-1/2 -translate-x-1/2 -bottom-1.5 h-[2px] bg-[#D4AF37] transition-all ${
+                      active ? "w-6" : "w-0 group-hover:w-6"
+                    }`}
+                  />
+                </Link>
+              );
+            })}
+          </nav>
 
-        <a
-          href="https://discord.gg/tradingcorps"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="
-            hidden md:flex items-center
-            px-3 py-1.5 rounded-lg
-            border border-[#D4AF37]/70
-            text-white text-sm font-medium
-            hover:bg-white/10
-            transition
-          "
-        >
-          Discord
-        </a>
-
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="
-            md:hidden h-9 w-9 flex items-center justify-center
-            rounded-lg border border-[#D4AF37]/50
-            text-white
-          "
-        >
-          {open ? <X size={18} /> : <Menu size={18} />}
-        </button>
-      </div>
-
-      {open && (
-        <div className="md:hidden mt-2 w-full max-w-5xl px-4">
-          <div className="rounded-xl bg-black/90 border border-[#D4AF37]/40 p-2">
-            {links.map((l) => (
-              <Link
-                key={l.path}
-                to={l.path}
-                className="block px-3 py-2 text-sm text-white/70 hover:text-white"
-              >
-                {l.name}
-              </Link>
-            ))}
+          <div className="flex items-center gap-2">
             <a
               href="https://discord.gg/tradingcorps"
               target="_blank"
-              rel="noopener noreferrer"
-              className="block mt-2 px-3 py-2 text-center bg-[#D4AF37] text-black rounded-lg text-sm"
+              className="hidden md:flex px-3 py-1.5 rounded-lg border border-[#D4AF37]/70 text-white text-sm hover:bg-white/10"
             >
               Discord
             </a>
+
+            <button
+              onClick={() => setOpen((v) => !v)}
+              className="md:hidden h-9 w-9 flex items-center justify-center rounded-lg border border-[#D4AF37]/50 text-white"
+            >
+              {open ? <X size={18} /> : <Menu size={18} />}
+            </button>
           </div>
         </div>
-      )}
+
+        {/* EXPANDING MOBILE MENU */}
+        <div
+          className={`
+            md:hidden overflow-hidden transition-all duration-300 px-5
+            ${open ? "max-h-[500px] opacity-100 mt-2" : "max-h-0 opacity-0"}
+          `}
+        >
+          <div className="flex flex-col gap-5 pt-2">
+            {links.map((l) => {
+              const active = isActive(l.path);
+              return (
+                <Link
+                  key={l.path}
+                  to={l.path}
+                  className={`relative text-[16px] font-medium ${
+                    active
+                      ? "text-[#D4AF37]"
+                      : "text-white/80 hover:text-white"
+                  }`}
+                >
+                  {l.name}
+                  <span
+                    className={`absolute left-0 -bottom-1 h-[2px] bg-[#D4AF37] transition-all ${
+                      active ? "w-20" : "w-0"
+                    }`}
+                  />
+                </Link>
+              );
+            })}
+
+            <a
+              href="https://discord.gg/tradingcorps"
+              target="_blank"
+              className="mt-4 text-center px-4 py-3 bg-[#D4AF37] text-black rounded-lg font-medium"
+            >
+              Join Discord
+            </a>
+          </div>
+        </div>
+      </div>
     </header>
   );
-};
+}
