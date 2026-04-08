@@ -10,29 +10,31 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
   const [viewMode, setViewMode] = useState<"regular" | "permanent">("regular");
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-16 text-center">
+    <div className="max-w-5xl mx-auto px-6 pt-32 pb-16 text-center">
 
       <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-4">
         AOT:R Value List
       </h1>
 
-      <p className="text-gray-400 max-w-2xl mx-auto mb-12">
-  Browse our complete AOT:R value list ({items.length}+ items).
-  <span className="text-red-400 font-semibold"> ⚠️ Notice:</span> 
-  These values are <span className="text-yellow-400 font-semibold">UNOFFICIAL and currently OUTDATED</span>. 
-  They are only shown to give a rough visual understanding of item worth.
+     <div className="bg-[#0b0b0d]/80 border border-[#D4AF37]/30 rounded-xl p-5 mb-12 text-left backdrop-blur">
+  <p className="text-gray-300 text-sm leading-relaxed">
+    Browse our complete AOT:R value list ({items.length}+ items).
+    
+    <span className="text-red-400 font-semibold"> ⚠️ Notice:</span> 
+    These values are <span className="text-yellow-400 font-semibold">UNOFFICIAL and currently OUTDATED</span>. 
+    They are only shown to give a rough visual understanding of item worth.
 
-  <br /><br />
+    <br /><br />
 
-  AOT:R trading is entirely <span className="font-semibold">player-driven</span> and based on 
-  <span className="text-yellow-400 font-semibold"> rarity, demand, and player needs</span>. 
-  Because of this, item values constantly change depending on availability and what players are willing to trade.
+    AOT:R trading is entirely <span className="font-semibold text-white">player-driven</span> and based on 
+    <span className="text-yellow-400 font-semibold"> rarity, demand, and player needs</span>.
 
-  <br /><br />
+    <br /><br />
 
-  Do not rely on value lists for exact pricing. Always negotiate trades yourself and 
-  <span className="text-yellow-400 font-semibold"> join our Discord for the latest community insights.</span>
-</p>
+    Do not rely on value lists for exact pricing. Always negotiate trades yourself and 
+    <span className="text-yellow-400 font-semibold"> join our Discord for the latest insights.</span>
+  </p>
+</div>
 
 
 
