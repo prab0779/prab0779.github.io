@@ -124,10 +124,6 @@ export const Footer: React.FC = () => {
           <p className="text-gray-500 text-xs sm:text-sm">
             © 2026 AOT:R Value Hub — Not affiliated with AoT:R or Roblox.
           </p>
-
-          <p className="flex items-center gap-1 text-gray-500 text-xs sm:text-sm">
-            Made with ❤️ by the Community
-          </p>
         </div>
 
       </div>
