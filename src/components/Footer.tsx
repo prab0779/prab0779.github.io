@@ -122,7 +122,7 @@ export const Footer: React.FC = () => {
         {/* Divider */}
         <div className="border-t border-gray-800 mt-12 pt-5 flex flex-col sm:flex-row items-center justify-between text-center gap-3">
           <p className="text-gray-500 text-xs sm:text-sm">
-            © 2025 AOT:R Value Hub — Not affiliated with AoT:R or Roblox.
+            © 2026 AOT:R Value Hub — Not affiliated with AoT:R or Roblox.
           </p>
 
           <p className="flex items-center gap-1 text-gray-500 text-xs sm:text-sm">
