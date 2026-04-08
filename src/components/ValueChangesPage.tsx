@@ -9,25 +9,30 @@ export const ValueChangesPage: React.FC = () => {
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>("all");
 
   const renderItemIcon = (emoji: string, itemName: string) => {
-    if (!emoji || typeof emoji !== "string") {
-      return <span className="text-2xl">👹</span>;
-    }
+  if (!emoji || typeof emoji !== "string") {
+    return <span className="text-2xl">👹</span>;
+  }
 
-    if (emoji.startsWith("/") || emoji.startsWith("./")) {
-      return (
-        <div className="w-8 h-8 flex items-center justify-center">
-          <img
-            src={emoji.startsWith("./") ? emoji.slice(2) : emoji.slice(1)}
-            alt={itemName}
-            className="w-8 h-8 object-contain"
-            style={{ imageRendering: "pixelated" }}
-          />
-        </div>
-      );
-    }
+  if (emoji.startsWith("/") || emoji.startsWith("./")) {
+    const src = emoji.startsWith("./") ? emoji.slice(2) : emoji;
 
-    return <span className="text-2xl">{emoji}</span>;
-  };
+    return (
+      <div className="w-8 h-8 flex items-center justify-center">
+        <img
+          src={src}
+          alt={itemName}
+          className="w-8 h-8 object-contain"
+          style={{ imageRendering: "pixelated" }}
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = "none";
+          }}
+        />
+      </div>
+    );
+  }
+
+  return <span className="text-2xl">{emoji}</span>;
+};
 
   const filteredChanges = useMemo(() => {
     return valueChanges.filter((change) => {
