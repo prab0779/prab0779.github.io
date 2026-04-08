@@ -75,7 +75,7 @@ export const FAQSection: React.FC = () => {
           FAQs
         </span>
 
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--gold-bright)] mt-3 drop-shadow-[0_0_6px_rgba(255,225,150,0.35)]">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-white/70 mt-3 drop-shadow-[0_0_6px_rgba(255,225,150,0.35)]">
           We’ve Got the Answers
         </h2>
 
@@ -95,12 +95,12 @@ export const FAQSection: React.FC = () => {
               onClick={() => toggleFAQ(index)}
               className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[rgba(255,220,150,0.05)] transition"
             >
-              <span className="text-[var(--gold-soft)] text-base font-medium">
+             <span className="text-white text-base font-medium">
                 {item.question}
               </span>
 
               <ChevronDown
-                className={`w-5 h-5 text-[var(--gold-soft)] transition-transform duration-300 ${
+                className={`w-5 h-5 text-white/70 transition-transform duration-300 ${
                   openIndex === index ? "rotate-180 text-[var(--gold-bright)]" : ""
                 }`}
               />
