@@ -84,7 +84,7 @@ const formatVizardValue = (v: number) => {
 
 
   return (
-    <div className="bg-[#06060A] rounded-2xl border border-gray-800 p-5 shadow-xl hover:border-blue-500 transition-all flex flex-col">
+   <div className="bg-[#06060A] rounded-2xl border border-gray-800 p-5 shadow-xl hover:border-[#D4AF37]/50 transition-all flex flex-col">
 
       {/* ITEM NAME + STATUS */}
       <div className="flex justify-between items-center mb-3">
