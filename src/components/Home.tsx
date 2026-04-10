@@ -1,172 +1,208 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { Item } from "../types/Item";
 import { FAQSection } from "./FAQSection";
 import { VideoSlider } from "./VideoSlider";
 import { StockRestocker } from "../components/StockRestocker";
 import Carousel from "../Shared/Carousel";
+import ShapeGrid from "../Shared/ShapeGrid";
+import SplitText from "../Shared/SplitText";
+import BlurText from "../Shared/BlurText";
+import ShinyText from "../Shared/ShinyText";
+import StarBorder from "../Shared/StarBorder";
+import BorderGlow from "../Shared/BorderGlow";
+import Dock from "../Shared/Dock";
+import { FaDiscord, FaXTwitter } from "react-icons/fa6";
+import { SiRoblox } from "react-icons/si";
 import { LineChart, Sparkles, Calculator, Shield } from "lucide-react";
 
 interface HomeProps {
   items: Item[];
 }
 
+
+const DockItems = [
+  {
+    icon: <SiRoblox size={22} />,
+    label: "Roblox",
+    onClick: () => window.open("https://www.roblox.com/games/13379208636/Attack-on-Titan-Revolution", "_blank"),
+  },
+  {
+    icon: <FaXTwitter size={22} />,
+    label: "X",
+    onClick: () => window.open("https://x.com/", "_blank"),
+  },
+  {
+    icon: <FaDiscord size={22} />,
+    label: "Discord",
+    onClick: () => window.open("https://discord.gg/tradingcorps", "_blank"),
+  },
+];
+
 export const Home: React.FC<HomeProps> = ({ items }) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const handleAnimationComplete = () => {
+    console.log("Animation completed!");
+  };
+
   return (
     <div className="relative">
-
-      {/* GOLD GRID BACKGROUND */}
       <div className="absolute inset-0 bg-[url('/gridd.svg')] opacity-10 mix-blend-soft-light pointer-events-none" />
 
-      {/* MAIN CONTENT */}
       <div className="relative z-10">
-
-        {/* HERO SECTION */}
-        <section className="max-w-7xl mx-auto px-4 md:px-6 pt-[240px] md:pt-[320px] pb-[160px] md:pb-[220px] grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          {/* TEXT */}
-          <div className="text-center lg:text-left space-y-6">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.25em] text-[var(--gold-soft)] mb-2">
-                AOT:R Trading Hub
-              </p>
-
-              <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--gold-bright)] leading-tight drop-shadow-lg">
-                AOT:R <span className="text-[var(--gold-soft)]">Values</span>
-              </h1>
-
-              <div className="h-0.5 w-20 bg-gradient-to-r from-[var(--gold-soft)] via-[var(--gold-bright)] to-transparent rounded-full mt-3 mx-auto lg:mx-0" />
-
-              <p className="text-gray-300 text-base md:text-lg max-w-md mt-4 mx-auto lg:mx-0">
-                The ultimate hub for Attack on Titan Revolution trading.
-                Discover values, analyze trades, and browse verified trade ads —
-                all in one place.
-              </p>
-            </div>
-
-            {/* BUTTONS */}
-            <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
-              <Link
-                to="/trade-ads"
-                className="px-6 py-3 rounded-xl 
-                  bg-[var(--gold-bright)] text-black font-semibold 
-                  hover:bg-[var(--gold-soft)] transition 
-                  shadow-lg hover:-translate-y-0.5 active:translate-y-0"
-              >
-                Start Trading →
-              </Link>
-
-              <Link
-                to="/value-list"
-                className="px-6 py-3 rounded-xl 
-                  bg-[#111] text-[var(--gold-soft)] font-medium 
-                  hover:bg-[#1a1a1a] transition border border-gray-700
-                  hover:border-[var(--gold-bright)] hover:-translate-y-0.5"
-              >
-                View Values ★
-              </Link>
-            </div>
-
-            {/* QUICK STATS / BADGES */}
-            <div className="flex justify-center lg:justify-start gap-4 pt-3">
-  {/* X */}
-  <a
-    href="https://x.com"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="
-      w-12 h-12 flex items-center justify-center
-      rounded-xl
-      border border-blue-500/60
-      text-white
-      hover:border-blue-400 hover:bg-blue-500/10
-      transition
-    "
-  >
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
-      <path d="M18.9 2H22l-7.6 8.7L23 22h-6.8l-5.3-7-6.1 7H1.7l8.1-9.2L1 2h6.9l4.8 6.4L18.9 2Zm-2.4 18h1.9L7.4 4H5.4l11.1 16Z" />
-    </svg>
-  </a>
-
-  {/* Roblox */}
-  <a
-    href="https://www.roblox.com/games/13379208636/Attack-on-Titan-Revolution"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="
-      w-12 h-12 flex items-center justify-center
-      rounded-xl
-      border border-[#D4AF37]/70
-      text-white
-      hover:border-[#D4AF37] hover:bg-[#D4AF37]/10
-      transition
-    "
-  >
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
-      <path d="M6 2 2 18l16 4 4-16L6 2Zm6.2 6.2 3.6.9-.9 3.6-3.6-.9.9-3.6Z" />
-    </svg>
-  </a>
-</div> 
+        <section className="relative overflow-hidden w-full pt-[200px] md:pt-[260px] pb-[140px] md:pb-[200px]">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-screen h-[150%] z-0 opacity-40 pointer-events-none mask-image-[linear-gradient(to_bottom,black,black,transparent)]">
+            <ShapeGrid
+              speed={0.5}
+              squareSize={40}
+              direction="diagonal"
+              borderColor="#271E37"
+              hoverFillColor="#222222"
+              shape="square"
+              hoverTrailAmount={0}
+            />
           </div>
 
-          {/* HERO IMAGE */}
-          <div className="relative mx-auto w-full flex justify-center lg:justify-end">
-  <div className="relative p-4 rounded-2xl border border-[rgba(255,220,150,0.15)] bg-black/40 backdrop-blur shadow-[0_0_25px_rgba(0,0,0,0.6)]">
-    
-    <Carousel
-      baseWidth={320}
-      autoplay={true}
-      autoplayDelay={3000}
-      pauseOnHover={true}
-      loop={true}
-      round={false}
-    />
- 
-  </div>
-</div>
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_30%_40%,rgba(255,215,120,0.08),transparent_60%)]" />
+
+          <div className="pointer-events-none absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-[#090A0F]" />
+
+          <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div className="text-center lg:text-left space-y-4">
+              <div>
+                <div className="text-xs font-medium uppercase tracking-[0.25em] mb-2">
+                  <ShinyText
+                    text="AOT:R Trading Hub"
+                    className="text-xs font-medium uppercase tracking-[0.25em] mb-2"
+                  />
+                </div>
+
+                <SplitText
+                  text="AOT:R Values"
+                  tag="h1"
+                  className="text-4xl md:text-6xl font-extrabold text-[var(--gold-bright)] leading-tight drop-shadow-lg"
+                  delay={40}
+                  duration={1}
+                  ease="power3.out"
+                  splitType="chars"
+                  from={{ opacity: 0, y: 40 }}
+                  to={{ opacity: 1, y: 0 }}
+                />
+
+                <div className="h-0.5 w-20 bg-gradient-to-r from-[var(--gold-soft)] via-[var(--gold-bright)] to-transparent rounded-full mt-3 mx-auto lg:mx-0" />
+
+                <div className="text-center lg:text-left space-y-4">
+                  <BlurText
+                    text="The ultimate hub for Attack on Titan Revolution trading. Discover values, analyze trades, and browse verified trade ads — all in one place."
+                    delay={200}
+                    animateBy="words"
+                    direction="top"
+                    onAnimationComplete={handleAnimationComplete}
+                    className="text-2xl mb-8"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
+                <StarBorder
+                  as={Link}
+                  to="/trade-ads"
+                  className="px-6 py-3 bg-[var(--gold-bright)] text-black font-semibold rounded-xl hover:bg-[var(--gold-soft)] transition shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+                  color="#FFD700"
+                  speed="2s"
+                >
+                  Start Trading →
+                </StarBorder>
+
+                <StarBorder
+                  as={Link}
+                  to="/value-list"
+                  className="px-6 py-3 bg-[#111] text-[var(--gold-soft)] font-medium rounded-xl border border-gray-700 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] transition hover:-translate-y-0.5"
+                  color="#FFD700"
+                  speed="4s"
+                >
+                  View Values ★
+                </StarBorder>
+              </div>
+            </div>
+            <div className="flex justify-center lg:justify-end lg:-ml-10 px-2 sm:px-0">
+                <Carousel />
+            </div>
+          </div>
+          <div className="relative z-10 w-full flex justify-center mt-[90px] md:mt-[150px]">
+              <Dock items={DockItems} />
+          </div>
         </section>
 
-        {/* DIVIDER */}
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--gold-soft)] to-transparent opacity-25 mb-10 md:mb-14" />
-        </div>
+        </div> 
 
-        {/* VIDEO HIGHLIGHTS */}
         <section className="relative max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-4">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-[var(--gold-bright)]">
-                Popular Highlights
-              </h2>
-              <p className="text-gray-400 text-sm md:text-base mt-1">
-                AOT:R clips, updates and moments from the community.
-              </p>
+              <SplitText
+                text="Popular Highlights"
+                tag="h2"
+                className="text-2xl md:text-3xl font-bold text-[var(--gold-bright)]"
+                delay={40}
+                duration={1}
+                ease="power3.out"
+                splitType="chars"
+                from={{ opacity: 0, y: 40 }}
+                to={{ opacity: 1, y: 0 }}
+              />
+              <div className="text-gray-400 text-sm md:text-base mt-1">
+                <BlurText
+                  text="AOT:R clips, updates and moments from the community."
+                  delay={200}
+                  animateBy="words"
+                  direction="top"
+                  enabled = {false}
+                  onAnimationComplete={handleAnimationComplete}
+                  className="text-1xl mb-2"
+                />
+              </div>
             </div>
           </div>
 
           <div className="relative">
-            {/* Side fades for premium look */}
             <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#090A0F] to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#090A0F] to-transparent" />
-
             <VideoSlider />
           </div>
         </section>
 
-        {/* DIVIDER */}
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--gold-soft)] to-transparent opacity-20 mb-10 md:mb-14" />
         </div>
 
-        {/* STOCK RESTOCKER SECTION */}
         <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-[var(--gold-bright)]">
-                Stock Restocker
-              </h2>
-              <p className="text-gray-400 text-sm md:text-base mt-1">
-                Track limited-time stocks and cosmetics so you never miss out.
-              </p>
+              <SplitText
+                text="Stock Restocker"
+                tag="h2"
+                className="text-2xl md:text-3xl font-bold text-[var(--gold-bright)]"
+                delay={40}
+                duration={1}
+                ease="power3.out"
+                splitType="chars"
+                from={{ opacity: 0, y: 40 }}
+                to={{ opacity: 1, y: 0 }}
+              />
+              <div className="text-gray-400 text-sm md:text-base mt-1">
+                <BlurText
+                  text="Track limited-time stocks and cosmetics so you never miss out."
+                  delay={200}
+                  animateBy="words"
+                  enabled={false}
+                  direction="top"
+                  onAnimationComplete={handleAnimationComplete}
+                  className="text-1xl mb-2"
+                />
+              </div>
             </div>
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-gray-800 text-xs text-gray-300">
               <Sparkles className="w-4 h-4 text-[var(--gold-bright)]" />
@@ -179,112 +215,111 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           </div>
         </section>
 
-        {/* FEATURES SECTION */}
         <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-12">
-          <h2 className="text-3xl font-bold text-[var(--gold-bright)] mb-2">
-            AOT:R Values Features
-          </h2>
-          <p className="text-gray-400 mb-8 text-sm md:text-base max-w-xl">
-            Everything you need for successful Attack on Titan Revolution trading —
-            from accurate values to smarter tools and safer deals.
-          </p>
+          <SplitText
+            text="AOT:R Values Features"
+            tag="h2"
+            className="text-3xl font-bold text-[var(--gold-bright)] mb-2"
+            delay={40}
+            duration={1}
+            ease="power3.out"
+            splitType="chars"
+            from={{ opacity: 0, y: 40 }}
+            to={{ opacity: 1, y: 0 }}
+          />
+          <BlurText
+            text="Everything you need for successful Attack on Titan Revolution trading — from accurate values to smarter tools and safer deals."
+            delay={200}
+            animateBy="words"
+            enabled={false}
+            direction="top"
+            onAnimationComplete={handleAnimationComplete}
+            className="text-gray-400 mb-8 text-sm md:text-base max-w-xl"
+          />
 
           <div className="grid sm:grid-cols-2 gap-5 md:gap-6">
-            <Link
-              to="/value-list"
-              className="group block bg-[#111]/70 backdrop-blur-xl border border-gray-800 rounded-2xl p-5 md:p-6 
-                shadow-lg transition-transform duration-200 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] hover:-translate-y-1"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <LineChart className="w-8 h-8 text-[var(--gold-bright)] opacity-90" />
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-soft)]">
-                  Values
-                </span>
-              </div>
-              <h3 className="text-xl font-semibold text-[var(--gold-bright)] mb-1">
-                Real-Time Values
-              </h3>
-              <p className="text-gray-400 text-sm mb-3">
-                Manually curated values based on active trades, demand and market trends.
-              </p>
-              <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">
-                Open value list →
-              </span>
-            </Link>
+            {[{
+              to: "/value-list",
+              icon: LineChart,
+              label: "Values",
+              title: "Real-Time Values",
+              desc: "Manually curated values based on active trades, demand and market trends.",
+              cta: "Open value list →"
+            },{
+              to: "/trade-ads",
+              icon: Sparkles,
+              label: "Trading",
+              title: "Trade Ads",
+              desc: "Post your offers and find traders looking for the exact items you have.",
+              cta: "Browse trade ads →"
+            },{
+              to: "/calculator",
+              icon: Calculator,
+              label: "Tools",
+              title: "Smart Trade Calculator",
+              desc: "Compare offers, calculate total value on both sides and avoid one-sided trades.",
+              cta: "Use calculator →"
+            },{
+              to: "/scam-logs",
+              icon: Shield,
+              label: "Safety",
+              title: "Safer Trading",
+              desc: "Check scam logs and stay away from flagged users before you trade.",
+              cta: "View scam logs →"
+            }].map((card, i) => {
+              const Icon = card.icon;
+              return (
+                <BorderGlow
+                  key={i}
+                  edgeSensitivity={30}
+                  glowColor="40 80 80"
+                  backgroundColor="#060010"
+                  borderRadius={28}
+                  glowRadius={40}
+                  glowIntensity={1}
+                  coneSpread={25}
+                  animated={false}
+                  colors={['#FFD700', '#FFC94D', '#FFB347']}
+                >
+                  <Link to={card.to} className="group block rounded-2xl p-5 md:p-6 transition-transform duration-200 hover:-translate-y-1">
+                    <div className="flex items-center justify-between mb-3">
+                      <Icon className="w-8 h-8 text-[var(--gold-bright)] opacity-90" />
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-soft)]">{card.label}</span>
+                    </div>
 
-            <Link
-              to="/trade-ads"
-              className="group block bg-[#111]/70 backdrop-blur-xl border border-gray-800 rounded-2xl p-5 md:p-6 
-                shadow-lg transition-transform duration-200 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] hover:-translate-y-1"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <Sparkles className="w-8 h-8 text-[var(--gold-bright)] opacity-90" />
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-soft)]">
-                  Trading
-                </span>
-              </div>
-              <h3 className="text-xl font-semibold text-[var(--gold-bright)] mb-1">
-                Trade Ads
-              </h3>
-              <p className="text-gray-400 text-sm mb-3">
-                Post your offers and find traders looking for the exact items you have.
-              </p>
-              <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">
-                Browse trade ads →
-              </span>
-            </Link>
+                    <SplitText
+                      text={card.title}
+                      tag="h3"
+                      className="text-xl font-semibold text-[var(--gold-bright)] mb-1"
+                      delay={30}
+                      duration={0.8}
+                      ease="power3.out"
+                      splitType="chars"
+                      from={{ opacity: 0, y: 20 }}
+                      to={{ opacity: 1, y: 0 }}
+                    />
 
-            <Link
-              to="/calculator"
-              className="group block bg-[#111]/70 backdrop-blur-xl border border-gray-800 rounded-2xl p-5 md:p-6 
-                shadow-lg transition-transform duration-200 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] hover:-translate-y-1"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <Calculator className="w-8 h-8 text-[var(--gold-bright)] opacity-90" />
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-soft)]">
-                  Tools
-                </span>
-              </div>
-              <h3 className="text-xl font-semibold text-[var(--gold-bright)] mb-1">
-                Smart Trade Calculator
-              </h3>
-              <p className="text-gray-400 text-sm mb-3">
-                Compare offers, calculate total value on both sides and avoid one-sided trades.
-              </p>
-              <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">
-                Use calculator →
-              </span>
-            </Link>
+                    <BlurText
+                      text={card.desc}
+                      delay={150}
+                      animateBy="words"
+                      enabled={false}
+                      direction="top"
+                      className="text-gray-400 text-sm mb-3"
+                    />
 
-            <Link
-              to="/scam-logs"
-              className="group block bg-[#111]/70 backdrop-blur-xl border border-gray-800 rounded-2xl p-5 md:p-6 
-                shadow-lg transition-transform duration-200 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] hover:-translate-y-1"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <Shield className="w-8 h-8 text-[var(--gold-bright)] opacity-90" />
-                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-soft)]">
-                  Safety
-                </span>
-              </div>
-              <h3 className="text-xl font-semibold text-[var(--gold-bright)] mb-1">
-                Safer Trading
-              </h3>
-              <p className="text-gray-400 text-sm mb-3">
-                Check scam logs and stay away from flagged users before you trade.
-              </p>
-              <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">
-                View scam logs →
-              </span>
-            </Link>
+                    <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">{card.cta}</span>
+                  </Link>
+                </BorderGlow>
+              );
+            })}
           </div>
         </section>
 
-        {/* FAQ SECTION */}
         <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-16">
           <FAQSection />
         </section>
       </div>
     </div>
   );
-};  
+}; 
