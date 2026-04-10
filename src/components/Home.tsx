@@ -5,7 +5,6 @@ import { FAQSection } from "./FAQSection";
 import { VideoSlider } from "./VideoSlider";
 import { StockRestocker } from "../components/StockRestocker";
 import { LineChart, Sparkles, Calculator, Shield } from "lucide-react";
-import ShapeGrid from "../Shared/ShapeGrid";
 
 interface HomeProps {
   items: Item[];
@@ -15,28 +14,14 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
   return (
     <div className="relative">
 
-      {/* 🔥 SHAPE GRID BACKGROUND */}
-      <div className="absolute inset-0 z-0 opacity-40">
-        <ShapeGrid
-          speed={0.4}
-          squareSize={40}
-          direction="diagonal"
-          borderColor="#271E37"
-          hoverFillColor="#222222"
-          shape="square"
-          hoverTrailAmount={0}
-        />
-      </div>
-
-      {/* 🔥 DARK FADE OVERLAY */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#060010]/80 via-transparent to-[#060010] z-[1]" />
+      {/* GOLD GRID BACKGROUND */}
+      <div className="absolute inset-0 bg-[url('/gridd.svg')] opacity-10 mix-blend-soft-light pointer-events-none" />
 
       {/* MAIN CONTENT */}
       <div className="relative z-10">
 
         {/* HERO SECTION */}
         <section className="max-w-7xl mx-auto px-4 md:px-6 pt-[240px] md:pt-[320px] pb-[160px] md:pb-[220px] grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          
           {/* TEXT */}
           <div className="text-center lg:text-left space-y-6">
             <div>
@@ -80,32 +65,46 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
               </Link>
             </div>
 
-            {/* ICONS */}
+            {/* QUICK STATS / BADGES */}
             <div className="flex justify-center lg:justify-start gap-4 pt-3">
-              {/* X */}
-              <a
-                href="https://x.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center rounded-xl border border-blue-500/60 text-white hover:border-blue-400 hover:bg-blue-500/10 transition"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
-                  <path d="M18.9 2H22l-7.6 8.7L23 22h-6.8l-5.3-7-6.1 7H1.7l8.1-9.2L1 2h6.9l4.8 6.4L18.9 2Zm-2.4 18h1.9L7.4 4H5.4l11.1 16Z" />
-                </svg>
-              </a>
+  {/* X */}
+  <a
+    href="https://x.com"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="
+      w-12 h-12 flex items-center justify-center
+      rounded-xl
+      border border-blue-500/60
+      text-white
+      hover:border-blue-400 hover:bg-blue-500/10
+      transition
+    "
+  >
+    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+      <path d="M18.9 2H22l-7.6 8.7L23 22h-6.8l-5.3-7-6.1 7H1.7l8.1-9.2L1 2h6.9l4.8 6.4L18.9 2Zm-2.4 18h1.9L7.4 4H5.4l11.1 16Z" />
+    </svg>
+  </a>
 
-              {/* Roblox */}
-              <a
-                href="https://www.roblox.com/games/13379208636/Attack-on-Titan-Revolution"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-12 h-12 flex items-center justify-center rounded-xl border border-[#D4AF37]/70 text-white hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 transition"
-              >
-                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
-                  <path d="M6 2 2 18l16 4 4-16L6 2Zm6.2 6.2 3.6.9-.9 3.6-3.6-.9.9-3.6Z" />
-                </svg>
-              </a>
-            </div>
+  {/* Roblox */}
+  <a
+    href="https://www.roblox.com/games/13379208636/Attack-on-Titan-Revolution"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="
+      w-12 h-12 flex items-center justify-center
+      rounded-xl
+      border border-[#D4AF37]/70
+      text-white
+      hover:border-[#D4AF37] hover:bg-[#D4AF37]/10
+      transition
+    "
+  >
+    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+      <path d="M6 2 2 18l16 4 4-16L6 2Zm6.2 6.2 3.6.9-.9 3.6-3.6-.9.9-3.6Z" />
+    </svg>
+  </a>
+</div>
           </div>
 
           {/* HERO IMAGE */}
@@ -119,33 +118,168 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
               />
             </div>
           </div>
-
         </section>
 
-        {/* KEEP REST SAME */}
-        {/* (everything below unchanged) */}
-
+        {/* DIVIDER */}
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--gold-soft)] to-transparent opacity-25 mb-10 md:mb-14" />
         </div>
 
+        {/* VIDEO HIGHLIGHTS */}
         <section className="relative max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
-          <VideoSlider />
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-4">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-[var(--gold-bright)]">
+                Popular Highlights
+              </h2>
+              <p className="text-gray-400 text-sm md:text-base mt-1">
+                AOT:R clips, updates and moments from the community.
+              </p>
+            </div>
+          </div>
+
+          <div className="relative">
+            {/* Side fades for premium look */}
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#090A0F] to-transparent" />
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#090A0F] to-transparent" />
+
+            <VideoSlider />
+          </div>
         </section>
 
+        {/* DIVIDER */}
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--gold-soft)] to-transparent opacity-20 mb-10 md:mb-14" />
+        </div>
+
+        {/* STOCK RESTOCKER SECTION */}
         <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
-          <StockRestocker />
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-[var(--gold-bright)]">
+                Stock Restocker
+              </h2>
+              <p className="text-gray-400 text-sm md:text-base mt-1">
+                Track limited-time stocks and cosmetics so you never miss out.
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-gray-800 text-xs text-gray-300">
+              <Sparkles className="w-4 h-4 text-[var(--gold-bright)]" />
+              Live restocks for active traders
+            </span>
+          </div>
+
+          <div className="rounded-2xl bg-[#050509]/80 border border-[rgba(255,220,150,0.18)] shadow-[0_0_35px_rgba(0,0,0,0.7)] p-4 md:p-5">
+            <StockRestocker />
+          </div>
         </section>
 
+        {/* FEATURES SECTION */}
         <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-12">
-          {/* features... unchanged */}
+          <h2 className="text-3xl font-bold text-[var(--gold-bright)] mb-2">
+            AOT:R Values Features
+          </h2>
+          <p className="text-gray-400 mb-8 text-sm md:text-base max-w-xl">
+            Everything you need for successful Attack on Titan Revolution trading —
+            from accurate values to smarter tools and safer deals.
+          </p>
+
+          <div className="grid sm:grid-cols-2 gap-5 md:gap-6">
+            <Link
+              to="/value-list"
+              className="group block bg-[#111]/70 backdrop-blur-xl border border-gray-800 rounded-2xl p-5 md:p-6 
+                shadow-lg transition-transform duration-200 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] hover:-translate-y-1"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <LineChart className="w-8 h-8 text-[var(--gold-bright)] opacity-90" />
+                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-soft)]">
+                  Values
+                </span>
+              </div>
+              <h3 className="text-xl font-semibold text-[var(--gold-bright)] mb-1">
+                Real-Time Values
+              </h3>
+              <p className="text-gray-400 text-sm mb-3">
+                Manually curated values based on active trades, demand and market trends.
+              </p>
+              <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">
+                Open value list →
+              </span>
+            </Link>
+
+            <Link
+              to="/trade-ads"
+              className="group block bg-[#111]/70 backdrop-blur-xl border border-gray-800 rounded-2xl p-5 md:p-6 
+                shadow-lg transition-transform duration-200 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] hover:-translate-y-1"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <Sparkles className="w-8 h-8 text-[var(--gold-bright)] opacity-90" />
+                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-soft)]">
+                  Trading
+                </span>
+              </div>
+              <h3 className="text-xl font-semibold text-[var(--gold-bright)] mb-1">
+                Trade Ads
+              </h3>
+              <p className="text-gray-400 text-sm mb-3">
+                Post your offers and find traders looking for the exact items you have.
+              </p>
+              <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">
+                Browse trade ads →
+              </span>
+            </Link>
+
+            <Link
+              to="/calculator"
+              className="group block bg-[#111]/70 backdrop-blur-xl border border-gray-800 rounded-2xl p-5 md:p-6 
+                shadow-lg transition-transform duration-200 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] hover:-translate-y-1"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <Calculator className="w-8 h-8 text-[var(--gold-bright)] opacity-90" />
+                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-soft)]">
+                  Tools
+                </span>
+              </div>
+              <h3 className="text-xl font-semibold text-[var(--gold-bright)] mb-1">
+                Smart Trade Calculator
+              </h3>
+              <p className="text-gray-400 text-sm mb-3">
+                Compare offers, calculate total value on both sides and avoid one-sided trades.
+              </p>
+              <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">
+                Use calculator →
+              </span>
+            </Link>
+
+            <Link
+              to="/scam-logs"
+              className="group block bg-[#111]/70 backdrop-blur-xl border border-gray-800 rounded-2xl p-5 md:p-6 
+                shadow-lg transition-transform duration-200 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] hover:-translate-y-1"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <Shield className="w-8 h-8 text-[var(--gold-bright)] opacity-90" />
+                <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-soft)]">
+                  Safety
+                </span>
+              </div>
+              <h3 className="text-xl font-semibold text-[var(--gold-bright)] mb-1">
+                Safer Trading
+              </h3>
+              <p className="text-gray-400 text-sm mb-3">
+                Check scam logs and stay away from flagged users before you trade.
+              </p>
+              <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">
+                View scam logs →
+              </span>
+            </Link>
+          </div>
         </section>
 
+        {/* FAQ SECTION */}
         <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-16">
           <FAQSection />
         </section>
-
       </div>
     </div>
   );
-};
+};  
