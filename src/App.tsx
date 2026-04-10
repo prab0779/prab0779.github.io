@@ -6,6 +6,7 @@ import { MaintenancePopup } from "./components/MaintenancePopup";
 import { Home } from "./components/Home";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useItems } from "./hooks/useItems";
+import ClickSpark from "./Shared/ClickSpark";
 import { OnlinePresenceProvider } from "./components/OnlinePresenceProvider";
 
 /* Lazy-loaded pages */
@@ -44,10 +45,18 @@ const LoadingFallback = () => (
 /* ⭐ MAIN DEFAULT EXPORT */
 export default function App() {
   return (
-    <OnlinePresenceProvider>
+  <OnlinePresenceProvider>
+    <ClickSpark
+  sparkColor='#fff'
+  sparkSize={10}
+  sparkRadius={15}
+  sparkCount={8}
+  duration={400}
+>
       <AppContent />
-    </OnlinePresenceProvider>
-  );
+    </ClickSpark>
+  </OnlinePresenceProvider>
+);
 }
 
 export const AppContent: React.FC = () => {
@@ -78,7 +87,7 @@ export const AppContent: React.FC = () => {
         {maintenanceMode && !isAdminPage && <MaintenancePopup />}
 
         <main>
-          <div className="container mx-auto px-4 py-4">
+          <div className="w-full">
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
                 <Route path="/" element={<Home items={items} />} />
