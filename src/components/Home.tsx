@@ -105,7 +105,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       <path d="M6 2 2 18l16 4 4-16L6 2Zm6.2 6.2 3.6.9-.9 3.6-3.6-.9.9-3.6Z" />
     </svg>
   </a>
-</div>
+</div> 
           </div>
 
           {/* HERO IMAGE */}
