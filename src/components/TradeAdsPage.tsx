@@ -9,6 +9,8 @@ import {
   Eye
 } from "lucide-react";
 
+import { AnimatedItem } from "../Shared/AnimatedList";
+
 import { useTradeAds } from "../hooks/useTradeAds";
 import { useAuth } from "../hooks/useAuth";
 import { CreateTradeAdData, TradeAdItem } from "../types/TradeAd";
@@ -135,8 +137,13 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
       {/* ADS */}
       <div className="grid lg:grid-cols-2 gap-6">
-        {filteredTradeAds.map((ad) => (
-          <div key={ad.id} className="bg-[#0c0c0c] p-6 rounded-xl border border-white/5 hover:border-white/10">
+        {filteredTradeAds.map((ad, index) => (
+  <AnimatedItem
+    key={ad.id}
+    index={index}
+    delay={(index % 2) * 0.1} // 2 columns → use % 2
+  >
+    <div className="bg-[#0c0c0c] p-6 rounded-xl border border-white/5 hover:border-white/10 transition">
 
             <div className="flex items-center mb-4 gap-2">
               <img src={ad.authorAvatar} className="w-8 h-8 rounded-full" />
@@ -181,6 +188,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
             </div>
 
           </div>
+    </AnimatedItem>
         ))}
       </div>
 
