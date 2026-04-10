@@ -5,7 +5,7 @@ import { FAQSection } from "./FAQSection";
 import { VideoSlider } from "./VideoSlider";
 import { StockRestocker } from "../components/StockRestocker";
 import { LineChart, Sparkles, Calculator, Shield } from "lucide-react";
-import { ShapeGrid } from "../shared/ShapeGrid"; 
+import { ShapeGrid } from "./shared/ShapeGrid"; 
 
 interface HomeProps {
   items: Item[];
