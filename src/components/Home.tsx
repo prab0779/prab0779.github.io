@@ -4,6 +4,7 @@ import { Item } from "../types/Item";
 import { FAQSection } from "./FAQSection";
 import { VideoSlider } from "./VideoSlider";
 import { StockRestocker } from "../components/StockRestocker";
+import Carousel from "../Shared/Carousel";
 import { LineChart, Sparkles, Calculator, Shield } from "lucide-react";
 
 interface HomeProps {
