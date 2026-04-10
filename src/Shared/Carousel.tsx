@@ -5,10 +5,8 @@ import React, { JSX } from 'react';
 // replace icons with your own if needed
 import { FiCircle, FiCode, FiFileText, FiLayers, FiLayout } from 'react-icons/fi';
 export interface CarouselItem {
-  title: string;
-  description: string;
   id: number;
-  icon: React.ReactNode;
+  image: string;
 }
 
 export interface CarouselProps {
