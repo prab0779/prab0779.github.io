@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { ItemCard } from "./ItemCard";
 import { SearchAndFilter } from "./SearchAndFilter";
 import { Item } from "../types/Item";
+import { AnimatedItem } from "../Shared/AnimatedList";
 
 interface ItemFlipGridProps {
   items: Item[];
@@ -49,14 +50,19 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-16">
-        {filteredItems.map((item) => (
-          <ItemCard
-            key={item.id}
-            item={item}
-            mode={mode}
-            vizardValue={vizardValue}   // 🔥 SEND Vizard Mask value here
-          />
-        ))}
+        {filteredItems.map((item, index) => (
+  <AnimatedItem
+    key={item.id}
+    index={index}
+    delay={(index % 4) * 0.08} // 🔥 stagger per row
+  >
+    <ItemCard
+      item={item}
+      mode={mode}
+      vizardValue={vizardValue}
+    />
+  </AnimatedItem>
+))}
       </div>
     </div>
   );
