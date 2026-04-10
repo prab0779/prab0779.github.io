@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { TrendingUp, TrendingDown, Minus, Calendar, Filter, Search } from "lucide-react";
 import { useValueChanges } from "../hooks/useValueChanges";
+import { AnimatedItem } from "../Shared/AnimatedList";
 
 export const ValueChangesPage: React.FC = () => {
   const { valueChanges, loading, error } = useValueChanges();
@@ -125,11 +126,13 @@ export const ValueChangesPage: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredChanges.map((change) => (
-            <div
-              key={change.id}
-              className="bg-[#0c0c0c] border border-white/5 rounded-xl p-4 hover:border-white/10 transition"
-            >
+          {filteredChanges.map((change, index) => (
+  <AnimatedItem
+    key={change.id}
+    index={index}
+    delay={(index % 4) * 0.08}
+  >
+    <div className="bg-[#0c0c0c] border border-white/5 rounded-xl p-4 hover:border-white/10 transition">
               <div className="flex items-center gap-2 mb-3">
                 {renderItemIcon(change.emoji, change.itemName)}
                 <span className="text-white text-sm font-semibold truncate">
@@ -145,9 +148,13 @@ export const ValueChangesPage: React.FC = () => {
                 </span>
               </div>
             </div>
+    </AnimatedItem>
           ))}
         </div>
+          
       )}
+          
     </div>
+      
   );
 };
