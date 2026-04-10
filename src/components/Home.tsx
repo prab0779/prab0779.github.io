@@ -109,16 +109,20 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           </div>
 
           {/* HERO IMAGE */}
-          <div className="relative mx-auto w-full max-w-sm md:max-w-md lg:max-w-full">
-            <div className="absolute -inset-6 rounded-3xl bg-[var(--gold-bright)] opacity-10 blur-3xl pointer-events-none" />
-            <div className="relative rounded-3xl overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.7)] border border-[rgba(255,220,150,0.15)] bg-black/40 backdrop-blur">
-              <img
-                src="/hero.png"
-                alt="AOTR Hero"
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          </div>
+          <div className="relative mx-auto w-full flex justify-center lg:justify-end">
+  <div className="relative p-4 rounded-2xl border border-[rgba(255,220,150,0.15)] bg-black/40 backdrop-blur shadow-[0_0_25px_rgba(0,0,0,0.6)]">
+    
+    <Carousel
+      baseWidth={320}
+      autoplay={true}
+      autoplayDelay={3000}
+      pauseOnHover={true}
+      loop={true}
+      round={false}
+    />
+
+  </div>
+</div>
         </section>
 
         {/* DIVIDER */}
