@@ -49,43 +49,33 @@ interface CarouselItemProps {
   transition: any;
 }
 
-function CarouselItem({ item, index, itemWidth, round, trackItemOffset, x, transition }: CarouselItemProps) {
+function CarouselItem({ item, index, itemWidth, trackItemOffset, x, transition }: CarouselItemProps) {
   const range = [-(index + 1) * trackItemOffset, -index * trackItemOffset, -(index - 1) * trackItemOffset];
-  const outputRange = [90, 0, -90];
-  const rotateY = useTransform(x, range, outputRange, { clamp: false });
+  const rotateY = useTransform(x, range, [90, 0, -90], { clamp: false });
 
   return (
     <motion.div
-      key={`${item?.id ?? index}-${index}`}
-      className={`relative shrink-0 flex flex-col ${
-        round
-          ? 'items-center justify-center text-center bg-[#060010] border-0'
-          : 'items-start justify-between bg-[#222] border border-[#222] rounded-[12px]'
-      } overflow-hidden cursor-grab active:cursor-grabbing`}
+      className="relative shrink-0 overflow-hidden rounded-3xl"
       style={{
         width: itemWidth,
-        height: round ? itemWidth : '100%',
-        rotateY: rotateY,
-        ...(round && { borderRadius: '50%' })
-      }}
+        height: "100%",
+        rotateY
+      }} 
       transition={transition}
     >
-      <div className={`${round ? 'p-0 m-0' : 'mb-4 p-5'}`}>
-        <span className="flex h-[28px] w-[28px] items-center justify-center rounded-full bg-[#060010]">
-          {item.icon}
-        </span>
-      </div>
-      <div className="p-5">
-        <div className="mb-1 font-black text-lg text-white">{item.title}</div>
-        <p className="text-sm text-white">{item.description}</p>
-      </div>
+      {/* Image */}
+      <img
+        src={item.image}
+        alt="hero"
+        className="w-full h-full object-cover rounded-3xl border border-[rgba(255,220,150,0.15)] shadow-[0_0_20px_rgba(0,0,0,0.7)]"
+      />
     </motion.div>
   );
 }
 
 export default function Carousel({
   items = DEFAULT_ITEMS,
-  baseWidth = 300,
+  baseWidth = 500,
   autoplay = false,
   autoplayDelay = 3000,
   pauseOnHover = false,
@@ -93,7 +83,21 @@ export default function Carousel({
   round = false
 }: CarouselProps): JSX.Element {
   const containerPadding = 16;
-  const itemWidth = baseWidth - containerPadding * 2;
+ const [containerWidth, setContainerWidth] = useState(baseWidth);
+
+useEffect(() => {
+  const updateWidth = () => {
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.offsetWidth);
+    }
+  };
+
+  updateWidth();
+  window.addEventListener("resize", updateWidth);
+  return () => window.removeEventListener("resize", updateWidth);
+}, []);
+
+const itemWidth = containerWidth - containerPadding * 2;
   const trackItemOffset = itemWidth + GAP;
   const itemsForRender = useMemo(() => {
     if (!loop) return items;
@@ -218,11 +222,10 @@ export default function Carousel({
   return (
     <div
       ref={containerRef}
-      className={`relative overflow-hidden p-4 ${
-        round ? 'rounded-full border border-white' : 'rounded-[24px] border border-[#222]'
-      }`}
+      className="relative overflow-hidden p-4 rounded-[24px]"
       style={{
-        width: `${baseWidth}px`,
+        width: "100%",
+  maxWidth: `${baseWidth}px`,
         ...(round && { height: `${baseWidth}px` })
       }}
     >
@@ -264,7 +267,7 @@ export default function Carousel({
               className={`h-2 w-2 rounded-full cursor-pointer transition-colors duration-150 ${
                 activeIndex === index
                   ? round
-                    ? 'bg-white'
+                    ? 'bg-black'
                     : 'bg-[#333333]'
                   : round
                     ? 'bg-[#555]'
