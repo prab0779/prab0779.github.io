@@ -21,7 +21,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       <div className="relative z-10">
 
         {/* HERO SECTION */}
-        <section className="max-w-7xl mx-auto px-4 md:px-6 pt-50 md:pt-62 pb-14 md:pb-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <section className="max-w-7xl mx-auto px-4 md:px-6 pt-[240px] md:pt-[320px] pb-[160px] md:pb-[220px] grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* TEXT */}
           <div className="text-center lg:text-left space-y-6">
             <div>
