@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import BlurText from "../Shared/BlurText";
 
 export const Header: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -44,7 +45,7 @@ export const Header: React.FC = () => {
         className={`
           w-full max-w-5xl
           rounded-xl
-          bg-white/5 backdrop-blur-xl
+          bg-white/10 backdrop-blur-xl
           border border-[#D4AF37]/50
           shadow-[0_8px_30px_rgba(0,0,0,0.6)]
           transition-all duration-300
@@ -70,7 +71,11 @@ export const Header: React.FC = () => {
                       : "text-white/70 hover:text-white"
                   }`}
                 >
-                  {l.name}
+                  <BlurText
+  text={l.name}
+  enabled={false}
+  className="text-[15px] font-medium"
+/>
                   <span
                     className={`absolute left-1/2 -translate-x-1/2 -bottom-1.5 h-[2px] bg-[#D4AF37] transition-all ${
                       active ? "w-6" : "w-0 group-hover:w-6"
@@ -113,13 +118,17 @@ export const Header: React.FC = () => {
                 <Link
                   key={l.path}
                   to={l.path}
-                  className={`relative text-[16px] font-medium ${
+                  className={`relative group text-[16px] font-medium ${
                     active
                       ? "text-[#D4AF37]"
                       : "text-white/80 hover:text-white"
                   }`}
                 >
-                  {l.name}
+                  <BlurText
+  text={l.name}
+  enabled={false}
+  className="text-[16px] font-medium"
+/>
                   <span
                     className={`absolute left-0 -bottom-1 h-[2px] bg-[#D4AF37] transition-all ${
                       active ? "w-20" : "w-0"
