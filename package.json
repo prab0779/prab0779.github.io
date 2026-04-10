@@ -14,7 +14,10 @@
   },
   "homepage": "https://prab0779.github.io/aotr",
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@supabase/supabase-js": "^2.39.0",
+    "gasp": "^0.0.2",
+    "gsap": "^3.14.2",
     "lucide-react": "^0.344.0",
     "motion": "^12.38.0",
     "react": "^18.3.1",
