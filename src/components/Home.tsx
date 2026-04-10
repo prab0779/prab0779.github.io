@@ -120,7 +120,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       loop={true}
       round={false}
     />
-
+ 
   </div>
 </div>
         </section>
