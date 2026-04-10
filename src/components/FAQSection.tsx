@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { AnimatedItem } from "../Shared/AnimatedList";
+import TextType from "../Shared/TextType";
+import SplitText from "../Shared/SplitText";
+import BlurText from "../Shared/BlurText";
 
 interface FAQItem {
   question: string;
@@ -30,32 +34,32 @@ const faqItems: FAQItem[] = [
   {
     question: "What items are included in the AOTR value list?",
     answer:
-      "Our comprehensive AOTR item database includes over 200+ items from Attack on Titan Revolution, covering weapons, accessories, clothing, consumables, and rare collectibles. Each item includes detailed information about value, demand, rarity, and how to obtain it.",
+      "Our comprehensive AOTR item database includes over 200+ items from Attack on Titan Revolution, covering weapons, accessories, clothing, consumables, and rare collectibles.",
   },
   {
     question: "How does the AOTR trade calculator work?",
     answer:
-      "Our AOTR trade calculator allows you to add items you're sending and receiving, automatically calculating total values, tax costs (gem and gold), and net profit/loss. It helps ensure fair trades and prevents you from losing value in Attack on Titan Revolution exchanges.",
+      "Our AOTR trade calculator allows you to add items you're sending and receiving, automatically calculating total values, tax costs, and net profit/loss.",
   },
   {
     question: "What do the demand ratings mean in AOTR?",
     answer:
-      "Demand ratings (1–10) indicate how much players want specific items in Attack on Titan Revolution. Higher demand means items are more sought after and harder to obtain.",
+      "Demand ratings (1–10) indicate how much players want specific items. Higher demand means items are more sought after.",
   },
   {
-    question: 'What does "Rate of Change" mean for AOTR items?',
+    question: 'What does "Rate of Change" mean?',
     answer:
-      "Rate of Change indicates whether an item's value is trending upward, downward, stable, or overpriced based on market behavior.",
+      "Rate of Change indicates whether an item's value is trending upward, downward, stable, or overpriced.",
   },
   {
-    question: "How do taxes work in AOTR trading?",
+    question: "How do taxes work?",
     answer:
-      "Some AOTR items require gem or gold taxes when trading. Our calculator automatically computes these costs so you know exactly what you'll pay.",
+      "Some items require gem or gold taxes when trading. Our calculator automatically computes these costs.",
   },
   {
     question: "Can I suggest updates?",
     answer:
-      "Yes! We welcome community feedback. Join our Discord to suggest value changes or report inaccurate information.",
+      "Yes! Join our Discord to suggest value changes or report inaccurate information.",
   },
 ];
 
@@ -69,55 +73,87 @@ export const FAQSection: React.FC = () => {
   return (
     <div className="py-20">
 
-      {/* Heading */}
+      {/* 🔥 Heading */}
       <div className="text-center mb-12">
-        <span className="tracking-wide uppercase text-sm text-[var(--gold-soft)]">
-          FAQs
-        </span>
 
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white/70 mt-3 drop-shadow-[0_0_6px_rgba(255,225,150,0.35)]">
-          We’ve Got the Answers
-        </h2>
+        {/* FAQs (silver) */}
+        <BlurText
+          text="FAQs"
+          enabled={false}
+          className="tracking-wide uppercase text-sm justify-center"
+        />
 
-        <p className="text-gray-400 mt-4 max-w-xl mx-auto">
-          A list of commonly asked questions from our community.
-        </p>
+        {/* Main Title (gold) */}
+        <SplitText
+          text="We’ve Got the Answers"
+          tag="h2"
+          enabled={false}
+          className="text-3xl sm:text-4xl font-extrabold mt-3 drop-shadow-[0_0_6px_rgba(255,225,150,0.35)]"
+        />
+
+        {/* Description (silver) */}
+        <BlurText
+          text="A list of commonly asked questions from our community."
+          enabled={false}
+          className="mt-4 max-w-xl mx-auto text-sm justify-center"
+        />
+
       </div>
 
       {/* FAQ List */}
       <div className="max-w-3xl mx-auto space-y-4">
         {faqItems.map((item, index) => (
-          <div
-            key={index}
-            className="bg-[#0b0b0d] border border-gray-800 rounded-xl overflow-hidden shadow-[0_0_12px_rgba(255,220,150,0.05)] transition-all"
-          >
-            <button
-              onClick={() => toggleFAQ(index)}
-              className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[rgba(255,220,150,0.05)] transition"
-            >
-             <span className="text-white text-base font-medium">
-                {item.question}
-              </span>
+          <AnimatedItem key={index} index={index} delay={index * 0.05}>
+            <div className="bg-[#0b0b0d] border border-gray-800 rounded-xl overflow-hidden shadow-[0_0_12px_rgba(255,220,150,0.05)] transition-all">
 
-              <ChevronDown
-                className={`w-5 h-5 text-white/70 transition-transform duration-300 ${
-                  openIndex === index ? "rotate-180 text-[var(--gold-bright)]" : ""
-                }`}
-              />
-            </button>
-
-            {/* Answer */}
-            {openIndex === index && (
-              <div
-                className="px-6 py-4 bg-black border-t border-gray-800 animate-fade-in"
-                style={{ animationDuration: "0.35s" }}
+              <button
+                onClick={() => toggleFAQ(index)}
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[rgba(255,220,150,0.05)] transition"
               >
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  {item.answer}
-                </p>
-              </div>
-            )}
-          </div>
+
+                {/* Question */}
+                <SplitText
+                  text={item.question}
+                  enabled={false}
+                  tag="span"
+                  textAlign="left"
+                  className={`text-base font-medium transition-colors ${
+                    openIndex === index
+                      ? "text-[var(--gold-bright)]"
+                      : "text-blue-400 hover:text-blue-300"
+                  }`}
+                />
+
+                {/* Arrow */}
+                <ChevronDown
+                  className={`w-5 h-5 transition-transform duration-300 ${
+                    openIndex === index
+                      ? "rotate-180 text-[var(--gold-bright)]"
+                      : "text-white-400"
+                  }`}
+                />
+
+              </button>
+
+              {/* Answer */}
+              {openIndex === index && (
+                <div className="px-6 py-4 bg-black border-t border-gray-800">
+                  <TextType
+                    key={index + "-" + openIndex}
+                    text={item.answer}
+                    typingSpeed={20}
+                    deletingSpeed={0}
+                    pauseDuration={999999}
+                    loop={false}
+                    showCursor
+                    cursorCharacter="|"
+                    className="text-gray-300 text-sm leading-relaxed"
+                  />
+                </div>
+              )}
+
+            </div>
+          </AnimatedItem>
         ))}
       </div>
 
