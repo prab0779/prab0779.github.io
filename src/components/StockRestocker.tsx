@@ -92,6 +92,7 @@ export const StockRestocker: React.FC = () => {
         splitType="chars"
         from={{ opacity: 0, y: 40 }}
         to={{ opacity: 1, y: 0 }}
+        enabled = false
       /> 
 
       <BlurText
