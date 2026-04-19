@@ -66,7 +66,13 @@ export const ItemCard: React.FC<ItemCardProps> = ({
   return (
     <div className="bg-[#06060A] rounded-2xl border border-gray-800 p-5 shadow-xl hover:border-[#D4AF37]/50 transition-all flex flex-col">
       <div className="flex justify-between items-center mb-3">
-        <h2 className="text-white font-bold text-lg">{item.name}</h2>
+        <h2 className="font-bold text-lg flex flex-wrap">
+          {item.name.split("").map((char, i) => (
+            <span key={i} className="gold-letter">
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
+        </h2>
       </div>
 
       <div className="flex justify-center mb-4">
@@ -99,10 +105,16 @@ export const ItemCard: React.FC<ItemCardProps> = ({
 
       <div className="bg-black/40 rounded-xl p-4 space-y-3 border border-gray-800">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-300 font-medium">Value</span>
+          <span className="font-medium flex flex-wrap">
+            {"Value".split("").map((c, i) => (
+              <span key={i} className="silver-letter">
+                {c}
+              </span>
+            ))}
+          </span>
 
           {modeState === "regular" ? (
-            <span className="text-white font-bold">
+            <span className="font-bold">
               <CountUp
                 from={0}
                 to={keysValue}
@@ -131,7 +143,13 @@ export const ItemCard: React.FC<ItemCardProps> = ({
         </div>
 
         <div className="flex justify-between text-sm">
-          <span className="text-gray-300 font-medium">Trend</span>
+          <span className="font-medium flex flex-wrap">
+            {"Trend".split("").map((c, i) => (
+              <span key={i} className="silver-letter">
+                {c}
+              </span>
+            ))}
+          </span>
           <span className={`font-bold flex items-center gap-1 ${getRateColor(item.rateOfChange)}`}>
             {getRateIcon(item.rateOfChange)}
             {item.rateOfChange}
@@ -139,14 +157,26 @@ export const ItemCard: React.FC<ItemCardProps> = ({
         </div>
 
         <div className="flex justify-between text-sm">
-          <span className="text-gray-300 font-medium">Demand</span>
+          <span className="font-medium flex flex-wrap">
+            {"Demand".split("").map((c, i) => (
+              <span key={i} className="silver-letter">
+                {c}
+              </span>
+            ))}
+          </span>
           <span className={`font-bold ${getDemandColor(item.demand)}`}>
             {item.demand}/10
           </span>
         </div>
 
         <div className="flex justify-between text-sm">
-          <span className="text-gray-300 font-medium">{tax.label}</span>
+          <span className="font-medium flex flex-wrap">
+            {tax.label.split("").map((c, i) => (
+              <span key={i} className="silver-letter">
+                {c === " " ? "\u00A0" : c}
+              </span>
+            ))}
+          </span>
           <span className={`font-bold ${tax.color}`}>
             {tax.value > 0 ? (
               <CountUp
@@ -163,12 +193,18 @@ export const ItemCard: React.FC<ItemCardProps> = ({
         </div>
 
         <div className="flex justify-between text-sm">
-          <span className="text-gray-300 font-medium">Prestige</span>
+          <span className="font-medium flex flex-wrap">
+            {"Prestige".split("").map((c, i) => (
+              <span key={i} className="silver-letter">
+                {c}
+              </span>
+            ))}
+          </span>
           <span className="text-purple-300 font-bold">
             {item.prestige}
           </span>
         </div>
       </div>
     </div>
-  ); 
+  );
 };
