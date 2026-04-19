@@ -89,18 +89,6 @@ export const StockRestocker: React.FC = () => {
     </span>
   ))}
 </h2>
-      <SplitText
-        text="Cosmetic Market"
-        tag="h2"
-        className="text-2xl md:text-3xl font-bold text-white mb-3"
-        delay={40}
-        duration={1}
-        enabled = {false}
-        ease="power3.out"
-        splitType="chars"
-        from={{ opacity: 0, y: 40 }}
-        to={{ opacity: 1, y: 0 }} 
-      /> 
 
       <BlurText
         text={`Next restock in: ${timeLeft}`}
