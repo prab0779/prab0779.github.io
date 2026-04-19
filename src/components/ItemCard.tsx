@@ -107,7 +107,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
         <div className="flex justify-between text-sm">
           <span className="font-medium flex flex-wrap">
             {"Value".split("").map((c, i) => (
-              <span key={i} className="gold-letter">
+              <span key={i} className="silver-letter"> 
                 {c}
               </span>
             ))}
