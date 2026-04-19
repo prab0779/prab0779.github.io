@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Item } from "../types/Item";
 import CountUp from "../Shared/CountUp";
+import BorderGlow from "../Shared/BorderGlow";
 
 interface ItemCardProps {
   item: Item;
@@ -64,147 +65,159 @@ export const ItemCard: React.FC<ItemCardProps> = ({
   const vizardConverted = vizardValue > 0 ? item.value / vizardValue : 0;
 
   return (
-    <div className="bg-[#06060A] rounded-2xl border border-gray-800 p-5 shadow-xl hover:border-[#D4AF37]/50 transition-all flex flex-col">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="font-bold text-lg flex flex-wrap">
-          {item.name.split("").map((char, i) => (
-            <span key={i} className="gold-letter">
-              {char === " " ? "\u00A0" : char}
-            </span>
-          ))}
-        </h2>
-      </div>
-
-      <div className="flex justify-center mb-4">
-        {renderIcon(item.emoji)}
-      </div>
-
-      <div className="flex bg-gray-900 border border-gray-800 rounded-full w-max mx-auto mb-4">
-        <button
-          onClick={() => setModeState("regular")}
-          className={`px-3 py-1 text-xs rounded-full ${
-            modeState === "regular"
-              ? "bg-blue-600 text-white"
-              : "text-gray-300"
-          }`}
-        >
-          Key
-        </button>
-
-        <button
-          onClick={() => setModeState("permanent")}
-          className={`px-3 py-1 text-xs rounded-full ${
-            modeState === "permanent"
-              ? "bg-blue-600 text-white"
-              : "text-gray-300"
-          }`}
-        >
-          Vizard
-        </button>
-      </div>
-
-      <div className="bg-black/40 rounded-xl p-4 space-y-3 border border-gray-800">
-        <div className="flex justify-between text-sm">
-          <span className="font-medium flex flex-wrap">
-            {"Value".split("").map((c, i) => (
-              <span key={i} className="silver-letter">
-                {c}
+    <BorderGlow
+      edgeSensitivity={30}
+      glowColor="40 80 80"
+      backgroundColor="#060010"
+      borderRadius={24}
+      glowRadius={40}
+      glowIntensity={1}
+      coneSpread={25}
+      animated={false}
+      colors={["#FFD700", "#FFC94D", "#FFB347"]}
+    >
+      <div className="p-5 flex flex-col">
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="font-bold text-lg flex flex-wrap">
+            {item.name.split("").map((char, i) => (
+              <span key={i} className="gold-letter">
+                {char === " " ? "\u00A0" : char}
               </span>
             ))}
-          </span>
-
-          {modeState === "regular" ? (
-            <span className="text-white font-bold">
-              <CountUp
-                from={0}
-                to={keysValue}
-                duration={1.2}
-                delay={(index % 4) * 0.08}
-                format={(v) => {
-                  if (v >= 1_000_000_000)
-                    return (v / 1_000_000_000).toFixed(2) + "B";
-                  if (v >= 1_000_000)
-                    return (v / 1_000_000).toFixed(0) + "M";
-                  return v.toLocaleString();
-                }}
-              />
-            </span>
-          ) : (
-            <span className="text-purple-300 font-bold">
-              <CountUp
-                from={0}
-                to={vizardConverted}
-                duration={1.2}
-                delay={(index % 4) * 0.08}
-                format={(v) => Number(v).toFixed(2)}
-              />
-            </span>
-          )}
+          </h2>
         </div>
 
-        <div className="flex justify-between text-sm">
-          <span className="font-medium flex flex-wrap">
-            {"Trend".split("").map((c, i) => (
-              <span key={i} className="silver-letter">
-                {c}
-              </span>
-            ))}
-          </span>
-          <span className={`font-bold flex items-center gap-1 ${getRateColor(item.rateOfChange)}`}>
-            {getRateIcon(item.rateOfChange)}
-            {item.rateOfChange}
-          </span>
+        <div className="flex justify-center mb-4">
+          {renderIcon(item.emoji)}
         </div>
 
-        <div className="flex justify-between text-sm">
-          <span className="font-medium flex flex-wrap">
-            {"Demand".split("").map((c, i) => (
-              <span key={i} className="silver-letter">
-                {c}
-              </span>
-            ))}
-          </span>
-          <span className={`font-bold ${getDemandColor(item.demand)}`}>
-            {item.demand}/10
-          </span>
+        <div className="flex bg-gray-900 border border-gray-800 rounded-full w-max mx-auto mb-4">
+          <button
+            onClick={() => setModeState("regular")}
+            className={`px-3 py-1 text-xs rounded-full ${
+              modeState === "regular"
+                ? "bg-blue-600 text-white"
+                : "text-gray-300"
+            }`}
+          >
+            Key
+          </button>
+
+          <button
+            onClick={() => setModeState("permanent")}
+            className={`px-3 py-1 text-xs rounded-full ${
+              modeState === "permanent"
+                ? "bg-blue-600 text-white"
+                : "text-gray-300"
+            }`}
+          >
+            Vizard
+          </button>
         </div>
 
-        <div className="flex justify-between text-sm">
-          <span className="font-medium flex flex-wrap">
-            {tax.label.split("").map((c, i) => (
-              <span key={i} className="silver-letter">
-                {c === " " ? "\u00A0" : c}
+        <div className="bg-black/40 rounded-xl p-4 space-y-3 border border-gray-800">
+          <div className="flex justify-between text-sm">
+            <span className="font-medium flex flex-wrap">
+              {"Value".split("").map((c, i) => (
+                <span key={i} className="silver-letter">
+                  {c}
+                </span>
+              ))}
+            </span>
+
+            {modeState === "regular" ? (
+              <span className="text-white font-bold">
+                <CountUp
+                  from={0}
+                  to={keysValue}
+                  duration={1.2}
+                  delay={(index % 4) * 0.08}
+                  format={(v) => {
+                    if (v >= 1_000_000_000)
+                      return (v / 1_000_000_000).toFixed(2) + "B";
+                    if (v >= 1_000_000)
+                      return (v / 1_000_000).toFixed(0) + "M";
+                    return v.toLocaleString();
+                  }}
+                />
               </span>
-            ))}
-          </span>
-          <span className={`font-bold ${tax.color}`}>
-            {tax.value > 0 ? (
-              <CountUp
-                from={0}
-                to={tax.value}
-                duration={1}
-                delay={(index % 4) * 0.08 + 0.1}
-                format={(v) => v.toLocaleString()}
-              />
             ) : (
-              "None"
-            )}
-          </span>
-        </div>
-
-        <div className="flex justify-between text-sm">
-          <span className="font-medium flex flex-wrap">
-            {"Prestige".split("").map((c, i) => (
-              <span key={i} className="silver-letter">
-                {c}
+              <span className="text-purple-300 font-bold">
+                <CountUp
+                  from={0}
+                  to={vizardConverted}
+                  duration={1.2}
+                  delay={(index % 4) * 0.08}
+                  format={(v) => Number(v).toFixed(2)}
+                />
               </span>
-            ))}
-          </span>
-          <span className="text-purple-300 font-bold">
-            {item.prestige}
-          </span>
+            )}
+          </div>
+
+          <div className="flex justify-between text-sm">
+            <span className="font-medium flex flex-wrap">
+              {"Trend".split("").map((c, i) => (
+                <span key={i} className="silver-letter">
+                  {c}
+                </span>
+              ))}
+            </span>
+            <span className={`font-bold flex items-center gap-1 ${getRateColor(item.rateOfChange)}`}>
+              {getRateIcon(item.rateOfChange)}
+              {item.rateOfChange}
+            </span>
+          </div>
+
+          <div className="flex justify-between text-sm">
+            <span className="font-medium flex flex-wrap">
+              {"Demand".split("").map((c, i) => (
+                <span key={i} className="silver-letter">
+                  {c}
+                </span>
+              ))}
+            </span>
+            <span className={`font-bold ${getDemandColor(item.demand)}`}>
+              {item.demand}/10
+            </span>
+          </div>
+
+          <div className="flex justify-between text-sm">
+            <span className="font-medium flex flex-wrap">
+              {tax.label.split("").map((c, i) => (
+                <span key={i} className="silver-letter">
+                  {c === " " ? "\u00A0" : c}
+                </span>
+              ))}
+            </span>
+            <span className={`font-bold ${tax.color}`}>
+              {tax.value > 0 ? (
+                <CountUp
+                  from={0}
+                  to={tax.value}
+                  duration={1}
+                  delay={(index % 4) * 0.08 + 0.1}
+                  format={(v) => v.toLocaleString()}
+                />
+              ) : (
+                "None"
+              )}
+            </span>
+          </div>
+
+          <div className="flex justify-between text-sm">
+            <span className="font-medium flex flex-wrap">
+              {"Prestige".split("").map((c, i) => (
+                <span key={i} className="silver-letter">
+                  {c}
+                </span>
+              ))}
+            </span>
+            <span className="text-purple-300 font-bold">
+              {item.prestige}
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+    </BorderGlow>
   );
 };
