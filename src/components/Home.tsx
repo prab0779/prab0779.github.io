@@ -72,12 +72,12 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             <div className="text-center lg:text-left space-y-4">
               <div>
                 <div className="text-xs font-medium uppercase tracking-[0.25em] mb-2 flex flex-wrap">
-  {"AOT:R Trading Hub".split("").map((char, i) => (
-    <span key={i} className="silver-letter">
-      {char === " " ? "\u00A0" : char}
-    </span>
-  ))}
-</div>
+                  {"AOT:R Trading Hub".split("").map((char, i) => (
+                  <span key={i} className="silver-letter">
+                  {char === " " ? "\u00A0" : char}
+                    </span>
+                    ))}
+                </div>
 
                 <SplitText
                   text="AOT:R Values"
