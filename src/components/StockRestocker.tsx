@@ -82,7 +82,7 @@ export const StockRestocker: React.FC = () => {
 
   return (
     <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14 mt-10">
-      <h2 className="text-2xl md:text-3xl font-bold mb-3 text-center">
+      <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
   {"Cosmetic Market".split("").map((char, i) => (
     <span key={i} className="gold-letter">
       {char === " " ? "\u00A0" : char}
