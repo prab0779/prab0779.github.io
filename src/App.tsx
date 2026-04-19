@@ -95,7 +95,7 @@ export const AppContent: React.FC = () => {
                 <Route path="/value-list" element={<ValueListPage items={items} />} />
                 <Route path="/value-changes" element={<ValueChangesPage />} />
                 <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
-                <Route path="/scam-logs" element={<ScamLogsPage />} />
+          
                 <Route path="/auth/callback" element={<AuthCallback />} />
 
                 <Route
