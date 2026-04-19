@@ -45,18 +45,18 @@ const LoadingFallback = () => (
 /* ⭐ MAIN DEFAULT EXPORT */
 export default function App() {
   return (
-  <OnlinePresenceProvider>
-    <ClickSpark
-  sparkColor='#fff'
-  sparkSize={10}
-  sparkRadius={15}
-  sparkCount={8}
-  duration={400}
->
-      <AppContent />
-    </ClickSpark>
-  </OnlinePresenceProvider>
-);
+    <OnlinePresenceProvider>
+      <ClickSpark
+        sparkColor="#fff"
+        sparkSize={10}
+        sparkRadius={15}
+        sparkCount={8}
+        duration={400}
+      >
+        <AppContent />
+      </ClickSpark>
+    </OnlinePresenceProvider>
+  );
 }
 
 export const AppContent: React.FC = () => {
@@ -64,7 +64,6 @@ export const AppContent: React.FC = () => {
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const location = useLocation();
 
-  /* Load maintenance mode from localStorage */
   useEffect(() => {
     const saved = localStorage.getItem("maintenanceMode");
     if (saved) setMaintenanceMode(JSON.parse(saved));
@@ -78,15 +77,13 @@ export const AppContent: React.FC = () => {
   const isAdminPage = location.pathname === "/admin";
 
   return (
-    <div className="min-h-screen relative aotr-background">
-
-      {/* CONTENT ABOVE BACKGROUND */}
-      <div className="relative z-10">
+    <div className="min-h-screen flex flex-col relative aotr-background">
+      <div className="relative z-10 flex flex-col min-h-screen">
 
         {!isAdminPage && <Header />}
         {maintenanceMode && !isAdminPage && <MaintenancePopup />}
 
-        <main>
+        <main className="flex-1">
           <div className="w-full">
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
@@ -95,7 +92,7 @@ export const AppContent: React.FC = () => {
                 <Route path="/value-list" element={<ValueListPage items={items} />} />
                 <Route path="/value-changes" element={<ValueChangesPage />} />
                 <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
-          
+                <Route path="/scam-logs" element={<ScamLogsPage />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
 
                 <Route
@@ -117,6 +114,7 @@ export const AppContent: React.FC = () => {
         </main>
 
         {!isAdminPage && <Footer />}
+
       </div>
     </div>
   );
