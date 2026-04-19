@@ -273,7 +273,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
               to: "/value-changes",
               icon: Shield,
               label: "Safety",
-              title: "Safer Trading",
+              title: "value Changes",
               desc: "Check scam logs and stay away from flagged users before you trade.",
               cta: "View scam logs →"
             }].map((card, i) => {
