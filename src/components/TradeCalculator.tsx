@@ -361,7 +361,13 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
           </div>
 
           <div className="mt-2 flex items-center justify-between text-sm">
-            <span className="text-zinc-300 font-medium">Gold Tax:</span>
+            <span className="font-medium flex flex-wrap">
+  {"Gem Tax:".split("").map((char, i) => (
+    <span key={i} className="silver-letter">
+      {char === " " ? "\u00A0" : char}
+    </span>
+  ))}
+</span>
             <span className="text-zinc-100">{goldTax.toLocaleString()}</span>
           </div>
         </div>
