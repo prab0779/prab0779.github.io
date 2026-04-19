@@ -88,6 +88,7 @@ export const StockRestocker: React.FC = () => {
         className="text-2xl md:text-3xl font-bold text-white mb-3"
         delay={40}
         duration={1}
+        enabled = {false}
         ease="power3.out"
         splitType="chars"
         from={{ opacity: 0, y: 40 }}
