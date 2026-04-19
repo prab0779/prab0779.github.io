@@ -236,15 +236,16 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             from={{ opacity: 0, y: 40 }}
             to={{ opacity: 1, y: 0 }}
           />
-          <BlurText
-            text="Everything you need for successful Attack on Titan Revolution trading — from accurate values to smarter tools and safer deals."
-            delay={200}
-            animateBy="words"
-            enabled={false}
-            direction="top"
-            onAnimationComplete={handleAnimationComplete}
-            className="text-gray-400 mb-8 text-sm md:text-base max-w-xl"
-          />
+          <p className="text-gray-400 mb-8 text-sm md:text-base max-w-xl flex flex-wrap">
+  {"Everything you need for successful Attack on Titan Revolution trading — from accurate values to smarter tools and safer deals."
+    .split(" ")
+    .map((word, i, arr) => (
+      <span key={i} className="silver-letter">
+        {word}
+        {i < arr.length - 1 && "\u00A0"}
+      </span>
+    ))}
+</p>
 
           <div className="grid sm:grid-cols-2 gap-5 md:gap-6">
             {[{
