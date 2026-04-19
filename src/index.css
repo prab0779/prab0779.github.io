@@ -25,6 +25,22 @@
   -webkit-text-fill-color: transparent;
 }
 
+.silver-letter {
+  display: inline-block;
+  background: linear-gradient(
+    120deg,
+    #9a9a9a 0%,
+    #d1d5db 40%,
+    #ffffff 50%,
+    #d1d5db 60%,
+    #9a9a9a 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* Background Utilities */
 .bg-gold {
   background-color: var(--gold-soft);
