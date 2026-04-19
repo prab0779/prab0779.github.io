@@ -13,6 +13,21 @@
   --gold-dark: #4b3a1d;      /* dark gold shadow */
 }
 
+.gold-text {
+  background: linear-gradient(
+    120deg,
+    #c6a44b 0%,
+    #f5d97a 40%,
+    #fff3b0 50%,
+    #f5d97a 60%,
+    #c6a44b 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* Text Utilities */
 .text-gold {
   color: var(--gold-soft);
