@@ -14,7 +14,6 @@ export const Header: React.FC = () => {
     { name: "Trade Calculator", path: "/calculator" },
     { name: "Value Changes", path: "/value-changes" },
     { name: "Trade Ads", path: "/trade-ads" },
-    { name: "Scam Logs", path: "/scam-logs" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
