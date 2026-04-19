@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useStockRotation } from "../hooks/useStockRotation";
 import { useItems } from "../hooks/useItems";
-import SplitText from "../Shared/SplitText";
-import BlurText from "../Shared/BlurText";
 import BorderGlow from "../Shared/BorderGlow";
 
 export const StockRestocker: React.FC = () => {
@@ -39,7 +37,8 @@ export const StockRestocker: React.FC = () => {
       second: "2-digit",
     }).formatToParts(new Date());
 
-    const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
+    const get = (type: string) =>
+      Number(parts.find((p) => p.type === type)?.value ?? 0);
 
     return {
       year: get("year"),
@@ -83,20 +82,21 @@ export const StockRestocker: React.FC = () => {
   return (
     <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14 mt-10">
       <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-  {"Cosmetic Market".split("").map((char, i) => (
-    <span key={i} className="gold-letter">
-      {char === " " ? "\u00A0" : char}
-    </span>
-  ))}
-</h2>
+        {"Cosmetic Market".split("").map((char, i) => (
+          <span key={i} className="gold-letter">
+            {char === " " ? "\u00A0" : char}
+          </span>
+        ))}
+      </h2>
 
-      <BlurText
-        text={`Next restock in: ${timeLeft}`}
-        delay={150}
-        animateBy="words"
-        direction="top"
-        className="text-gray-400 mb-6"
-      />
+      <p className="mb-6 flex flex-wrap">
+        {`Next restock in: ${timeLeft}`.split(" ").map((word, i) => (
+          <span key={i} className="silver-letter">
+            {word}
+            {i < `Next restock in: ${timeLeft}`.split(" ").length - 1 && "\u00A0"}
+          </span>
+        ))}
+      </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {activeItems.map((item, i) => (
@@ -110,12 +110,13 @@ export const StockRestocker: React.FC = () => {
             glowIntensity={1}
             coneSpread={25}
             animated={false}
-            colors={['#FFD700', '#FFC94D', '#FFB347']}
+            colors={["#FFD700", "#FFC94D", "#FFB347"]}
           >
             <div className="relative rounded-xl p-5 flex flex-col items-center justify-between transition hover:scale-[1.02]">
               {item ? (
                 <>
-                  {typeof item.emoji === "string" && item.emoji.startsWith("/") ? (
+                  {typeof item.emoji === "string" &&
+                  item.emoji.startsWith("/") ? (
                     <img
                       src={item.emoji}
                       alt={item.name}
@@ -126,12 +127,12 @@ export const StockRestocker: React.FC = () => {
                   )}
 
                   <div className="text-lg font-bold mb-4 tracking-wide text-center">
-  {item.name.split("").map((char, i) => (
-    <span key={i} className="gold-letter">
-      {char === " " ? "\u00A0" : char}
-    </span>
-  ))}
-</div>
+                    {item.name.split("").map((char, i) => (
+                      <span key={i} className="gold-letter">
+                        {char === " " ? "\u00A0" : char}
+                      </span>
+                    ))}
+                  </div>
 
                   <div className="bg-gray-800 text-blue-300 text-center font-bold py-2 rounded-md w-full">
                     In Stock
@@ -139,17 +140,9 @@ export const StockRestocker: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <SplitText
-                    text="?"
-                    tag="div"
-                    className="text-yellow-300 text-lg font-bold mb-4 tracking-wide text-center"
-                    delay={20}
-                    duration={0.6}
-                    ease="power3.out"
-                    splitType="chars"
-                    from={{ opacity: 0, y: 20 }}
-                    to={{ opacity: 1, y: 0 }}
-                  />
+                  <div className="text-lg font-bold mb-4 tracking-wide text-center">
+                    <span className="gold-letter">?</span>
+                  </div>
 
                   <div className="bg-gray-800 text-blue-300 text-center font-bold py-2 rounded-md w-full">
                     ?
