@@ -119,8 +119,8 @@ export const FAQSection: React.FC = () => {
                       key={i}
                       className={
                         openIndex === index
-                          ? "silver-lette"
-                          : "gold-letter"
+                          ? "gold-letter"
+                          : "silver-letter"
                       }
                     >
                       {char === " " ? "\u00A0" : char}
