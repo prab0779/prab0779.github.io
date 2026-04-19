@@ -134,6 +134,7 @@ export const StockRestocker: React.FC = () => {
                     text={item.name}
                     tag="div"
                     className="text-yellow-300 text-lg font-bold mb-4 tracking-wide text-center"
+                    enabled = {false}
                     delay={20}
                     duration={0.6}
                     ease="power3.out"
