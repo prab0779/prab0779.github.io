@@ -119,7 +119,7 @@ export const FAQSection: React.FC = () => {
                       key={i}
                       className={
                         openIndex === index
-                          ? "gold-letter"
+                          ? "silver-lette"
                           : "gold-letter"
                       }
                     >
