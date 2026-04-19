@@ -106,26 +106,34 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
-                <StarBorder
-                  as={Link}
-                  to="/trade-ads"
-                  className="px-6 py-3 bg-[var(--gold-bright)] text-black font-semibold rounded-xl hover:bg-[var(--gold-soft)] transition shadow-lg hover:-translate-y-0.5 active:translate-y-0"
-                  color="#FFD700"
-                  speed="2s"
-                >
-                  Start Trading →
-                </StarBorder>
+  <StarBorder
+    as={Link}
+    to="/trade-ads"
+    className="px-6 py-3 bg-[var(--gold-bright)] text-black font-semibold rounded-xl hover:bg-[var(--gold-soft)] transition shadow-lg hover:-translate-y-0.5 active:translate-y-0 flex flex-wrap justify-center"
+    color="#FFD700"
+    speed="2s"
+  >
+    {"Start Trading →".split("").map((char, i) => (
+      <span key={i} className="silver-letter">
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ))}
+  </StarBorder>
 
-                <StarBorder
-                  as={Link}
-                  to="/value-list"
-                  className="px-6 py-3 bg-[#111] text-[var(--gold-soft)] font-medium rounded-xl border border-gray-700 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] transition hover:-translate-y-0.5"
-                  color="#FFD700"
-                  speed="4s"
-                >
-                  View Values ★
-                </StarBorder>
-              </div>
+  <StarBorder
+    as={Link}
+    to="/value-list"
+    className="px-6 py-3 bg-[#111] font-medium rounded-xl border border-gray-700 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] transition hover:-translate-y-0.5 flex flex-wrap justify-center"
+    color="#FFD700"
+    speed="4s"
+  >
+    {"View Values ★".split("").map((char, i) => (
+      <span key={i} className="gold-letter">
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ))}
+  </StarBorder>
+</div>
             </div>
             <div className="flex justify-center lg:justify-end lg:-ml-10 px-2 sm:px-0">
                 <Carousel />
