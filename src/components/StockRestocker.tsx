@@ -91,8 +91,7 @@ export const StockRestocker: React.FC = () => {
         ease="power3.out"
         splitType="chars"
         from={{ opacity: 0, y: 40 }}
-        to={{ opacity: 1, y: 0 }}
-        enabled = false
+        to={{ opacity: 1, y: 0 }} 
       /> 
 
       <BlurText
