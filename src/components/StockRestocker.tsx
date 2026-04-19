@@ -104,7 +104,7 @@ export const StockRestocker: React.FC = () => {
             key={i}
             edgeSensitivity={30}
             glowColor="40 80 80"
-            backgroundColor="#060010"
+            backgroundColor="#0c0c0c"
             borderRadius={20}
             glowRadius={30}
             glowIntensity={1}
