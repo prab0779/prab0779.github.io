@@ -362,7 +362,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
 
           <div className="mt-2 flex items-center justify-between text-sm">
             <span className="font-medium flex flex-wrap">
-  {"Gem Tax:".split("").map((char, i) => (
+  {"Gold Tax:".split("").map((char, i) => (
     <span key={i} className="silver-letter">
       {char === " " ? "\u00A0" : char}
     </span>
