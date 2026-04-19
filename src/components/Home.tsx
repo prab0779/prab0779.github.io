@@ -305,14 +305,14 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
   ))}
 </h3>
 
-                    <BlurText
-                      text={card.desc}
-                      delay={150}
-                      animateBy="words"
-                      enabled={false}
-                      direction="top"
-                      className="text-gray-400 text-sm mb-3"
-                    />
+                    <p className="text-gray-400 text-sm mb-3 flex flex-wrap">
+  {card.desc.split(" ").map((word, i, arr) => (
+    <span key={i} className="silver-letter">
+      {word}
+      {i < arr.length - 1 && "\u00A0"}
+    </span>
+  ))}
+</p>
 
                     <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">{card.cta}</span>
                   </Link>
