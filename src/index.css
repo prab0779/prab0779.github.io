@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ========================= */
-/*      GOLDEN UI THEME      */
-/* ========================= */
-
 :root {
   --gold-soft: #927337;      /* soft gold, darker */
   --gold-bright: #c4a04a;    /* bright gold, richer but still gold */
