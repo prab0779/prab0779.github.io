@@ -9,7 +9,8 @@
   --gold-dark: #4b3a1d;      /* dark gold shadow */
 }
 
-.gold-text {
+.gold-letter {
+  display: inline-block;
   background: linear-gradient(
     120deg,
     #c6a44b 0%,
