@@ -158,4 +158,4 @@ export const FAQSection: React.FC = () => {
       </div>
     </div>
   );
-};
+}; 
