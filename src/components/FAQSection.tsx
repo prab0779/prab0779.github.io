@@ -120,7 +120,7 @@ export const FAQSection: React.FC = () => {
                       className={
                         openIndex === index
                           ? "gold-letter"
-                          : "silver-letter"
+                          : "gold-letter"
                       }
                     >
                       {char === " " ? "\u00A0" : char}
