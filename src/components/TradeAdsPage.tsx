@@ -1,19 +1,14 @@
 import React, { useState, useMemo, useEffect } from "react";
 import {
-  Plus,
   Search,
-  Filter,
-  Tag,
-  X,
-  Save,
   Eye
 } from "lucide-react";
 
 import { AnimatedItem } from "../Shared/AnimatedList";
+import BorderGlow from "../Shared/BorderGlow";
 
 import { useTradeAds } from "../hooks/useTradeAds";
 import { useAuth } from "../hooks/useAuth";
-import { CreateTradeAdData, TradeAdItem } from "../types/TradeAd";
 import { Item } from "../types/Item";
 
 interface TradeAdsPageProps {
@@ -29,28 +24,15 @@ const AVAILABLE_TAGS = [
 export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const { user, signInWithDiscord } = useAuth();
   const {
-    tradeAds, loading, error, createTradeAd,
+    tradeAds, loading,
     page, totalPages, setPage, total
   } = useTradeAds();
 
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [countdown, setCountdown] = useState<number>(0);
 
   useEffect(() => setPage(1), [searchTerm, selectedTag]);
-
-  useEffect(() => {
-    if (countdown <= 0) return;
-    const t = setInterval(() => {
-      setCountdown((p) => {
-        if (p - 1 <= 0) setErrorMessage(null);
-        return p - 1;
-      });
-    }, 1000);
-    return () => clearInterval(t);
-  }, [countdown]);
 
   const filteredTradeAds = useMemo(() => {
     const q = searchTerm.toLowerCase();
@@ -85,20 +67,25 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
     return <div className="text-center py-12 text-zinc-400">Loading...</div>;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-14 mt-16 space-y-10">
+    <div className="max-w-6xl mx-auto px-4 py-14 mt-20 space-y-10">
 
       {/* HEADER */}
       <div className="text-center">
-        <h1
-          className="text-4xl font-extrabold mb-4"
-          style={{
-            color: "var(--gold-bright)",
-            textShadow: "0 0 12px rgba(255,180,0,0.4)",
-          }}
-        >
-          Trade Ads
+        <h1 className="text-4xl font-extrabold mb-4 flex flex-wrap justify-center">
+          {"Trade Ads".split("").map((c, i) => (
+            <span key={i} className="gold-letter">
+              {c === " " ? "\u00A0" : c}
+            </span>
+          ))}
         </h1>
-        <p className="text-zinc-400 mb-6">Post and browse trade offers</p>
+
+        <p className="mb-6 flex flex-wrap justify-center text-sm">
+          {"Post and browse trade offers".split(" ").map((w, i, arr) => (
+            <span key={i} className="silver-letter">
+              {w}{i < arr.length - 1 && "\u00A0"}
+            </span>
+          ))}
+        </p>
 
         <button
           onClick={() => (!user ? signInWithDiscord() : setShowCreateForm(true))}
@@ -138,57 +125,88 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       {/* ADS */}
       <div className="grid lg:grid-cols-2 gap-6">
         {filteredTradeAds.map((ad, index) => (
-  <AnimatedItem
-    key={ad.id}
-    index={index}
-    delay={(index % 2) * 0.1} // 2 columns → use % 2
-  >
-    <div className="bg-[#0c0c0c] p-6 rounded-xl border border-white/5 hover:border-white/10 transition">
+          <AnimatedItem key={ad.id} index={index} delay={(index % 2) * 0.1}>
+            <BorderGlow
+              edgeSensitivity={30}
+              glowColor="40 80 80"
+              backgroundColor="#0c0c0c"
+              borderRadius={16}
+              glowRadius={30}
+              glowIntensity={1}
+              coneSpread={25}
+              animated={false}
+              colors={['#FFD700', '#FFC94D', '#FFB347']}
+            >
+              <div className="p-6 rounded-xl">
 
-            <div className="flex items-center mb-4 gap-2">
-              <img src={ad.authorAvatar} className="w-8 h-8 rounded-full" />
-              <div>
-                <p className="text-white text-sm">{ad.authorName}</p>
-                <p className="text-zinc-500 text-xs">{getRelativeTime(ad.createdAt)}</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-[#111] p-3 rounded border border-white/5">
-                <p className="text-yellow-400 text-sm mb-2">Offering</p>
-                {ad.itemsOffering.map((i, idx) => (
-                  <div key={idx} className="flex gap-2 text-sm text-white">
-                    {renderItemIcon(i.emoji, i.itemName)}
-                    {i.itemName}
+                <div className="flex items-center mb-4 gap-2">
+                  <img src={ad.authorAvatar} className="w-8 h-8 rounded-full" />
+                  <div>
+                    <p className="text-white text-sm">{ad.authorName}</p>
+                    <p className="text-zinc-500 text-xs">{getRelativeTime(ad.createdAt)}</p>
                   </div>
-                ))}
-              </div>
+                </div>
 
-              <div className="bg-[#111] p-3 rounded border border-white/5">
-                <p className="text-green-400 text-sm mb-2">Looking For</p>
-                {ad.itemsWanted.map((i, idx) => (
-                  <div key={idx} className="flex gap-2 text-sm text-white">
-                    {renderItemIcon(i.emoji, i.itemName)}
-                    {i.itemName}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-[#111] p-3 rounded border border-white/5">
+                    <p className="text-sm mb-2 flex flex-wrap">
+                      {"Offering".split("").map((c, i) => (
+                        <span key={i} className="gold-letter">{c}</span>
+                      ))}
+                    </p>
+                    {ad.itemsOffering.map((i, idx) => (
+                      <div key={idx} className="flex gap-2 text-sm">
+                        {renderItemIcon(i.emoji, i.itemName)}
+                        <span className="flex flex-wrap">
+                          {i.itemName.split("").map((c, i2) => (
+                            <span key={i2} className="silver-letter">
+                              {c === " " ? "\u00A0" : c}
+                            </span>
+                          ))}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                ))}
+
+                  <div className="bg-[#111] p-3 rounded border border-white/5">
+                    <p className="text-sm mb-2 flex flex-wrap">
+                      {"Looking For".split("").map((c, i) => (
+                        <span key={i} className="gold-letter">{c === " " ? "\u00A0" : c}</span>
+                      ))}
+                    </p>
+                    {ad.itemsWanted.map((i, idx) => (
+                      <div key={idx} className="flex gap-2 text-sm">
+                        {renderItemIcon(i.emoji, i.itemName)}
+                        <span className="flex flex-wrap">
+                          {i.itemName.split("").map((c, i2) => (
+                            <span key={i2} className="silver-letter">
+                              {c === " " ? "\u00A0" : c}
+                            </span>
+                          ))}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {ad.tags.map((tag, i) => (
+                    <span
+                      key={i}
+                      className="px-2 py-1 bg-yellow-900/20 border border-yellow-700/30 rounded-full text-xs flex flex-wrap"
+                    >
+                      {tag.split("").map((c, i2) => (
+                        <span key={i2} className="gold-letter">
+                          {c === " " ? "\u00A0" : c}
+                        </span>
+                      ))}
+                    </span>
+                  ))}
+                </div>
+
               </div>
-            </div>
-
-            {/* TAGS */}
-            <div className="flex flex-wrap gap-2 mt-4">
-              {ad.tags.map((tag, i) => (
-                <span
-                  key={i}
-                  className="px-2 py-1 bg-yellow-900/20 text-yellow-300 border border-yellow-700/30 rounded-full text-xs"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-          </div>
-    </AnimatedItem>
+            </BorderGlow>
+          </AnimatedItem>
         ))}
       </div>
 
