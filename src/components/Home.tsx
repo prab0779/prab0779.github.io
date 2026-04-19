@@ -291,6 +291,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
                       text={card.title}
                       tag="h3"
                       className="text-xl font-semibold text-[var(--gold-bright)] mb-1"
+                      enabled = {false}
                       delay={30}
                       duration={0.8}
                       ease="power3.out"
