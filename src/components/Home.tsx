@@ -297,18 +297,13 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
                       <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-soft)]">{card.label}</span>
                     </div>
 
-                    <SplitText
-                      text={card.title}
-                      tag="h3"
-                      className="text-xl font-semibold text-[var(--gold-bright)] mb-1"
-                      enabled = {false}
-                      delay={30}
-                      duration={0.8}
-                      ease="power3.out"
-                      splitType="chars"
-                      from={{ opacity: 0, y: 20 }}
-                      to={{ opacity: 1, y: 0 }}
-                    />
+                    <h3 className="text-xl font-semibold mb-1 flex flex-wrap">
+  {card.title.split("").map((char, i) => (
+    <span key={i} className="gold-letter">
+      {char === " " ? "\u00A0" : char}
+    </span>
+  ))}
+</h3>
 
                     <BlurText
                       text={card.desc}
