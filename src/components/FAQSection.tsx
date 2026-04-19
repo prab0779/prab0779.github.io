@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { AnimatedItem } from "../Shared/AnimatedList";
 import TextType from "../Shared/TextType";
-import SplitText from "../Shared/SplitText";
-import BlurText from "../Shared/BlurText";
 
 interface FAQItem {
   question: string;
@@ -72,59 +70,64 @@ export const FAQSection: React.FC = () => {
 
   return (
     <div className="py-20">
-
-      {/* 🔥 Heading */}
       <div className="text-center mb-12">
+        <p className="tracking-wide uppercase text-sm justify-center flex flex-wrap">
+          {"FAQs".split("").map((char, i) => (
+            <span key={i} className="silver-letter">
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
+        </p>
 
-        {/* FAQs (silver) */}
-        <BlurText
-          text="FAQs"
-          enabled={false}
-          className="tracking-wide uppercase text-sm justify-center"
-        />
+        <h2 className="text-3xl sm:text-4xl font-extrabold mt-3 drop-shadow-[0_0_6px_rgba(255,225,150,0.35)]">
+          {"We’ve Got the Answers".split("").map((char, i) => (
+            <span key={i} className="gold-letter">
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
+        </h2>
 
-        {/* Main Title (gold) */}
-        <SplitText
-          text="We’ve Got the Answers"
-          tag="h2"
-          enabled={false}
-          className="text-3xl sm:text-4xl font-extrabold mt-3 drop-shadow-[0_0_6px_rgba(255,225,150,0.35)]"
-        />
-
-        {/* Description (silver) */}
-        <BlurText
-          text="A list of commonly asked questions from our community."
-          enabled={false}
-          className="mt-4 max-w-xl mx-auto text-sm justify-center"
-        />
-
+        <p className="mt-4 max-w-xl mx-auto text-sm justify-center flex flex-wrap">
+          {"A list of commonly asked questions from our community."
+            .split(" ")
+            .map((word, i, arr) => (
+              <span key={i} className="silver-letter">
+                {word}
+                {i < arr.length - 1 && "\u00A0"}
+              </span>
+            ))}
+        </p>
       </div>
 
-      {/* FAQ List */}
       <div className="max-w-3xl mx-auto space-y-4">
         {faqItems.map((item, index) => (
           <AnimatedItem key={index} index={index} delay={index * 0.05}>
             <div className="bg-[#0b0b0d] border border-gray-800 rounded-xl overflow-hidden shadow-[0_0_12px_rgba(255,220,150,0.05)] transition-all">
-
               <button
                 onClick={() => toggleFAQ(index)}
                 className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[rgba(255,220,150,0.05)] transition"
               >
-
-                {/* Question */}
-                <SplitText
-                  text={item.question}
-                  enabled={false}
-                  tag="span"
-                  textAlign="left"
-                  className={`text-base font-medium transition-colors ${
+                <span
+                  className={`text-base font-medium transition-colors flex flex-wrap ${
                     openIndex === index
-                      ? "text-[var(--gold-bright)]"
-                      : "text-blue-400 hover:text-blue-300"
+                      ? ""
+                      : ""
                   }`}
-                />
+                >
+                  {item.question.split("").map((char, i) => (
+                    <span
+                      key={i}
+                      className={
+                        openIndex === index
+                          ? "gold-letter"
+                          : "silver-letter"
+                      }
+                    >
+                      {char === " " ? "\u00A0" : char}
+                    </span>
+                  ))}
+                </span>
 
-                {/* Arrow */}
                 <ChevronDown
                   className={`w-5 h-5 transition-transform duration-300 ${
                     openIndex === index
@@ -132,10 +135,8 @@ export const FAQSection: React.FC = () => {
                       : "text-white-400"
                   }`}
                 />
-
               </button>
 
-              {/* Answer */}
               {openIndex === index && (
                 <div className="px-6 py-4 bg-black border-t border-gray-800">
                   <TextType
@@ -151,12 +152,10 @@ export const FAQSection: React.FC = () => {
                   />
                 </div>
               )}
-
             </div>
           </AnimatedItem>
         ))}
       </div>
-
     </div>
   );
 };
