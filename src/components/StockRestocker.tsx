@@ -133,19 +133,6 @@ export const StockRestocker: React.FC = () => {
   ))}
 </div>
 
-                  <SplitText
-                    text={item.name}
-                    tag="div"
-                    className="text-yellow-300 text-lg font-bold mb-4 tracking-wide text-center"
-                    enabled = {false}
-                    delay={20}
-                    duration={0.6}
-                    ease="power3.out"
-                    splitType="chars"
-                    from={{ opacity: 0, y: 20 }}
-                    to={{ opacity: 1, y: 0 }}
-                  />
-
                   <div className="bg-gray-800 text-blue-300 text-center font-bold py-2 rounded-md w-full">
                     In Stock
                   </div>
