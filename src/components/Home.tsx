@@ -109,7 +109,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
   <StarBorder
     as={Link}
     to="/trade-ads"
-    className="px-6 py-3 bg-[var(--gold-bright)] text-black font-semibold rounded-xl hover:bg-[var(--gold-soft)] transition shadow-lg hover:-translate-y-0.5 active:translate-y-0 flex flex-wrap justify-center"
+    className="px-6 py-3 bg-[#111] font-medium rounded-xl border border-gray-700 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] transition hover:-translate-y-0.5 flex flex-wrap justify-center"
     color="#FFD700"
     speed="2s"
   >
