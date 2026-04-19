@@ -1,44 +1,47 @@
 import React, { useState, useMemo } from "react";
-import { TrendingUp, TrendingDown, Minus, Calendar, Filter, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useValueChanges } from "../hooks/useValueChanges";
 import { AnimatedItem } from "../Shared/AnimatedList";
+import BorderGlow from "../Shared/BorderGlow";
 
 export const ValueChangesPage: React.FC = () => {
   const { valueChanges, loading, error } = useValueChanges();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedChangeType, setSelectedChangeType] = useState<string>("");
-  const [selectedTimeframe, setSelectedTimeframe] = useState<string>("all");
 
   const renderItemIcon = (emoji: string, itemName: string) => {
-  if (!emoji || typeof emoji !== "string") {
-    return <span className="text-2xl">👹</span>;
-  }
+    if (!emoji || typeof emoji !== "string") {
+      return <span className="text-2xl">👹</span>;
+    }
 
-  if (emoji.startsWith("/") || emoji.startsWith("./")) {
-    const src = emoji.startsWith("./") ? emoji.slice(2) : emoji;
+    if (emoji.startsWith("/") || emoji.startsWith("./")) {
+      const src = emoji.startsWith("./") ? emoji.slice(2) : emoji;
 
-    return (
-      <div className="w-8 h-8 flex items-center justify-center">
-        <img
-          src={src}
-          alt={itemName}
-          className="w-8 h-8 object-contain"
-          style={{ imageRendering: "pixelated" }}
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = "none";
-          }}
-        />
-      </div>
-    );
-  }
+      return (
+        <div className="w-8 h-8 flex items-center justify-center">
+          <img
+            src={src}
+            alt={itemName}
+            className="w-8 h-8 object-contain"
+            style={{ imageRendering: "pixelated" }}
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = "none";
+            }}
+          />
+        </div>
+      );
+    }
 
-  return <span className="text-2xl">{emoji}</span>;
-};
+    return <span className="text-2xl">{emoji}</span>;
+  };
 
   const filteredChanges = useMemo(() => {
     return valueChanges.filter((change) => {
-      const matchesSearch = change.itemName.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType = !selectedChangeType || change.changeType === selectedChangeType;
+      const matchesSearch = change.itemName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesType =
+        !selectedChangeType || change.changeType === selectedChangeType;
       return matchesSearch && matchesType;
     });
   }, [valueChanges, searchTerm, selectedChangeType]);
@@ -61,16 +64,27 @@ export const ValueChangesPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-14 mt-16 space-y-10">
+    <div className="max-w-6xl mx-auto px-4 py-14 mt-20 space-y-10">
       {/* Header */}
-      <div className="text-center">
-        <h1
-          className="text-4xl font-extrabold"
-          style={{ color: "var(--gold-bright)", textShadow: "0 0 12px rgba(255,180,0,0.4)" }}
-        >
-          Value Changes
+      <div className="text-center mt-16">
+        <h1 className="text-4xl font-extrabold flex flex-wrap justify-center">
+          {"Value Changes".split("").map((c, i) => (
+            <span key={i} className="gold-letter">
+              {c === " " ? "\u00A0" : c}
+            </span>
+          ))}
         </h1>
-        <p className="text-zinc-400 mt-2">Track item value updates and market trends</p>
+
+        <p className="mt-3 flex flex-wrap justify-center text-sm">
+          {"Track item value updates and market trends"
+            .split(" ")
+            .map((w, i, arr) => (
+              <span key={i} className="silver-letter">
+                {w}
+                {i < arr.length - 1 && "\u00A0"}
+              </span>
+            ))}
+        </p>
       </div>
 
       {/* Filters */}
@@ -97,28 +111,6 @@ export const ValueChangesPage: React.FC = () => {
         </select>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-green-900/20 border border-green-700/30 rounded-xl p-4">
-          <p className="text-green-400 text-sm">Increases</p>
-          <p className="text-white text-xl font-bold">
-            {filteredChanges.filter((c) => c.changeType === "increase").length}
-          </p>
-        </div>
-
-        <div className="bg-red-900/20 border border-red-700/30 rounded-xl p-4">
-          <p className="text-red-400 text-sm">Decreases</p>
-          <p className="text-white text-xl font-bold">
-            {filteredChanges.filter((c) => c.changeType === "decrease").length}
-          </p>
-        </div>
-
-        <div className="bg-yellow-900/20 border border-yellow-700/30 rounded-xl p-4">
-          <p className="text-yellow-400 text-sm">Total</p>
-          <p className="text-white text-xl font-bold">{filteredChanges.length}</p>
-        </div>
-      </div>
-
       {/* Cards */}
       {filteredChanges.length === 0 ? (
         <div className="text-center text-zinc-500 py-20">
@@ -127,34 +119,56 @@ export const ValueChangesPage: React.FC = () => {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredChanges.map((change, index) => (
-  <AnimatedItem
-    key={change.id}
-    index={index}
-    delay={(index % 4) * 0.08}
-  >
-    <div className="bg-[#0c0c0c] border border-white/5 rounded-xl p-4 hover:border-white/10 transition">
-              <div className="flex items-center gap-2 mb-3">
-                {renderItemIcon(change.emoji, change.itemName)}
-                <span className="text-white text-sm font-semibold truncate">
-                  {change.itemName}
-                </span>
-              </div>
+            <AnimatedItem key={change.id} index={index} delay={(index % 4) * 0.08}>
+              <BorderGlow
+                edgeSensitivity={30}
+                glowColor="40 80 80"
+                backgroundColor="#0c0c0c"
+                borderRadius={16}
+                glowRadius={30}
+                glowIntensity={1}
+                coneSpread={25}
+                animated={false}
+                colors={["#FFD700", "#FFC94D", "#FFB347"]}
+              >
+                <div className="rounded-xl p-4 transition">
+                  <div className="flex items-center gap-2 mb-3">
+                    {renderItemIcon(change.emoji, change.itemName)}
 
-              <div className="bg-[#111] rounded-lg p-2 text-center text-sm">
-                <span className="text-zinc-400">🔑 {change.oldValue}</span>
-                <span className="mx-2 text-zinc-500">→</span>
-                <span className="text-yellow-400 font-bold">
-                  🔑 {change.newValue}
-                </span>
-              </div>
-            </div>
-    </AnimatedItem>
+                    <span className="text-sm font-semibold truncate flex flex-wrap">
+                      {change.itemName.split("").map((c, i) => (
+                        <span key={i} className="gold-letter">
+                          {c === " " ? "\u00A0" : c}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+
+                  <div className="bg-[#111] rounded-lg p-2 text-center text-sm flex items-center justify-center">
+                    <span className="flex flex-wrap">
+                      {("🔑 " + change.oldValue).split("").map((c, i) => (
+                        <span key={i} className="silver-letter">
+                          {c === " " ? "\u00A0" : c}
+                        </span>
+                      ))}
+                    </span>
+
+                    <span className="mx-2 text-zinc-500">→</span>
+
+                    <span className="font-bold flex flex-wrap">
+                      {("🔑 " + change.newValue).split("").map((c, i) => (
+                        <span key={i} className="gold-letter">
+                          {c === " " ? "\u00A0" : c}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                </div>
+              </BorderGlow>
+            </AnimatedItem>
           ))}
         </div>
-          
       )}
-          
     </div>
-      
   );
 };
