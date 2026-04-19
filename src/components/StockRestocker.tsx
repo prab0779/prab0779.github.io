@@ -125,6 +125,14 @@ export const StockRestocker: React.FC = () => {
                     <span className="text-5xl mb-4">{item.emoji}</span>
                   )}
 
+                  <div className="text-lg font-bold mb-4 tracking-wide text-center">
+  {item.name.split("").map((char, i) => (
+    <span key={i} className="gold-letter">
+      {char === " " ? "\u00A0" : char}
+    </span>
+  ))}
+</div>
+
                   <SplitText
                     text={item.name}
                     tag="div"
