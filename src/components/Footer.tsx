@@ -124,16 +124,6 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/scam-logs" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition">
-                  <Shield className="w-4 h-4" />
-                  <span className="flex flex-wrap">
-                    {"Scam Logs".split("").map((c, i) => (
-                      <span key={i} className="silver-letter">
-                        {c === " " ? "\u00A0" : c}
-                      </span>
-                    ))}
-                  </span>
-                </Link>
               </li>
               <li>
                 <a
