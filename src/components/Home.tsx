@@ -283,7 +283,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
                   key={i}
                   edgeSensitivity={30}
                   glowColor="40 80 80"
-                  backgroundColor="#060010"
+                  backgroundColor="#0c0c0c"
                   borderRadius={28}
                   glowRadius={40}
                   glowIntensity={1}
