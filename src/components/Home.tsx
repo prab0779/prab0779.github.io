@@ -270,7 +270,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
               desc: "Compare offers, calculate total value on both sides and avoid one-sided trades.",
               cta: "Use calculator →"
             },{
-              to: "/scam-logs",
+              to: "/Change-logs",
               icon: Shield,
               label: "Safety",
               title: "Safer Trading",
