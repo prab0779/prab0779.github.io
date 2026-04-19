@@ -339,9 +339,13 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
           style={{ border: "1px solid rgba(255,255,255,0.07)" }}
         >
           <div className="flex items-center justify-between text-sm">
-            <span className="font-semibold" style={{ color: "var(--gold-bright)" }}>
-              Value:
-            </span>
+            <span className="font-semibold flex flex-wrap">
+  {"Value:".split("").map((char, i) => (
+    <span key={i} className="gold-letter">
+      {char}
+    </span>
+  ))}
+</span>
             <span className="text-white font-semibold">{value.toLocaleString()}</span>
           </div>
 
