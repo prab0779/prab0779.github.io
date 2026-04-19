@@ -114,7 +114,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
           </span>
 
           {modeState === "regular" ? (
-            <span className="font-bold">
+            <span className="text-white font-bold">
               <CountUp
                 from={0}
                 to={keysValue}
