@@ -82,17 +82,9 @@ export const StockRestocker: React.FC = () => {
 
   return (
     <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14 mt-10">
-      <SplitText
-        text="Cosmetic Market"
-        tag="h2"
-        className="text-2xl md:text-3xl font-bold text-white mb-3"
-        delay={40}
-        duration={1}
-        ease="power3.out"
-        splitType="chars"
-        from={{ opacity: 0, y: 40 }}
-        to={{ opacity: 1, y: 0 }}
-      />
+      <h2 className="text-2xl md:text-3xl font-bold mb-3 gold-text">
+  Cosmetic Market
+</h2>
 
       <BlurText
         text={`Next restock in: ${timeLeft}`}
