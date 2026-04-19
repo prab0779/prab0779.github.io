@@ -365,21 +365,26 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
   return (
     <div className="max-w-6xl mx-auto px-4 py-14 mt-12">
       {/* Title (less blur, crisp) */}
-      <div className="text-center mb-6">
-        <h1
-          className="text-4xl sm:text-5xl font-extrabold tracking-tight"
-          style={{
-            color: "var(--gold-bright)",
-            textShadow: "0 2px 10px rgba(196,160,74,0.25), 0 8px 30px rgba(0,0,0,0.6)",
-          }}
-        >
-          AoTR Trade Calculator
-        </h1>
+      <div className="text-center mb-6 mt-12">
+  <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight flex flex-wrap justify-center">
+    {"AoTR Trade Calculator".split("").map((char, i) => (
+      <span key={i} className="gold-letter">
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ))}
+  </h1>
 
-        <p className="mt-2 text-zinc-400 text-sm sm:text-base">
-          Build a trade on both sides and instantly see value + tax difference.
-        </p>
-      </div>
+  <p className="mt-3 text-sm sm:text-base flex flex-wrap justify-center">
+    {"Build a trade on both sides and instantly see value + tax difference."
+      .split(" ")
+      .map((word, i, arr) => (
+        <span key={i} className="silver-letter">
+          {word}
+          {i < arr.length - 1 && "\u00A0"}
+        </span>
+      ))}
+  </p>
+</div>
 
       <div className="mb-6">
         <StatusPill />
