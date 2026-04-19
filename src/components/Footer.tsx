@@ -189,21 +189,6 @@ export const Footer: React.FC = () => {
         </div>
 
       </div>
-
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="
-          fixed bottom-6 right-6
-          bg-[var(--gold-bright)]
-          text-black
-          p-3 rounded-full
-          shadow-[0_0_12px_rgba(255,215,100,0.6)]
-          hover:scale-105 active:scale-95
-          transition-all
-        "
-      >
-        ↑
-      </button>
     </footer>
   );
 };
