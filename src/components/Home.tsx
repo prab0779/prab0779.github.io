@@ -212,6 +212,7 @@ useEffect(() => {
             <VideoSlider />
           </div>
         </section>
+        </ScrollReveal>
 
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--gold-soft)] to-transparent opacity-20 mb-10 md:mb-14" />
