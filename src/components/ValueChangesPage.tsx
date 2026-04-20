@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import { useValueChanges } from "../hooks/useValueChanges";
 import { AnimatedItem } from "../Shared/AnimatedList";
 import BorderGlow from "../Shared/BorderGlow";
+import GradientText from "../Shared/GradientText";
 
 export const ValueChangesPage: React.FC = () => {
   const { valueChanges, loading, error } = useValueChanges();
@@ -58,23 +59,16 @@ export const ValueChangesPage: React.FC = () => {
     <div className="max-w-6xl mx-auto px-4 py-14 mt-20 space-y-10">
       {/* Header */}
       <div className="text-center mt-16">
-        <h1 className="text-4xl font-extrabold flex flex-wrap justify-center">
-          {"Value Changes".split("").map((c, i) => (
-            <span key={i} className="gold-letter">
-              {c === " " ? "\u00A0" : c}
-            </span>
-          ))}
+        <h1 className="text-4xl font-extrabold">
+          <GradientText variant="gold">
+            Value Changes
+          </GradientText>
         </h1>
 
-        <p className="mt-3 flex flex-wrap justify-center text-sm">
-          {"Track item value updates and market trends"
-            .split(" ")
-            .map((w, i, arr) => (
-              <span key={i} className="silver-letter">
-                {w}
-                {i < arr.length - 1 && "\u00A0"}
-              </span>
-            ))}
+        <p className="mt-3 text-sm">
+          <GradientText variant="silver">
+            Track item value updates and market trends
+          </GradientText>
         </p>
       </div>
 
@@ -126,33 +120,23 @@ export const ValueChangesPage: React.FC = () => {
                   <div className="flex items-center gap-2 mb-3">
                     {renderItemIcon(change.emoji, change.itemName)}
 
-                    <span className="text-sm font-semibold truncate flex flex-wrap">
-                      {change.itemName.split("").map((c, i) => (
-                        <span key={i} className="gold-letter">
-                          {c === " " ? "\u00A0" : c}
-                        </span>
-                      ))}
+                    <span className="text-sm font-semibold truncate">
+                      <GradientText variant="gold">
+                        {change.itemName}
+                      </GradientText>
                     </span>
                   </div>
 
                   <div className="bg-[#111] rounded-lg p-2 text-center text-sm flex items-center justify-center">
-                    <span className="flex flex-wrap">
-                      {("" + change.oldValue).split("").map((c, i) => (
-                        <span key={i} className="silver-letter">
-                          {c === " " ? "\u00A0" : c}
-                        </span>
-                      ))}
-                    </span>
+                    <GradientText variant="silver">
+                      {change.oldValue}
+                    </GradientText>
 
                     <span className="mx-2 text-zinc-500">→</span>
 
-                    <span className="font-bold flex flex-wrap">
-                      {("" + change.newValue).split("").map((c, i) => (
-                        <span key={i} className="gold-letter">
-                          {c === " " ? "\u00A0" : c}
-                        </span>
-                      ))}
-                    </span>
+                    <GradientText variant="gold">
+                      {change.newValue}
+                    </GradientText>
                   </div>
                 </div>
               </BorderGlow>
