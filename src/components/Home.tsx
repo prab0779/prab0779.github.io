@@ -266,7 +266,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             from={{ opacity: 0, y: 40 }}
             to={{ opacity: 1, y: 0 }}
           />
-          <p className="text-gray-400 mb-8 text-sm md:text-base max-w-xl flex flex-wrap">
+         <p className="text-gray-400 mb-8 text-sm md:text-base max-w-xl">
             <GradientText variant="silver">
               Everything you need for successful Attack on Titan Revolution trading — from accurate values to smarter tools and safer deals.
             </GradientText>
