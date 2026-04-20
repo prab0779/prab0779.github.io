@@ -60,7 +60,7 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
             animateBy="words"
             direction="top"
             onAnimationComplete={handleAnimationComplete}
-            className="text-lg text-gray-400 text-center max-w-xl"
+            className="text-lg text-gray-400 mx-auto max-w-xl text-center block"
           />
         )}
       </div>
