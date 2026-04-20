@@ -5,7 +5,7 @@ import { Item } from "../types/Item";
 import GradientText from "../Shared/GradientText";
 import SplitText from "../Shared/SplitText";
 import BlurText from "../Shared/BlurText";
-import { ItemFlipCard } from "./ItemFlipCard"; // assume single item component
+import { ItemFlipCard } from "./ItemFlipGrid"; // assume single item component
 
 interface ValueListPageProps {
   items: Item[];
