@@ -18,7 +18,7 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
   const vizardMask = useMemo(
     () => items.find((i) => i.name.toLowerCase() === "vizard mask"),
     [items]
-  );
+  ); 
 
   const vizardValue = vizardMask?.value ?? 0;
 
