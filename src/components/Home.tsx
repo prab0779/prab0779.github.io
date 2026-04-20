@@ -47,17 +47,19 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
   const [stage, setStage] = useState(0);
 
-  useEffect(() => {
-    const t1 = setTimeout(() => setStage(1), 100);
-    const t2 = setTimeout(() => setStage(2), 600);
-    const t3 = setTimeout(() => setStage(3), 1200);
+useEffect(() => {
+  const t1 = setTimeout(() => setStage(1), 100);   // heading
+  const t2 = setTimeout(() => setStage(2), 500);   // description
+  const t3 = setTimeout(() => setStage(3), 900);   // buttons
+  const t4 = setTimeout(() => setStage(4), 1300);  // carousel + dock
 
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
-  }, []);
+  return () => {
+    clearTimeout(t1);
+    clearTimeout(t2);
+    clearTimeout(t3);
+    clearTimeout(t4);
+  };
+}, []);
 
   const handleAnimationComplete = () => {
     console.log("Animation completed!");
