@@ -43,7 +43,7 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
         <BlurText
           text={`Browse our complete AOT:R value list (${items.length} items).
 
-⚠️ Notice: These values are UNOFFICIAL and currently OUTDATED.
+Notice: These values are UNOFFICIAL and currently OUTDATED.
 
 They are only shown to give a rough visual understanding of item worth.
 
