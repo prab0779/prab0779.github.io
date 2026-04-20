@@ -11,10 +11,18 @@ export const VideoSlider = () => {
   ];
 
   const loop = [...videos, ...videos];
+  const [paused, setPaused] = useState(false);
 
   return (
-    <div className="overflow-hidden w-full">
-      <div className="flex gap-6 slider-animation">
+    <div
+      className="overflow-hidden w-full"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div
+        className="flex gap-6 slider-animation"
+        style={{ animationPlayState: paused ? "paused" : "running" }}
+      >
         {loop.map((id, i) => (
           <VideoCard key={i} id={id} />
         ))}
@@ -32,9 +40,7 @@ const VideoCard = ({ id }: { id: string }) => {
     if (!el) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
+      ([entry]) => setIsVisible(entry.isIntersecting),
       { threshold: 0.6 }
     );
 
