@@ -50,7 +50,7 @@ export const ValueChangesPage: React.FC = () => {
     return (
       <div className="max-w-6xl mx-auto mt-20 text-center">
         <div className="w-10 h-10 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-zinc-400">Loading value changes...</p>
+        
       </div>
     );
   }
