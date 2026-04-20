@@ -45,10 +45,11 @@ const PRESETS = {
     "#534ab7"
   ]
 };
+
 interface GradientTextProps {
   children: ReactNode;
   className?: string;
-  variant?: 'gold' | 'silver';
+  variant?: 'gold' | 'silver' | 'green' | 'blue'  | 'red' | 'purple';
   animationSpeed?: number;
   showBorder?: boolean;
   direction?: 'horizontal' | 'vertical' | 'diagonal';
