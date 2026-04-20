@@ -84,18 +84,40 @@ export const StockRestocker: React.FC = () => {
         ))}
       </h2>
 
-      {/* ✅ Animated Countdown */}
-      <div className="mb-6 flex flex-col items-start gap-2">
-        <span className="silver-letter">Next restock in:</span>
+     {/* ✅ Animated Countdown FIXED */}
+<div className="mb-6 flex flex-col items-start gap-2">
+  <span className="silver-letter">Next restock in:</span>
 
-        <div className="flex items-center gap-2">
-          <Counter value={Math.floor(timeLeft / 3600)} fontSize={26} />
-          <span className="text-gray-400">:</span>
-          <Counter value={Math.floor((timeLeft % 3600) / 60)} fontSize={26} />
-          <span className="text-gray-400">:</span>
-          <Counter value={timeLeft % 60} fontSize={26} />
-        </div>
-      </div>
+  <div className="flex items-center gap-2 text-white">
+    <Counter
+      value={Math.floor(timeLeft / 3600)}
+      fontSize={28}
+      textColor="#e5e7eb" // silver/white
+      gradientFrom="transparent"
+      gradientTo="transparent"
+    />
+
+    <span className="silver-letter">:</span>
+
+    <Counter
+      value={Math.floor((timeLeft % 3600) / 60)}
+      fontSize={28}
+      textColor="#e5e7eb"
+      gradientFrom="transparent"
+      gradientTo="transparent"
+    />
+
+    <span className="silver-letter">:</span>
+
+    <Counter
+      value={timeLeft % 60}
+      fontSize={28}
+      textColor="#e5e7eb"
+      gradientFrom="transparent"
+      gradientTo="transparent"
+    />
+  </div>
+</div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {activeItems.map((item, i) => (
