@@ -222,23 +222,7 @@ const ShapeGrid: React.FC<ShapeGridProps> = ({
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
 
-    const isVisibleRef = useRef(true);
 
-useEffect(() => {
-  const canvas = canvasRef.current;
-  if (!canvas) return;
-
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      isVisibleRef.current = entry.isIntersecting;
-    },
-    { threshold: 0.1 }
-  );
-
-  observer.observe(canvas);
-
-  return () => observer.disconnect();
-}, []);
 
     const updateAnimation = () => {
       const effectiveSpeed = Math.max(speed, 0.1);
