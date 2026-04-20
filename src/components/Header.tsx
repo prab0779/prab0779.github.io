@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import BlurText from "../Shared/BlurText";
+import GradientText from "../Shared/GradientText";
 
 export const Header: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -51,7 +51,6 @@ export const Header: React.FC = () => {
           ${open ? "pb-4" : ""}
         `}
       >
-        {/* TOP BAR */}
         <div className="flex items-center justify-between px-5 py-5">
           <Link to="/" className="flex items-center">
             <img src="/customdiscordlogo.png" className="h-8" />
@@ -64,17 +63,18 @@ export const Header: React.FC = () => {
                 <Link
                   key={l.path}
                   to={l.path}
-                  className={`relative text-[15px] font-medium ${
-                    active
-                      ? "text-white"
-                      : "text-white/70 hover:text-white"
-                  }`}
+                  className="relative group text-[15px] font-medium"
                 >
-                  <BlurText
-  text={l.name}
-  enabled={false}
-  className="text-[15px] font-medium"
-/>
+                  {active ? (
+                    <GradientText variant="gold" className="text-[15px] font-medium">
+                      {l.name}
+                    </GradientText>
+                  ) : (
+                    <GradientText variant="silver" className="text-[15px] font-medium">
+                      {l.name}
+                    </GradientText>
+                  )}
+
                   <span
                     className={`absolute left-1/2 -translate-x-1/2 -bottom-1.5 h-[2px] bg-[#D4AF37] transition-all ${
                       active ? "w-6" : "w-0 group-hover:w-6"
@@ -91,7 +91,7 @@ export const Header: React.FC = () => {
               target="_blank"
               className="hidden md:flex px-3 py-1.5 rounded-lg border border-[#D4AF37]/70 text-white text-sm hover:bg-white/10"
             >
-              Discord
+              <GradientText variant="silver">Discord</GradientText>
             </a>
 
             <button
@@ -103,7 +103,6 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* EXPANDING MOBILE MENU */}
         <div
           className={`
             md:hidden overflow-hidden transition-all duration-300 px-5
@@ -117,17 +116,14 @@ export const Header: React.FC = () => {
                 <Link
                   key={l.path}
                   to={l.path}
-                  className={`relative group text-[16px] font-medium ${
-                    active
-                      ? "text-[#D4AF37]"
-                      : "text-white/80 hover:text-white"
-                  }`}
+                  className="relative group text-[16px] font-medium"
                 >
-                  <BlurText
-  text={l.name}
-  enabled={false}
-  className="text-[16px] font-medium"
-/>
+                  {active ? (
+                    <GradientText variant="gold">{l.name}</GradientText>
+                  ) : (
+                    <GradientText variant="silver">{l.name}</GradientText>
+                  )}
+
                   <span
                     className={`absolute left-0 -bottom-1 h-[2px] bg-[#D4AF37] transition-all ${
                       active ? "w-20" : "w-0"
@@ -149,4 +145,4 @@ export const Header: React.FC = () => {
       </div>
     </header>
   );
-}
+};
