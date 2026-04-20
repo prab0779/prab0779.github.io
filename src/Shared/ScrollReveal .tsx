@@ -44,11 +44,13 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
   }, [children]);
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+  const el = containerRef.current;
+  if (!el) return;
 
-    const scroller = scrollContainerRef && scrollContainerRef.current ? scrollContainerRef.current : window;
+  const scroller =
+    scrollContainerRef?.current || window;
 
+  const ctx = gsap.context(() => {
     gsap.fromTo(
       el,
       { transformOrigin: '0% 50%', rotate: baseRotation },
@@ -69,9 +71,8 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
 
     gsap.fromTo(
       wordElements,
-      { opacity: baseOpacity, willChange: 'opacity' },
+      { opacity: baseOpacity },
       {
-        ease: 'none',
         opacity: 1,
         stagger: 0.05,
         scrollTrigger: {
@@ -89,7 +90,6 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
         wordElements,
         { filter: `blur(${blurStrength}px)` },
         {
-          ease: 'none',
           filter: 'blur(0px)',
           stagger: 0.05,
           scrollTrigger: {
@@ -102,11 +102,10 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
         }
       );
     }
+  }, el);
 
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
-  }, [scrollContainerRef, enableBlur, baseRotation, baseOpacity, rotationEnd, wordAnimationEnd, blurStrength]);
+  return () => ctx.revert();
+}, [scrollContainerRef, enableBlur, baseRotation, baseOpacity, rotationEnd, wordAnimationEnd, blurStrength]);
 
   return (
     <h2 ref={containerRef} className={`my-5 ${containerClassName}`}>
