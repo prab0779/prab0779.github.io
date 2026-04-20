@@ -140,7 +140,7 @@ export const StockRestocker: React.FC = () => {
                   <div className="text-lg font-bold mb-4 tracking-wide text-center">
                     {item.name.split("").map((char, i) => (
                       <span key={i} className="gold-letter">
-                        {char === " " ? "\u00A0" : char}
+                        {char === " " ? "" : char}
                       </span>
                     ))}
                   </div>
