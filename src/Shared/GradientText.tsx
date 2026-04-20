@@ -15,9 +15,36 @@ const PRESETS = {
     "#ffffff",
     "#d1d5db",
     "#9a9a9a"
+  ],
+  green: [
+    "#3b6d11",
+    "#639922",
+    "#c0dd97",
+    "#639922",
+    "#3b6d11"
+  ],
+  blue: [
+    "#185fa5",
+    "#378add",
+    "#b5d4f4",
+    "#378add",
+    "#185fa5"
+  ],
+  red: [
+    "#a32d2d",
+    "#e24b4a",
+    "#f7c1c1",
+    "#e24b4a",
+    "#a32d2d"
+  ],
+  purple: [
+    "#534ab7",
+    "#7f77dd",
+    "#cecbf6",
+    "#7f77dd",
+    "#534ab7"
   ]
 };
-
 interface GradientTextProps {
   children: ReactNode;
   className?: string;
