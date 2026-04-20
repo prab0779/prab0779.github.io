@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Item } from "../types/Item";
 import CountUp from "../Shared/CountUp";
@@ -12,17 +12,13 @@ interface ItemCardProps {
   index?: number;
 }
 
-export const ItemCard: React.FC<ItemCardProps> = ({
+export const ItemCard = React.memo(({
   item,
   mode,
   vizardValue,
   index = 0
-}) => {
+}: ItemCardProps) => {
   const [modeState, setModeState] = useState<"regular" | "permanent">(mode);
-
-  useEffect(() => {
-    setModeState(mode);
-  }, [mode]);
 
   const getDemandVariant = (d: number): "red" | "yellow" | "green" =>
     d <= 3 ? "red" : d <= 6 ? "yellow" : "green";
@@ -55,6 +51,8 @@ export const ItemCard: React.FC<ItemCardProps> = ({
       return (
         <img
           src={emoji}
+          loading="lazy"
+          decoding="async"
           className="w-28 h-28 mx-auto object-contain pixelated"
         />
       );
@@ -129,7 +127,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
                   from={0}
                   to={keysValue}
                   duration={1.2}
-                  delay={(index % 4) * 0.08}
+                  delay={index < 20 ? (index % 4) * 0.08 : 0}
                   format={(v) => {
                     if (v >= 1_000_000_000)
                       return (v / 1_000_000_000).toFixed(2) + "B";
@@ -146,7 +144,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
                     from={0}
                     to={vizardConverted}
                     duration={1.2}
-                    delay={(index % 4) * 0.08}
+                    delay={index < 20 ? (index % 4) * 0.08 : 0}
                     format={(v) => Number(v).toFixed(2)}
                   />
                 </GradientText>
@@ -186,7 +184,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
                     from={0}
                     to={tax.value}
                     duration={1}
-                    delay={(index % 4) * 0.08 + 0.1}
+                    delay={index < 20 ? (index % 4) * 0.08 + 0.1 : 0}
                     format={(v) => v.toLocaleString()}
                   />
                 </GradientText>
@@ -208,4 +206,4 @@ export const ItemCard: React.FC<ItemCardProps> = ({
       </div>
     </BorderGlow>
   );
-};
+});
