@@ -19,7 +19,7 @@ interface ShapeGridProps {
 
 const ShapeGrid: React.FC<ShapeGridProps> = ({
   direction = 'right',
-  speed = 2,
+  speed = 20,
   borderColor = '#999',
   squareSize = 40,
   hoverFillColor = '#222',
