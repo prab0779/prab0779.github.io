@@ -1,6 +1,7 @@
 import React from 'react';
 import { ExternalLink, Mail, Home, List, Calculator, History, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import GradientText from '../Shared/GradientText';
 
 export const Footer: React.FC = () => {
   return (
@@ -19,112 +20,68 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 py-14">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10">
 
+          {/* LOGO */}
           <div className="col-span-2 sm:col-span-1">
-            <div className="mb-4 text-xl font-bold flex flex-wrap">
-              {"AOT:R Value Hub".split("").map((char, i) => (
-                <span key={i} className="gold-letter">
-                  {char === " " ? "\u00A0" : char}
-                </span>
-              ))}
-            </div>
+            <GradientText variant="gold" className="text-xl font-bold mb-4">
+              AOT:R Value Hub
+            </GradientText>
 
-            <p className="text-sm leading-relaxed max-w-xs flex flex-wrap">
-              {"aotrvalue.com is a 3rd party site not affiliated with Attack on Titan Revolution or Roblox."
-                .split(" ")
-                .map((word, i, arr) => (
-                  <span key={i} className="silver-letter">
-                    {word}
-                    {i < arr.length - 1 && "\u00A0"}
-                  </span>
-                ))}
-            </p>
+            <GradientText variant="silver" className="text-sm leading-relaxed max-w-xs">
+              aotrvalue.com is a 3rd party site not affiliated with Attack on Titan Revolution or Roblox.
+            </GradientText>
           </div>
 
+          {/* NAV */}
           <div>
-            <div className="font-semibold text-sm mb-3 flex flex-wrap">
-              {"Navigation".split("").map((char, i) => (
-                <span key={i} className="gold-letter">
-                  {char === " " ? "\u00A0" : char}
-                </span>
-              ))}
-            </div>
+            <GradientText variant="gold" className="font-semibold text-sm mb-3">
+              Navigation
+            </GradientText>
 
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition">
                   <Home className="w-4 h-4" />
-                  <span className="flex flex-wrap">
-                    {"Home".split("").map((c, i) => (
-                      <span key={i} className="silver-letter">
-                        {c}
-                      </span>
-                    ))}
-                  </span>
+                  <GradientText variant="silver">Home</GradientText>
                 </Link>
               </li>
+
               <li>
                 <Link to="/value-list" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition">
                   <List className="w-4 h-4" />
-                  <span className="flex flex-wrap">
-                    {"Value List".split("").map((c, i) => (
-                      <span key={i} className="silver-letter">
-                        {c === " " ? "\u00A0" : c}
-                      </span>
-                    ))}
-                  </span>
+                  <GradientText variant="silver">Value List</GradientText>
                 </Link>
               </li>
+
               <li>
                 <Link to="/calculator" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition">
                   <Calculator className="w-4 h-4" />
-                  <span className="flex flex-wrap">
-                    {"Calculator".split("").map((c, i) => (
-                      <span key={i} className="silver-letter">
-                        {c}
-                      </span>
-                    ))}
-                  </span>
+                  <GradientText variant="silver">Calculator</GradientText>
                 </Link>
               </li>
+
               <li>
                 <Link to="/value-changes" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition">
                   <History className="w-4 h-4" />
-                  <span className="flex flex-wrap">
-                    {"Value Changes".split("").map((c, i) => (
-                      <span key={i} className="silver-letter">
-                        {c === " " ? "\u00A0" : c}
-                      </span>
-                    ))}
-                  </span>
+                  <GradientText variant="silver">Value Changes</GradientText>
                 </Link>
               </li>
             </ul>
           </div>
 
+          {/* COMMUNITY */}
           <div>
-            <div className="font-semibold text-sm mb-3 flex flex-wrap">
-              {"Community".split("").map((char, i) => (
-                <span key={i} className="gold-letter">
-                  {char === " " ? "\u00A0" : char}
-                </span>
-              ))}
-            </div>
+            <GradientText variant="gold" className="font-semibold text-sm mb-3">
+              Community
+            </GradientText>
 
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/trade-ads" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition">
                   <Shield className="w-4 h-4" />
-                  <span className="flex flex-wrap">
-                    {"Trade Ads".split("").map((c, i) => (
-                      <span key={i} className="silver-letter">
-                        {c === " " ? "\u00A0" : c}
-                      </span>
-                    ))}
-                  </span>
+                  <GradientText variant="silver">Trade Ads</GradientText>
                 </Link>
               </li>
-              <li>
-              </li>
+
               <li>
                 <a
                   href="https://discord.gg/tradingcorps"
@@ -132,26 +89,17 @@ export const Footer: React.FC = () => {
                   className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  <span className="flex flex-wrap">
-                    {"Discord".split("").map((c, i) => (
-                      <span key={i} className="silver-letter">
-                        {c}
-                      </span>
-                    ))}
-                  </span>
+                  <GradientText variant="silver">Discord</GradientText>
                 </a>
               </li>
             </ul>
           </div>
 
+          {/* SUPPORT */}
           <div>
-            <div className="font-semibold text-sm mb-3 flex flex-wrap">
-              {"Support".split("").map((char, i) => (
-                <span key={i} className="gold-letter">
-                  {char === " " ? "\u00A0" : char}
-                </span>
-              ))}
-            </div>
+            <GradientText variant="gold" className="font-semibold text-sm mb-3">
+              Support
+            </GradientText>
 
             <ul className="space-y-2 text-sm">
               <li>
@@ -161,13 +109,7 @@ export const Footer: React.FC = () => {
                   className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition"
                 >
                   <Mail className="w-4 h-4" />
-                  <span className="flex flex-wrap">
-                    {"Contact Us".split("").map((c, i) => (
-                      <span key={i} className="silver-letter">
-                        {c === " " ? "\u00A0" : c}
-                      </span>
-                    ))}
-                  </span>
+                  <GradientText variant="silver">Contact Us</GradientText>
                 </a>
               </li>
             </ul>
@@ -175,17 +117,11 @@ export const Footer: React.FC = () => {
 
         </div>
 
-        <div className="border-t border-gray-800 mt-12 pt-5 flex flex-col sm:flex-row items-center justify-between text-center gap-3">
-          <p className="text-xs sm:text-sm flex flex-wrap">
-            {"© 2026 AOT:R Value Hub — Not affiliated with AoT:R or Roblox."
-              .split(" ")
-              .map((word, i, arr) => (
-                <span key={i} className="silver-letter">
-                  {word}
-                  {i < arr.length - 1 && "\u00A0"}
-                </span>
-              ))}
-          </p>
+        {/* BOTTOM */}
+        <div className="border-t border-gray-800 mt-12 pt-5 text-center">
+          <GradientText variant="silver" className="text-xs sm:text-sm">
+            © 2026 AOT:R Value Hub — Not affiliated with AoT:R or Roblox.
+          </GradientText>
         </div>
 
       </div>
