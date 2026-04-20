@@ -71,7 +71,7 @@ useEffect(() => {
       <div className="absolute inset-0 bg-[url('/gridd.svg')] opacity-10 mix-blend-soft-light pointer-events-none" />
 
       <div className="relative z-10">
-        <section className="relative overflow-hidden w-full pt-[340px] md:pt-[420px] pb-[140px] md:pb-[200px]">
+        <section className="relative overflow-hidden w-full pt-[360px] md:pt-[440px] pb-[140px] md:pb-[200px]">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-screen h-[150%] z-0 opacity-40 pointer-events-none mask-image-[linear-gradient(to_bottom,black,black,transparent)]">
             <ShapeGrid
               speed={0.5}
