@@ -122,16 +122,6 @@ export const StockRestocker: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {activeItems.map((item, i) => (
           <BorderGlow
-            key={i}
-            edgeSensitivity={30}
-            glowColor="40 80 80"
-            backgroundColor="#0c0c0c"
-            borderRadius={20}
-            glowRadius={30}
-            glowIntensity={1}
-            coneSpread={25}
-            animated={false}
-            colors={["#FFD700", "#FFC94D", "#FFB347"]}
           >
             <div className="relative rounded-xl p-5 flex flex-col items-center justify-between transition hover:scale-[1.02]">
               {item ? (
