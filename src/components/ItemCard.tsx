@@ -200,7 +200,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({
             <span className="font-medium">
               <GradientText variant="silver">Prestige</GradientText>
             </span>
-            <GradientText variant="purple">
+            <GradientText variant="blue">
               {item.prestige}
             </GradientText>
           </div>
