@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ItemFlipGrid } from "./ItemFlipGrid";
 import { Item } from "../types/Item";
+import GradientText from "../Shared/GradientText";
 
 interface ValueListPageProps {
   items: Item[];
@@ -21,86 +22,68 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
   return (
     <div className="max-w-5xl mx-auto px-6 pt-32 pb-16 text-center">
 
-      <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 flex flex-wrap justify-center">
-        {"AOT:R Value List".split("").map((c, i) => (
-          <span key={i} className="gold-letter">
-            {c === " " ? "\u00A0" : c}
-          </span>
-        ))}
+      <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
+        <GradientText variant="gold">
+          AOT:R Value List
+        </GradientText>
       </h1>
 
       <div className="bg-[#0b0b0d]/80 border border-[#D4AF37]/30 rounded-xl p-5 mb-12 text-left backdrop-blur">
-        <p className="text-sm leading-relaxed flex flex-wrap">
+        <p className="text-sm leading-relaxed text-gray-400">
 
-          {"Browse our complete AOT:R value list (".split(" ").map((w, i, arr) => (
-            <span key={i} className="silver-letter">
-              {w}{i < arr.length - 1 && "\u00A0"}
-            </span>
-          ))}
+          <GradientText variant="silver">
+            Browse our complete AOT:R value list (
+          </GradientText>
 
           <span className="text-white font-semibold mx-1">
             {items.length}
           </span>
 
-          {"items).".split(" ").map((w, i, arr) => (
-            <span key={"b"+i} className="silver-letter">
-              {w}{i < arr.length - 1 && "\u00A0"}
-            </span>
-          ))}
+          <GradientText variant="silver">
+            items).
+          </GradientText>
 
-          <span className="text-red-400 font-semibold">  Notice: </span>
+          <span className="text-red-400 font-semibold ml-2">
+            Notice:
+          </span>
 
-          {"These values are".split(" ").map((w, i, arr) => (
-            <span key={"c"+i} className="silver-letter">
-              {w}{i < arr.length - 1 && "\u00A0"}
-            </span>
-          ))}
+          <GradientText variant="silver">
+            {" "}These values are{" "}
+          </GradientText>
 
-          <span className="text-yellow-400 font-semibold mx-1">
+          <span className="text-yellow-400 font-semibold">
             UNOFFICIAL and currently OUTDATED
           </span>
 
-          {"They are only shown to give a rough visual understanding of item worth."
-            .split(" ")
-            .map((w, i, arr) => (
-              <span key={"d"+i} className="silver-letter">
-                {w}{i < arr.length - 1 && "\u00A0"}
-              </span>
-            ))}
+          <GradientText variant="silver">
+            {" "}They are only shown to give a rough visual understanding of item worth.
+          </GradientText>
 
           <br /><br />
 
-          {"AOT:R trading is entirely".split(" ").map((w, i, arr) => (
-            <span key={"e"+i} className="silver-letter">
-              {w}{i < arr.length - 1 && "\u00A0"}
-            </span>
-          ))}
+          <GradientText variant="silver">
+            AOT:R trading is entirely{" "}
+          </GradientText>
 
-          <span className="text-white font-semibold mx-1">
+          <span className="text-white font-semibold">
             player-driven
           </span>
 
-          {"and based on".split(" ").map((w, i, arr) => (
-            <span key={"f"+i} className="silver-letter">
-              {w}{i < arr.length - 1 && "\u00A0"}
-            </span>
-          ))}
+          <GradientText variant="silver">
+            {" "}and based on{" "}
+          </GradientText>
 
-          <span className="text-yellow-400 font-semibold mx-1">
+          <span className="text-yellow-400 font-semibold">
             rarity, demand, and player needs
           </span>
 
           <br /><br />
 
-          {"Do not rely on value lists for exact pricing. Always negotiate trades yourself and"
-            .split(" ")
-            .map((w, i, arr) => (
-              <span key={"g"+i} className="silver-letter">
-                {w}{i < arr.length - 1 && "\u00A0"}
-              </span>
-            ))}
+          <GradientText variant="silver">
+            Do not rely on value lists for exact pricing. Always negotiate trades yourself and{" "}
+          </GradientText>
 
-          <span className="text-yellow-400 font-semibold mx-1">
+          <span className="text-yellow-400 font-semibold">
             join our Discord for the latest insights.
           </span>
 
@@ -108,12 +91,10 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
       </div>
 
       <div className="mb-12">
-        <h3 className="font-semibold mb-3 flex flex-wrap justify-center">
-          {"Default View Mode".split("").map((c, i) => (
-            <span key={i} className="gold-letter">
-              {c === " " ? "\u00A0" : c}
-            </span>
-          ))}
+        <h3 className="font-semibold mb-3">
+          <GradientText variant="gold">
+            Default View Mode
+          </GradientText>
         </h3>
 
         <div className="inline-flex bg-gray-900 border border-gray-700 rounded-lg overflow-hidden">
@@ -140,14 +121,10 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
           </button>
         </div>
 
-        <p className="text-sm mt-2 flex flex-wrap justify-center">
-          {"Sets the default display mode for all items."
-            .split(" ")
-            .map((w, i, arr) => (
-              <span key={i} className="silver-letter">
-                {w}{i < arr.length - 1 && "\u00A0"}
-              </span>
-            ))}
+        <p className="text-sm mt-2">
+          <GradientText variant="silver">
+            Sets the default display mode for all items.
+          </GradientText>
         </p>
       </div>
 
