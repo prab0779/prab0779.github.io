@@ -1,4 +1,4 @@
-i have react window now import React, { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { ItemCard } from "./ItemCard";
 import { SearchAndFilter } from "./SearchAndFilter";
 import { Item } from "../types/Item";
