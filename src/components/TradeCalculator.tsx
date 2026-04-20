@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Plus, X, Search } from "lucide-react";
 import { Item, TradeItem, TradeCalculation } from "../types/Item";
-import GradientText from "./GradientText";
+import GradientText from "../Shared/GradientText";
 
 interface TradeCalculatorProps {
   items: Item[];
