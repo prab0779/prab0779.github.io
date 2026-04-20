@@ -49,7 +49,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
   const [stage, setStage] = useState(0);
 
 useEffect(() => {
-  const t1 = setTimeout(() => setStage(1), 100);   // heading
+  const t1 = setTimeout(() => setStage(1), 500);   // heading
   const t2 = setTimeout(() => setStage(2), 100);   // description
   const t3 = setTimeout(() => setStage(3), 100);   // buttons
   const t4 = setTimeout(() => setStage(4), 100);  // carousel + dock
