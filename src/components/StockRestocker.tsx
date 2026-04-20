@@ -101,7 +101,7 @@ export const StockRestocker: React.FC = () => {
             fontSize={20}
             textColor="#fff3b0"
             digitStyle={{ width: "1ch" }}
-            gradientFrom="transparent"
+            gradientFrom="transparent" 
             gradientTo="transparent"
           />
 
