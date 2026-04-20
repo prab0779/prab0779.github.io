@@ -13,6 +13,7 @@ import StarBorder from "../Shared/StarBorder";
 import BorderGlow from "../Shared/BorderGlow";
 import ScrollReveal from "../Shared/ScrollReveal";
 import Dock from "../Shared/Dock";
+import GradientText from "../Shared/GradientText";
 import { FaDiscord, FaXTwitter } from "react-icons/fa6";
 import { SiRoblox } from "react-icons/si";
 import { LineChart, Sparkles, Calculator, Shield } from "lucide-react";
@@ -48,19 +49,19 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
   const [stage, setStage] = useState(0);
 
-useEffect(() => {
-  const t1 = setTimeout(() => setStage(1), 100);   // heading
-  const t2 = setTimeout(() => setStage(2), 100);   // description
-  const t3 = setTimeout(() => setStage(3), 100);   // buttons
-  const t4 = setTimeout(() => setStage(4), 100);  // carousel + dock
+  useEffect(() => {
+    const t1 = setTimeout(() => setStage(1), 100);
+    const t2 = setTimeout(() => setStage(2), 100);
+    const t3 = setTimeout(() => setStage(3), 100);
+    const t4 = setTimeout(() => setStage(4), 100);
 
-  return () => {
-    clearTimeout(t1);
-    clearTimeout(t2);
-    clearTimeout(t3);
-    clearTimeout(t4);
-  };
-}, []);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+    };
+  }, []);
 
   const handleAnimationComplete = () => {
     console.log("Animation completed!");
@@ -91,12 +92,12 @@ useEffect(() => {
             <div className="text-center lg:text-left space-y-4">
               <div>
                 <ShinyText
-  text="AOT:R Trading Hub"
-  className="text-xs font-medium uppercase tracking-[0.25em] mb-2 flex flex-wrap justify-center text-center lg:justify-start lg:text-left"
-  speed={3}
-  delay={3}
-  pauseOnHover
-/>
+                  text="AOT:R Trading Hub"
+                  className="text-xs font-medium uppercase tracking-[0.25em] mb-2 flex flex-wrap justify-center text-center lg:justify-start lg:text-left"
+                  speed={3}
+                  delay={3}
+                  pauseOnHover
+                />
 
                 {stage >= 1 && (
                   <SplitText
@@ -138,9 +139,9 @@ useEffect(() => {
                     speed="2s"
                   >
                     {"Start Trading →".split("").map((char, i) => (
-                      <span key={i} className="silver-letter">
-                        {char === " " ? "\u00A0" : char}
-                      </span>
+                      <GradientText key={i} variant="silver">
+                        {char === " " ? " " : char}
+                      </GradientText>
                     ))}
                   </StarBorder>
 
@@ -152,9 +153,9 @@ useEffect(() => {
                     speed="4s"
                   >
                     {"View Values ★".split("").map((char, i) => (
-                      <span key={i} className="gold-letter">
-                        {char === " " ? "\u00A0" : char}
-                      </span>
+                      <GradientText key={i} variant="gold">
+                        {char === " " ? " " : char}
+                      </GradientText>
                     ))}
                   </StarBorder>
                 </div>
@@ -178,41 +179,42 @@ useEffect(() => {
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--gold-soft)] to-transparent opacity-25 mb-10 md:mb-14" />
         </div>
+
         <ScrollReveal>
-        <section className="relative max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-4">
-            <div>
-              <SplitText
-                text="Popular Highlights"
-                tag="h2"
-                className="text-2xl md:text-3xl font-bold text-[var(--gold-bright)]"
-                delay={40}
-                duration={1}
-                ease="power3.out"
-                splitType="chars"
-                from={{ opacity: 0, y: 40 }}
-                to={{ opacity: 1, y: 0 }}
-              />
-              <div className="text-gray-400 text-sm md:text-base mt-1">
-                <BlurText
-                  text="AOT:R clips, updates and moments from the community."
-                  delay={200}
-                  animateBy="words"
-                  direction="top"
-                  enabled={false}
-                  onAnimationComplete={handleAnimationComplete}
-                  className="text-1xl mb-2"
+          <section className="relative max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-4">
+              <div>
+                <SplitText
+                  text="Popular Highlights"
+                  tag="h2"
+                  className="text-2xl md:text-3xl font-bold text-[var(--gold-bright)]"
+                  delay={40}
+                  duration={1}
+                  ease="power3.out"
+                  splitType="chars"
+                  from={{ opacity: 0, y: 40 }}
+                  to={{ opacity: 1, y: 0 }}
                 />
+                <div className="text-gray-400 text-sm md:text-base mt-1">
+                  <BlurText
+                    text="AOT:R clips, updates and moments from the community."
+                    delay={200}
+                    animateBy="words"
+                    direction="top"
+                    enabled={false}
+                    onAnimationComplete={handleAnimationComplete}
+                    className="text-1xl mb-2"
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="relative">
-            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#090A0F] to-transparent" />
-            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#090A0F] to-transparent" />
-            <VideoSlider />
-          </div>
-        </section>
+            <div className="relative">
+              <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#090A0F] to-transparent" />
+              <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#090A0F] to-transparent" />
+              <VideoSlider />
+            </div>
+          </section>
         </ScrollReveal>
 
         <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -272,10 +274,10 @@ useEffect(() => {
             {"Everything you need for successful Attack on Titan Revolution trading — from accurate values to smarter tools and safer deals."
               .split(" ")
               .map((word, i, arr) => (
-                <span key={i} className="silver-letter">
+                <GradientText key={i} variant="silver">
                   {word}
-                  {i < arr.length - 1 && "\u00A0"}
-                </span>
+                  {i < arr.length - 1 && " "}
+                </GradientText>
               ))}
           </p>
 
@@ -331,18 +333,18 @@ useEffect(() => {
 
                     <h3 className="text-xl font-semibold mb-1 flex flex-wrap">
                       {card.title.split("").map((char, i) => (
-                        <span key={i} className="gold-letter">
-                          {char === " " ? "\u00A0" : char}
-                        </span>
+                        <GradientText key={i} variant="gold">
+                          {char === " " ? " " : char}
+                        </GradientText>
                       ))}
                     </h3>
 
                     <p className="text-gray-400 text-sm mb-3 flex flex-wrap">
                       {card.desc.split(" ").map((word, i, arr) => (
-                        <span key={i} className="silver-letter">
+                        <GradientText key={i} variant="silver">
                           {word}
-                          {i < arr.length - 1 && "\u00A0"}
-                        </span>
+                          {i < arr.length - 1 && " "}
+                        </GradientText>
                       ))}
                     </p>
 
@@ -353,7 +355,7 @@ useEffect(() => {
                 </BorderGlow>
               );
             })}
-          </div> 
+          </div>
         </section>
 
         <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-16">
