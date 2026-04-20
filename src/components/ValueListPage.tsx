@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ItemFlipGrid } from "./ItemFlipGrid";
 import { Item } from "../types/Item";
+import SplitText from "../Shared/SplitText";
+import BlurText from "../Shared/BlurText";
+import GradientText from "../Shared/GradientText";
 
 interface ValueListPageProps {
   items: Item[];
@@ -19,100 +22,46 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
     setViewMode(mode);
   }, []);
 
-  const titleChars = useMemo(
-    () => "AOT:R Value List".split(""),
-    []
-  );
-
-  const descriptionWords = useMemo(() => {
-    return [
-      "Browse our complete AOT:R value list (",
-      "COUNT",
-      "items).",
-      "⚠️ Notice:",
-      "These values are",
-      "UNOFFICIAL and currently OUTDATED",
-      "They are only shown to give a rough visual understanding of item worth.",
-      "AOT:R trading is entirely",
-      "player-driven",
-      "and based on",
-      "rarity, demand, and player needs",
-      "Do not rely on value lists for exact pricing. Always negotiate trades yourself and",
-      "join our Discord for the latest insights."
-    ];
-  }, []);
-
   return (
     <div className="max-w-5xl mx-auto px-6 pt-32 pb-16 text-center">
 
-      <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 flex flex-wrap justify-center min-h-[3rem]">
-        {titleChars.map((c, i) => (
-          <span key={i} className="gold-letter">
-            {c === " " ? "\u00A0" : c}
-          </span>
-        ))}
-      </h1>
+      <SplitText
+        text="AOT:R Value List"
+        tag="h1"
+        className="text-4xl sm:text-5xl font-extrabold text-[var(--gold-bright)] leading-tight min-h-[3rem]"
+        delay={40}
+        duration={0.8}
+        ease="power3.out"
+        splitType="chars"
+        from={{ opacity: 0, y: 30 }}
+        to={{ opacity: 1, y: 0 }}
+      />
 
-      <div className="bg-[#0b0b0d]/80 border border-[#D4AF37]/30 rounded-xl p-5 mb-12 text-left backdrop-blur min-h-[160px]">
-        <p className="text-sm leading-relaxed flex flex-wrap">
+      <div className="h-0.5 w-20 bg-gradient-to-r from-[var(--gold-soft)] via-[var(--gold-bright)] to-transparent rounded-full mt-3 mx-auto" />
 
-          {descriptionWords.map((word, i) => {
-            if (word === "COUNT") {
-              return (
-                <span key={i} className="text-white font-semibold mx-1">
-                  {items.length}
-                </span>
-              );
-            }
+      <div className="mt-6 max-w-xl mx-auto min-h-[140px]">
+        <BlurText
+          text={`Browse our complete AOT:R value list (${items.length} items).
 
-            if (word === "⚠️ Notice:") {
-              return (
-                <span key={i} className="text-red-400 font-semibold mx-1">
-                  {word}
-                </span>
-              );
-            }
+⚠️ Notice: These values are UNOFFICIAL and currently OUTDATED.
 
-            if (word === "UNOFFICIAL and currently OUTDATED") {
-              return (
-                <span key={i} className="text-yellow-400 font-semibold mx-1">
-                  {word}
-                </span>
-              );
-            }
+They are only shown to give a rough visual understanding of item worth.
 
-            if (word === "player-driven") {
-              return (
-                <span key={i} className="text-white font-semibold mx-1">
-                  {word}
-                </span>
-              );
-            }
+AOT:R trading is entirely player-driven and based on rarity, demand, and player needs.
 
-            if (word === "rarity, demand, and player needs" || word.includes("Discord")) {
-              return (
-                <span key={i} className="text-yellow-400 font-semibold mx-1">
-                  {word}
-                </span>
-              );
-            }
-
-            return (
-              <span key={i} className="silver-letter mr-1">
-                {word}
-              </span>
-            );
-          })}
-        </p>
+Do not rely on value lists for exact pricing. Always negotiate trades yourself and join our Discord for the latest insights.`}
+          delay={120}
+          animateBy="words"
+          direction="top"
+          className="text-lg text-gray-400"
+        />
       </div>
 
-      <div className="mb-12">
-        <h3 className="font-semibold mb-3 flex flex-wrap justify-center">
-          {"Default View Mode".split("").map((c, i) => (
-            <span key={i} className="gold-letter">
-              {c === " " ? "\u00A0" : c}
-            </span>
-          ))}
+      <div className="mb-12 mt-10">
+        <h3 className="font-semibold mb-3">
+          <GradientText variant="gold">
+            Default View Mode
+          </GradientText>
         </h3>
 
         <div className="inline-flex bg-gray-900 border border-gray-700 rounded-lg overflow-hidden">
@@ -139,14 +88,10 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
           </button>
         </div>
 
-        <p className="text-sm mt-2 flex flex-wrap justify-center">
-          {"Sets the default display mode for all items."
-            .split(" ")
-            .map((w, i, arr) => (
-              <span key={i} className="silver-letter">
-                {w}{i < arr.length - 1 && "\u00A0"}
-              </span>
-            ))}
+        <p className="text-sm mt-2">
+          <GradientText variant="silver">
+            Sets the default display mode for all items.
+          </GradientText>
         </p>
       </div>
 
