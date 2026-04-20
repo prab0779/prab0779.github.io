@@ -3,6 +3,7 @@ import { useStockRotation } from "../hooks/useStockRotation";
 import { useItems } from "../hooks/useItems";
 import BorderGlow from "../Shared/BorderGlow";
 import Counter from "../Shared/Counter";
+import GradientText from "../Shared/GradientText";
 
 export const StockRestocker: React.FC = () => {
   const { rotation } = useStockRotation();
@@ -67,33 +68,37 @@ export const StockRestocker: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // ✅ Split time
   const hours = Math.floor(timeLeft / 3600);
   const minutes = Math.floor((timeLeft % 3600) / 60);
   const seconds = timeLeft % 60;
 
   return (
     <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14 mt-10">
-      
-      {/* 🔥 Title */}
+
+      {/* 🔥 TITLE */}
       <h2 className="text-2xl md:text-3xl font-bold mb-3">
-        {"Cosmetic Market".split("").map((char, i) => (
-          <span key={i} className="gold-letter">
-            {char === " " ? "\u00A0" : char}
-          </span>
-        ))}
+        <GradientText
+          colors={["#c6a44b", "#f5d97a", "#fff3b0", "#f5d97a", "#c6a44b"]}
+          animationSpeed={6}
+        >
+          Cosmetic Market
+        </GradientText>
       </h2>
 
-      {/* ✅ Countdown */}
+      {/* ⏱ COUNTDOWN */}
       <div className="mb-6 flex flex-col items-start gap-2">
-        <span className="silver-letter">Next restock in:</span>
+        <GradientText
+          colors={["#9a9a9a", "#d1d5db", "#ffffff", "#d1d5db", "#9a9a9a"]}
+          animationSpeed={6}
+        >
+          Next restock in:
+        </GradientText>
 
-        <div className="flex items-center gap-2 text-white">
+        <div className="flex items-center gap-2">
 
-          {/* HOURS */}
           <Counter
             value={hours}
-            places={[10, 1]} // ✅ forces 2 digits (03)
+            places={[10, 1]}
             fontSize={20}
             textColor="#e5e7eb"
             digitStyle={{ width: "1ch" }}
@@ -101,9 +106,8 @@ export const StockRestocker: React.FC = () => {
             gradientTo="transparent"
           />
 
-          <span className="silver-letter">:</span>
+          <GradientText colors={["#9a9a9a","#d1d5db","#ffffff","#d1d5db","#9a9a9a"]}>:</GradientText>
 
-          {/* MINUTES */}
           <Counter
             value={minutes}
             places={[10, 1]}
@@ -114,9 +118,8 @@ export const StockRestocker: React.FC = () => {
             gradientTo="transparent"
           />
 
-          <span className="silver-letter">:</span>
+          <GradientText colors={["#9a9a9a","#d1d5db","#ffffff","#d1d5db","#9a9a9a"]}>:</GradientText>
 
-          {/* SECONDS */}
           <Counter
             value={seconds}
             places={[10, 1]}
@@ -126,11 +129,10 @@ export const StockRestocker: React.FC = () => {
             gradientFrom="transparent"
             gradientTo="transparent"
           />
-
         </div>
       </div>
 
-      {/* 🧱 Items Grid */}
+      {/* 🧱 ITEMS */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {activeItems.map((item, i) => (
           <BorderGlow
@@ -146,10 +148,9 @@ export const StockRestocker: React.FC = () => {
             colors={["#FFD700", "#FFC94D", "#FFB347"]}
           >
             <div className="relative rounded-xl p-5 flex flex-col items-center justify-between transition hover:scale-[1.02]">
-              
+
               {item ? (
                 <>
-                  {/* Icon */}
                   {typeof item.emoji === "string" && item.emoji.startsWith("/") ? (
                     <img
                       src={item.emoji}
@@ -160,16 +161,16 @@ export const StockRestocker: React.FC = () => {
                     <span className="text-5xl mb-4">{item.emoji}</span>
                   )}
 
-                  {/* Name */}
-                  <div className="text-lg font-bold mb-4 tracking-wide text-center">
-                    {item.name.split("").map((char, i) => (
-                      <span key={i} className="gold-letter">
-                        {char === " " ? "\u00A0" : char}
-                      </span>
-                    ))}
+                  {/* 🔥 ITEM NAME */}
+                  <div className="text-lg font-bold mb-4 text-center">
+                    <GradientText
+                      colors={["#c6a44b", "#f5d97a", "#fff3b0", "#f5d97a", "#c6a44b"]}
+                      animationSpeed={6}
+                    >
+                      {item.name}
+                    </GradientText>
                   </div>
 
-                  {/* Status */}
                   <div className="bg-gray-800 text-blue-300 text-center font-bold py-2 rounded-md w-full">
                     In Stock
                   </div>
@@ -177,7 +178,7 @@ export const StockRestocker: React.FC = () => {
               ) : (
                 <>
                   <div className="text-lg font-bold mb-4 text-center">
-                    <span className="gold-letter">?</span>
+                    <GradientText colors={["#c6a44b","#f5d97a","#fff3b0"]}>?</GradientText>
                   </div>
 
                   <div className="bg-gray-800 text-blue-300 text-center font-bold py-2 rounded-md w-full">
