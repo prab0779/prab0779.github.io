@@ -138,11 +138,9 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
                     color="#FFD700"
                     speed="2s"
                   >
-                    {"Start Trading →".split("").map((char, i) => (
-                      <GradientText key={i} variant="silver">
-                        {char === " " ? " " : char}
-                      </GradientText>
-                    ))}
+                    <GradientText variant="silver">
+                      Start Trading →
+                    </GradientText>
                   </StarBorder>
 
                   <StarBorder
@@ -152,11 +150,9 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
                     color="#FFD700"
                     speed="4s"
                   >
-                    {"View Values ★".split("").map((char, i) => (
-                      <GradientText key={i} variant="gold">
-                        {char === " " ? " " : char}
-                      </GradientText>
-                    ))}
+                    <GradientText variant="gold">
+                      View Values ★
+                    </GradientText>
                   </StarBorder>
                 </div>
               )}
@@ -271,14 +267,9 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             to={{ opacity: 1, y: 0 }}
           />
           <p className="text-gray-400 mb-8 text-sm md:text-base max-w-xl flex flex-wrap">
-            {"Everything you need for successful Attack on Titan Revolution trading — from accurate values to smarter tools and safer deals."
-              .split(" ")
-              .map((word, i, arr) => (
-                <GradientText key={i} variant="silver">
-                  {word}
-                  {i < arr.length - 1 && " "}
-                </GradientText>
-              ))}
+            <GradientText variant="silver">
+              Everything you need for successful Attack on Titan Revolution trading — from accurate values to smarter tools and safer deals.
+            </GradientText>
           </p>
 
           <div className="grid sm:grid-cols-2 gap-5 md:gap-6">
@@ -331,21 +322,16 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
                       <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--gold-soft)]">{card.label}</span>
                     </div>
 
-                    <h3 className="text-xl font-semibold mb-1 flex flex-wrap">
-                      {card.title.split("").map((char, i) => (
-                        <GradientText key={i} variant="gold">
-                          {char === " " ? " " : char}
-                        </GradientText>
-                      ))}
+                    <h3 className="text-xl font-semibold mb-1">
+                      <GradientText variant="gold">
+                        {card.title}
+                      </GradientText>
                     </h3>
 
-                    <p className="text-gray-400 text-sm mb-3 flex flex-wrap">
-                      {card.desc.split(" ").map((word, i, arr) => (
-                        <GradientText key={i} variant="silver">
-                          {word}
-                          {i < arr.length - 1 && " "}
-                        </GradientText>
-                      ))}
+                    <p className="text-gray-400 text-sm mb-3">
+                      <GradientText variant="silver">
+                        {card.desc}
+                      </GradientText>
                     </p>
 
                     <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">
