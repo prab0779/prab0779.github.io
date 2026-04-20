@@ -87,7 +87,7 @@ export const StockRestocker: React.FC = () => {
       {/* ⏱ COUNTDOWN */}
       <div className="mb-6 flex flex-col items-start gap-2">
         <GradientText
-          colors={["#9a9a9a", "#d1d5db", "#ffffff", "#d1d5db", "#9a9a9a"]}
+          variant="silver"
           animationSpeed={6}
         >
           Next restock in:
