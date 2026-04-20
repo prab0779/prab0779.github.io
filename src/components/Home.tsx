@@ -96,7 +96,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
                 </div> 
                 <ShinyText
   text="AOT:R Trading Hub"
-  className="text-xs font-medium uppercase tracking-[0.25em] mb-2"
+  className="text-xs font-medium uppercase tracking-[0.25em] mb-2 flex flex-wra"
   speed={3}
   delay={3}
   pauseOnHover
