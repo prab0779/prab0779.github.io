@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Item } from "../types/Item";
 import CountUp from "../Shared/CountUp";
@@ -20,33 +20,38 @@ export const ItemCard = React.memo(({
 }: ItemCardProps) => {
   const [modeState, setModeState] = useState<"regular" | "permanent">(mode);
 
-  const getDemandVariant = (d: number): "red" | "yellow" | "green" =>
-    d <= 3 ? "red" : d <= 6 ? "yellow" : "green";
+  const getDemandVariant = useCallback((d: number): "red" | "yellow" | "green" =>
+    d <= 3 ? "red" : d <= 6 ? "yellow" : "green", []);
 
-  const getRateIcon = (r: string) =>
+  const getRateIcon = useCallback((r: string) =>
     r === "Rising" ? (
       <TrendingUp className="w-4 h-4 text-green-400" />
     ) : r === "Falling" ? (
       <TrendingDown className="w-4 h-4 text-red-400" />
     ) : (
       <Minus className="w-4 h-4 text-gray-400" />
-    );
+    ), []);
 
-  const getRateVariant = (r: string): "green" | "red" | "yellow" =>
+  const getRateVariant = useCallback((r: string): "green" | "red" | "yellow" =>
     r === "Rising"
       ? "green"
       : r === "Falling"
       ? "red"
-      : "yellow";
+      : "yellow", []);
 
-  const tax = item.gemTax
-    ? { label: "Gem Tax", value: item.gemTax, variant: "purple" as const }
-    : item.goldTax
-    ? { label: "Gold Tax", value: item.goldTax, variant: "yellow" as const }
-    : { label: "Tax", value: 0, variant: "silver" as const };
+  const tax = useMemo(() => {
+    if (item.gemTax) {
+      return { label: "Gem Tax", value: item.gemTax, variant: "purple" as const };
+    }
+    if (item.goldTax) {
+      return { label: "Gold Tax", value: item.goldTax, variant: "yellow" as const };
+    }
+    return { label: "Tax", value: 0, variant: "silver" as const };
+  }, [item]);
 
-  const renderIcon = (emoji: string) => {
+  const renderIcon = useCallback((emoji: string) => {
     if (!emoji) return <span className="text-6xl">👹</span>;
+
     if (emoji.startsWith("/")) {
       return (
         <img
@@ -57,14 +62,16 @@ export const ItemCard = React.memo(({
         />
       );
     }
+
     return <span className="text-6xl">{emoji}</span>;
-  };
+  }, []);
 
   const keysValue = item.value;
-  const vizardConverted =
-    vizardValue > 0
-      ? Math.round((item.value / vizardValue) * 100) / 100
-      : 0;
+
+  const vizardConverted = useMemo(() => {
+    if (!vizardValue) return 0;
+    return Math.round((item.value / vizardValue) * 100) / 100;
+  }, [item.value, vizardValue]);
 
   return (
     <BorderGlow
