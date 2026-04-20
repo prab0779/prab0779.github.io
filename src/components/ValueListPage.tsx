@@ -1,109 +1,108 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { ItemFlipGrid } from "./ItemFlipGrid";
 import { Item } from "../types/Item";
 
-interface ValueListPageProps { 
+interface ValueListPageProps {
   items: Item[];
 }
 
 export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
-  const [viewMode, setViewMode] = useState<"regular" | "permanent">("regular");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("viewMode");
-    if (saved) setViewMode(saved as "regular" | "permanent");
-  }, []);
+  const [viewMode, setViewMode] = useState<"regular" | "permanent">(() => {
+    return (localStorage.getItem("viewMode") as "regular" | "permanent") || "regular";
+  });
 
   useEffect(() => {
     localStorage.setItem("viewMode", viewMode);
   }, [viewMode]);
 
+  const handleViewMode = useCallback((mode: "regular" | "permanent") => {
+    setViewMode(mode);
+  }, []);
+
+  const titleChars = useMemo(
+    () => "AOT:R Value List".split(""),
+    []
+  );
+
+  const descriptionWords = useMemo(() => {
+    return [
+      "Browse our complete AOT:R value list (",
+      "COUNT",
+      "items).",
+      "⚠️ Notice:",
+      "These values are",
+      "UNOFFICIAL and currently OUTDATED",
+      "They are only shown to give a rough visual understanding of item worth.",
+      "AOT:R trading is entirely",
+      "player-driven",
+      "and based on",
+      "rarity, demand, and player needs",
+      "Do not rely on value lists for exact pricing. Always negotiate trades yourself and",
+      "join our Discord for the latest insights."
+    ];
+  }, []);
+
   return (
     <div className="max-w-5xl mx-auto px-6 pt-32 pb-16 text-center">
 
-      <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 flex flex-wrap justify-center">
-        {"AOT:R Value List".split("").map((c, i) => (
+      <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 flex flex-wrap justify-center min-h-[3rem]">
+        {titleChars.map((c, i) => (
           <span key={i} className="gold-letter">
             {c === " " ? "\u00A0" : c}
           </span>
         ))}
       </h1>
 
-      <div className="bg-[#0b0b0d]/80 border border-[#D4AF37]/30 rounded-xl p-5 mb-12 text-left backdrop-blur">
+      <div className="bg-[#0b0b0d]/80 border border-[#D4AF37]/30 rounded-xl p-5 mb-12 text-left backdrop-blur min-h-[160px]">
         <p className="text-sm leading-relaxed flex flex-wrap">
 
-          {"Browse our complete AOT:R value list (".split(" ").map((w, i, arr) => (
-            <span key={i} className="silver-letter">
-              {w}{i < arr.length - 1 && "\u00A0"}
-            </span>
-          ))}
+          {descriptionWords.map((word, i) => {
+            if (word === "COUNT") {
+              return (
+                <span key={i} className="text-white font-semibold mx-1">
+                  {items.length}
+                </span>
+              );
+            }
 
-          <span className="text-white font-semibold mx-1">
-            {items.length}
-          </span>
+            if (word === "⚠️ Notice:") {
+              return (
+                <span key={i} className="text-red-400 font-semibold mx-1">
+                  {word}
+                </span>
+              );
+            }
 
-          {"items).".split(" ").map((w, i, arr) => (
-            <span key={"b"+i} className="silver-letter">
-              {w}{i < arr.length - 1 && "\u00A0"}
-            </span>
-          ))}
+            if (word === "UNOFFICIAL and currently OUTDATED") {
+              return (
+                <span key={i} className="text-yellow-400 font-semibold mx-1">
+                  {word}
+                </span>
+              );
+            }
 
-          <span className="text-red-400 font-semibold"> ⚠️ Notice: </span>
+            if (word === "player-driven") {
+              return (
+                <span key={i} className="text-white font-semibold mx-1">
+                  {word}
+                </span>
+              );
+            }
 
-          {"These values are".split(" ").map((w, i, arr) => (
-            <span key={"c"+i} className="silver-letter">
-              {w}{i < arr.length - 1 && "\u00A0"}
-            </span>
-          ))}
+            if (word === "rarity, demand, and player needs" || word.includes("Discord")) {
+              return (
+                <span key={i} className="text-yellow-400 font-semibold mx-1">
+                  {word}
+                </span>
+              );
+            }
 
-          <span className="text-yellow-400 font-semibold mx-1">
-            UNOFFICIAL and currently OUTDATED
-          </span>
-
-          {"They are only shown to give a rough visual understanding of item worth."
-            .split(" ")
-            .map((w, i, arr) => (
-              <span key={"d"+i} className="silver-letter">
-                {w}{i < arr.length - 1 && "\u00A0"}
+            return (
+              <span key={i} className="silver-letter mr-1">
+                {word}
               </span>
-            ))}
-
-          <br /><br />
-
-          {"AOT:R trading is entirely".split(" ").map((w, i, arr) => (
-            <span key={"e"+i} className="silver-letter">
-              {w}{i < arr.length - 1 && "\u00A0"}
-            </span>
-          ))}
-
-          <span className="text-white font-semibold mx-1">
-            player-driven
-          </span>
-
-          {"and based on".split(" ").map((w, i, arr) => (
-            <span key={"f"+i} className="silver-letter">
-              {w}{i < arr.length - 1 && "\u00A0"}
-            </span>
-          ))}
-
-          <span className="text-yellow-400 font-semibold mx-1">
-            rarity, demand, and player needs
-          </span>
-
-          <br /><br />
-
-          {"Do not rely on value lists for exact pricing. Always negotiate trades yourself and"
-            .split(" ")
-            .map((w, i, arr) => (
-              <span key={"g"+i} className="silver-letter">
-                {w}{i < arr.length - 1 && "\u00A0"}
-              </span>
-            ))}
-
-          <span className="text-yellow-400 font-semibold mx-1">
-            join our Discord for the latest insights.
-          </span>
-
+            );
+          })}
         </p>
       </div>
 
@@ -118,7 +117,7 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
 
         <div className="inline-flex bg-gray-900 border border-gray-700 rounded-lg overflow-hidden">
           <button
-            onClick={() => setViewMode("regular")}
+            onClick={() => handleViewMode("regular")}
             className={`px-6 py-2 font-medium transition-all duration-200 ${
               viewMode === "regular"
                 ? "bg-purple-600 text-white"
@@ -129,7 +128,7 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
           </button>
 
           <button
-            onClick={() => setViewMode("permanent")}
+            onClick={() => handleViewMode("permanent")}
             className={`px-6 py-2 font-medium transition-all duration-200 ${
               viewMode === "permanent"
                 ? "bg-purple-600 text-white"
