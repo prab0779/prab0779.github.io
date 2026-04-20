@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Plus, X, Search } from "lucide-react";
 import { Item, TradeItem, TradeCalculation } from "../types/Item";
+import GradientText from "./GradientText";
 
 interface TradeCalculatorProps {
   items: Item[];
@@ -58,7 +59,6 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       0
     );
 
-    // NET: positive means YOU pay that amount; negative means THEY owe you
     const totalGemTax = receivedGemTax - sentGemTax;
     const totalGoldTax = receivedGoldTax - sentGoldTax;
 
@@ -77,7 +77,6 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     };
   }, [itemsSent, itemsReceived]);
 
-  // ======= UI helpers =======
   const resetAll = () => {
     setItemsSent([]);
     setItemsReceived([]);
@@ -87,7 +86,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     if (!emoji || typeof emoji !== "string") return <span className="text-4xl leading-none">👹</span>;
 
     if (emoji.startsWith("/") || emoji.startsWith("./")) {
-      const src = emoji.startsWith("./") ? emoji.slice(2) : emoji; // keep leading /
+      const src = emoji.startsWith("./") ? emoji.slice(2) : emoji;
       return (
         <img
           src={src}
@@ -115,38 +114,32 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     ? "YOU WIN"
     : "YOU LOSE";
 
-  // progress marker: 0..100 center at 50
   const maxSpan = Math.max(1, Math.max(calculation.totalValueSent, calculation.totalValueReceived));
   const normalized = hasTrade ? diff / maxSpan : 0;
   const pct = Math.max(0, Math.min(100, 50 + normalized * 50));
 
   const StatusPill = () => {
-  if (!tradeLabel) return null;
+    if (!tradeLabel) return null;
 
-  const styles =
-    tradeLabel === "FAIR TRADE"
-      ? "bg-emerald-900/40 text-emerald-300 border-emerald-700/40"
-      : tradeLabel === "YOU WIN"
-      ? "bg-emerald-800/30 text-emerald-200 border-emerald-700/30"
-      : "bg-red-900/50 text-red-300 border-red-800/40";
+    const styles =
+      tradeLabel === "FAIR TRADE"
+        ? "bg-emerald-900/40 text-emerald-300 border-emerald-700/40"
+        : tradeLabel === "YOU WIN"
+        ? "bg-emerald-800/30 text-emerald-200 border-emerald-700/30"
+        : "bg-red-900/50 text-red-300 border-red-800/40";
 
-  return (
-     <div
-      className={`w-full text-center py-3 font-semibold tracking-wide border ${styles}`}
-      style={{
-        borderLeft: "none",
-        borderRight: "none",
-      }}
-    >
-      <span className="inline-flex items-center gap-2 justify-center">
-        
-        {tradeLabel}
-      </span>
-    </div>
-  );
-};
+    return (
+      <div
+        className={`w-full text-center py-3 font-semibold tracking-wide border ${styles}`}
+        style={{ borderLeft: "none", borderRight: "none" }}
+      >
+        <span className="inline-flex items-center gap-2 justify-center">
+          {tradeLabel}
+        </span>
+      </div>
+    );
+  };
 
-  // ======= Searchable modal =======
   const ItemModal: React.FC<{
     isOpen: boolean;
     onClose: () => void;
@@ -165,7 +158,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
         <div
           className="w-full max-w-lg rounded-2xl border bg-zinc-950 shadow-2xl"
-          style={{ borderColor: "rgba(255,255,255,0.08)" }} // avoid white borders
+          style={{ borderColor: "rgba(255,255,255,0.08)" }}
         >
           <div
             className="flex items-center justify-between px-5 py-4 border-b"
@@ -219,7 +212,6 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     );
   };
 
-  // ======= Side grid =======
   const Side: React.FC<{ side: "sent" | "received" }> = ({ side }) => {
     const selected = side === "sent" ? itemsSent : itemsReceived;
     const openModal = () => (side === "sent" ? setShowSentModal(true) : setShowReceivedModal(true));
@@ -234,7 +226,6 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
         style={{ border: "1px solid rgba(255,255,255,0.07)" }}
       >
         <div className="grid grid-cols-3 gap-3 sm:gap-4">
-          {/* plus in center (idx 4) */}
           {Array.from({ length: 9 }, (_, idx) => {
             if (idx === 4) {
               return (
@@ -282,7 +273,6 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                           {tradeItem.item.name}
                         </div>
 
-                        {/* quantity: NO spinner buttons (use - / + only) */}
                         <div className="mt-1 flex items-center justify-center gap-1">
                           <button
                             onClick={(e) => {
@@ -339,35 +329,17 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
           style={{ border: "1px solid rgba(255,255,255,0.07)" }}
         >
           <div className="flex items-center justify-between text-sm">
-            <span className="font-semibold flex flex-wrap">
-  {"Value:".split("").map((char, i) => (
-    <span key={i} className="gold-letter">
-      {char}
-    </span>
-  ))}
-</span>
+            <GradientText variant="gold" className="font-semibold">Value:</GradientText>
             <span className="text-white font-semibold">{value.toLocaleString()}</span>
           </div>
 
           <div className="mt-2 flex items-center justify-between text-sm">
-            <span className="font-medium flex flex-wrap">
-  {"Gem Tax:".split("").map((char, i) => (
-    <span key={i} className="silver-letter">
-      {char === " " ? "\u00A0" : char}
-    </span>
-  ))}
-</span>
+            <GradientText variant="silver" className="font-medium">Gem Tax:</GradientText>
             <span className="text-zinc-100">{gemTax.toLocaleString()}</span>
           </div>
 
           <div className="mt-2 flex items-center justify-between text-sm">
-            <span className="font-medium flex flex-wrap">
-  {"Gold Tax:".split("").map((char, i) => (
-    <span key={i} className="silver-letter">
-      {char === " " ? "\u00A0" : char}
-    </span>
-  ))}
-</span>
+            <GradientText variant="silver" className="font-medium">Gold Tax:</GradientText>
             <span className="text-zinc-100">{goldTax.toLocaleString()}</span>
           </div>
         </div>
@@ -375,32 +347,21 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
     );
   };
 
-  // progress bar (muted)
   const percentText = hasTrade && maxSpan ? ((diff / maxSpan) * 100).toFixed(1) : "0.0";
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-14 mt-12">
-      {/* Title (less blur, crisp) */}
       <div className="text-center mb-6 mt-12">
-  <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight flex flex-wrap justify-center">
-    {"AoTR Trade Calculator".split("").map((char, i) => (
-      <span key={i} className="gold-letter">
-        {char === " " ? "\u00A0" : char}
-      </span>
-    ))}
-  </h1>
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+          <GradientText variant="gold">AoTR Trade Calculator</GradientText>
+        </h1>
 
-  <p className="mt-3 text-sm sm:text-base flex flex-wrap justify-center">
-    {"Build a trade on both sides and instantly see value + tax difference."
-      .split(" ")
-      .map((word, i, arr) => (
-        <span key={i} className="silver-letter">
-          {word}
-          {i < arr.length - 1 && "\u00A0"}
-        </span>
-      ))}
-  </p>
-</div>
+        <p className="mt-3 text-sm sm:text-base">
+          <GradientText variant="silver">
+            Build a trade on both sides and instantly see value + tax difference.
+          </GradientText>
+        </p>
+      </div>
 
       <div className="mb-6">
         <StatusPill />
@@ -463,24 +424,19 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             </button>
           </div>
 
-          {/* muted progress bar */}
           <div
-  className="relative h-2 rounded-full overflow-hidden"
-  style={{ background: "#1a1a1a" }}
->
-  {/* red base */} 
-  <div className="absolute inset-0 bg-red-600" />
-
-  {/* green overlay (how much YOU win) */}
-  <div
-    className="absolute top-0 left-0 h-full bg-green-500"
-    style={{ width: `${pct}%` }}
-  />
-</div>
+            className="relative h-2 rounded-full overflow-hidden"
+            style={{ background: "#1a1a1a" }}
+          >
+            <div className="absolute inset-0 bg-red-600" />
+            <div
+              className="absolute top-0 left-0 h-full bg-green-500"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Modals */}
       <ItemModal
         isOpen={showSentModal}
         onClose={() => setShowSentModal(false)}
