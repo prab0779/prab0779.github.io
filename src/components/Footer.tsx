@@ -20,7 +20,6 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 py-14">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10">
 
-          {/* LOGO */}
           <div className="col-span-2 sm:col-span-1">
             <GradientText variant="gold" className="text-xl font-bold mb-4">
               AOT:R Value Hub
@@ -31,7 +30,6 @@ export const Footer: React.FC = () => {
             </GradientText>
           </div>
 
-          {/* NAV */}
           <div>
             <GradientText variant="gold" className="font-semibold text-sm mb-3">
               Navigation
@@ -68,7 +66,6 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* COMMUNITY */}
           <div>
             <GradientText variant="gold" className="font-semibold text-sm mb-3">
               Community
@@ -95,7 +92,6 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* SUPPORT */}
           <div>
             <GradientText variant="gold" className="font-semibold text-sm mb-3">
               Support
@@ -117,7 +113,6 @@ export const Footer: React.FC = () => {
 
         </div>
 
-        {/* BOTTOM */}
         <div className="border-t border-gray-800 mt-12 pt-5 text-center">
           <GradientText variant="silver" className="text-xs sm:text-sm">
             © 2026 AOT:R Value Hub — Not affiliated with AoT:R or Roblox.
