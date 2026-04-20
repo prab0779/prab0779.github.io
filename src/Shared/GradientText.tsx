@@ -1,10 +1,28 @@
 import { useState, useCallback, useEffect, useRef, ReactNode } from 'react';
 import { motion, useMotionValue, useAnimationFrame, useTransform } from 'motion/react';
 
+const PRESETS = {
+  gold: [
+    "#c6a44b",
+    "#f5d97a",
+    "#fff3b0",
+    "#f5d97a",
+    "#c6a44b"
+  ],
+  silver: [
+    "#9a9a9a",
+    "#d1d5db",
+    "#ffffff",
+    "#d1d5db",
+    "#9a9a9a"
+  ]
+};
+
 interface GradientTextProps {
   children: ReactNode;
   className?: string;
   colors?: string[];
+  variant?: 'gold' | 'silver';
   animationSpeed?: number;
   showBorder?: boolean;
   direction?: 'horizontal' | 'vertical' | 'diagonal';
@@ -15,8 +33,9 @@ interface GradientTextProps {
 export default function GradientText({
   children,
   className = '',
-  colors = ['#5227FF', '#FF9FFC', '#B497CF'],
-  animationSpeed = 8,
+  colors,
+  variant = 'gold',
+  animationSpeed = 12,
   showBorder = false,
   direction = 'horizontal',
   pauseOnHover = false,
@@ -27,6 +46,7 @@ export default function GradientText({
   const elapsedRef = useRef(0);
   const lastTimeRef = useRef<number | null>(null);
 
+  const resolvedColors = colors || PRESETS[variant];
   const animationDuration = animationSpeed * 1000;
 
   useAnimationFrame(time => {
@@ -54,7 +74,6 @@ export default function GradientText({
         progress.set(100 - ((cycleTime - animationDuration) / animationDuration) * 100);
       }
     } else {
-      // Continuously increase position for seamless looping
       progress.set((elapsedRef.current / animationDuration) * 100);
     }
   });
@@ -65,14 +84,9 @@ export default function GradientText({
   }, [animationSpeed, yoyo]);
 
   const backgroundPosition = useTransform(progress, p => {
-    if (direction === 'horizontal') {
-      return `${p}% 50%`;
-    } else if (direction === 'vertical') {
-      return `50% ${p}%`;
-    } else {
-      // For diagonal, move only horizontally to avoid interference patterns
-      return `${p}% 50%`;
-    }
+    if (direction === 'horizontal') return `${p}% 50%`;
+    if (direction === 'vertical') return `50% ${p}%`;
+    return `${p}% 50%`;
   });
 
   const handleMouseEnter = useCallback(() => {
@@ -84,29 +98,38 @@ export default function GradientText({
   }, [pauseOnHover]);
 
   const gradientAngle =
-    direction === 'horizontal' ? 'to right' : direction === 'vertical' ? 'to bottom' : 'to bottom right';
-  // Duplicate first color at the end for seamless looping
-  const gradientColors = [...colors, colors[0]].join(', ');
+    direction === 'horizontal'
+      ? 'to right'
+      : direction === 'vertical'
+      ? 'to bottom'
+      : 'to bottom right';
+
+  const gradientColors = [...resolvedColors, resolvedColors[0]].join(', ');
 
   const gradientStyle = {
     backgroundImage: `linear-gradient(${gradientAngle}, ${gradientColors})`,
-    backgroundSize: direction === 'horizontal' ? '300% 100%' : direction === 'vertical' ? '100% 300%' : '300% 300%',
+    backgroundSize:
+      direction === 'horizontal'
+        ? '300% 100%'
+        : direction === 'vertical'
+        ? '100% 300%'
+        : '300% 300%',
     backgroundRepeat: 'repeat'
   };
 
   return (
-    <motion.div
-      className={`relative mx-auto flex max-w-fit flex-row items-center justify-center rounded-[1.25rem] font-medium backdrop-blur transition-shadow duration-500 overflow-hidden cursor-pointer ${showBorder ? 'py-1 px-2' : ''} ${className}`}
+    <motion.span
+      className={`relative inline-block ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       {showBorder && (
-        <motion.div
-          className="absolute inset-0 z-0 pointer-events-none rounded-[1.25rem]"
+        <motion.span
+          className="absolute inset-0 z-0 pointer-events-none rounded-xl"
           style={{ ...gradientStyle, backgroundPosition }}
         >
-          <div
-            className="absolute bg-black rounded-[1.25rem] z-[-1]"
+          <span
+            className="absolute bg-black rounded-xl z-[-1]"
             style={{
               width: 'calc(100% - 2px)',
               height: 'calc(100% - 2px)',
@@ -115,14 +138,19 @@ export default function GradientText({
               transform: 'translate(-50%, -50%)'
             }}
           />
-        </motion.div>
+        </motion.span>
       )}
-      <motion.div
-        className="inline-block relative z-2 text-transparent bg-clip-text"
-        style={{ ...gradientStyle, backgroundPosition, WebkitBackgroundClip: 'text' }}
+
+      <motion.span
+        className="inline-block text-transparent bg-clip-text"
+        style={{
+          ...gradientStyle,
+          backgroundPosition,
+          WebkitBackgroundClip: 'text'
+        }}
       >
         {children}
-      </motion.div>
-    </motion.div>
+      </motion.span>
+    </motion.span>
   );
 }
