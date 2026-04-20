@@ -55,7 +55,11 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
       <div className="mt-6">
         {stage >= 2 && (
           <BlurText
-            text="Browse all values, understand trading basics, and explore item worth in one place."
+            text="Browse our complete AOT:R value list (200 items). Notice: These values are UNOFFICIAL and currently OUTDATED They are only shown to give a rough visual understanding of item worth.
+
+AOT:R trading is entirely player-driven and based on rarity, demand, and player needs.
+
+Do not rely on value lists for exact pricing. Always negotiate trades yourself and join our Discord for the latest insights."
             delay={200}
             animateBy="words"
             direction="top"
