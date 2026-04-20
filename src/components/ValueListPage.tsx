@@ -69,7 +69,7 @@ Do not rely on value lists for exact pricing. Always negotiate trades yourself a
         )} 
       </div> 
 
-      <div className="p-5 mb-5 mt-1">
+      <div className="p-1 mb-1 mt-1">
       </div>
 
       <div className="mb-12">
