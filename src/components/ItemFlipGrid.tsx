@@ -1,9 +1,8 @@
-import React, { useState, useMemo } from "react";
-import { FixedSizeGrid as Grid } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
+i have react window now import React, { useState, useMemo } from "react";
 import { ItemCard } from "./ItemCard";
 import { SearchAndFilter } from "./SearchAndFilter";
 import { Item } from "../types/Item";
+import { AnimatedItem } from "../Shared/AnimatedList";
 
 interface ItemFlipGridProps {
   items: Item[];
@@ -18,7 +17,7 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
   const vizardMask = useMemo(
     () => items.find((i) => i.name.toLowerCase() === "vizard mask"),
     [items]
-  );
+  ); 
 
   const vizardValue = vizardMask?.value ?? 0;
 
@@ -29,43 +28,18 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
   const filteredItems = useMemo(() => {
     const lowerSearch = searchTerm.toLowerCase();
 
-    return items
-      .filter((item) => {
-        const matchesSearch = item.name.toLowerCase().includes(lowerSearch);
-        const matchesCategory =
-          !selectedCategory || item.category === selectedCategory;
+    const filtered = items.filter((item) => {
+      const matchesSearch = item.name.toLowerCase().includes(lowerSearch);
+      const matchesCategory =
+        !selectedCategory || item.category === selectedCategory;
 
-        return matchesSearch && matchesCategory;
-      })
-      .slice()
-      .sort((a, b) =>
-        sortOrder === "asc" ? a.value - b.value : b.value - a.value
-      );
-  }, [items, searchTerm, selectedCategory, sortOrder]);
+      return matchesSearch && matchesCategory;
+    });
 
-  const COLUMN_COUNT = 4;
-  const COLUMN_WIDTH = 260;
-  const ROW_HEIGHT = 340;
-
-  const rowCount = Math.ceil(filteredItems.length / COLUMN_COUNT);
-
-  const Cell = ({ columnIndex, rowIndex, style }: any) => {
-    const index = rowIndex * COLUMN_COUNT + columnIndex;
-    if (index >= filteredItems.length) return null;
-
-    const item = filteredItems[index];
-
-    return (
-      <div style={style} className="p-3">
-        <ItemCard
-          item={item}
-          mode={mode}
-          vizardValue={vizardValue}
-          index={index}
-        />
-      </div>
+    return filtered.sort((a, b) =>
+      sortOrder === "asc" ? a.value - b.value : b.value - a.value
     );
-  };
+  }, [items, searchTerm, selectedCategory, sortOrder]);
 
   return (
     <div className="space-y-6">
@@ -79,21 +53,21 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
         onSortOrderChange={setSortOrder}
       />
 
-      <div style={{ height: "75vh" }}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <Grid
-              columnCount={COLUMN_COUNT}
-              columnWidth={COLUMN_WIDTH}
-              height={height}
-              rowCount={rowCount}
-              rowHeight={ROW_HEIGHT}
-              width={width}
-            >
-              {Cell}
-            </Grid>
-          )}
-        </AutoSizer>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-16">
+        {filteredItems.map((item, index) => (
+          <AnimatedItem
+            key={item.id}
+            index={index}
+            delay={(index % 4) * 0.08} // stagger animation
+          >
+            <ItemCard
+              item={item}
+              mode={mode}
+              vizardValue={vizardValue}
+              index={index} // required for animations
+            />
+          </AnimatedItem>
+        ))}
       </div>
 
       {filteredItems.length === 0 && (
@@ -103,4 +77,4 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
       )}
     </div>
   );
-};
+}; 
