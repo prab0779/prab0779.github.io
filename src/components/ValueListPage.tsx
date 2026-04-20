@@ -48,7 +48,7 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
             </span>
           ))}
 
-          <span className="text-red-400 font-semibold"> ⚠️ Notice: </span>
+          <span className="text-red-400 font-semibold"> Notice: </span>
 
           {"These values are".split(" ").map((w, i, arr) => (
             <span key={"c"+i} className="silver-letter">
