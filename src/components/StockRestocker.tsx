@@ -107,15 +107,19 @@ export const StockRestocker: React.FC = () => {
 
           <GradientText variant="silver">:</GradientText> 
 
-          <Counter
-            value={minutes}
-            places={[10, 1]}
-            fontSize={20}
-            textColor="#e5e7eb"
-            digitStyle={{ width: "1ch" }}
-            gradientFrom="transparent"
-            gradientTo="transparent"
-          />
+          <span>
+  <GradientText variant="silver">
+    <Counter
+      value={minutes}
+      places={[10, 1]}
+      fontSize={20}
+      textColor="transparent"
+      digitStyle={{ width: "1ch", display: "inline-block" }}
+      gradientFrom="transparent"
+      gradientTo="transparent"
+    />
+  </GradientText>
+</span>
 
           <GradientText variant="silver">:</GradientText>
 
