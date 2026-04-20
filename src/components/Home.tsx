@@ -177,7 +177,7 @@ useEffect(() => {
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--gold-soft)] to-transparent opacity-25 mb-10 md:mb-14" />
         </div>
-
+        <ScrollReveal
         <section className="relative max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-4">
             <div>
