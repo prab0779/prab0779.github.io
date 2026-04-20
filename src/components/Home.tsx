@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Item } from "../types/Item";
 import { FAQSection } from "./FAQSection";
@@ -20,12 +20,15 @@ interface HomeProps {
   items: Item[];
 }
 
-
 const DockItems = [
   {
     icon: <SiRoblox size={22} />,
     label: "Roblox",
-    onClick: () => window.open("https://www.roblox.com/games/13379208636/Attack-on-Titan-Revolution", "_blank"),
+    onClick: () =>
+      window.open(
+        "https://www.roblox.com/games/13379208636/Attack-on-Titan-Revolution",
+        "_blank"
+      ),
   },
   {
     icon: <FaXTwitter size={22} />,
@@ -41,6 +44,20 @@ const DockItems = [
 
 export const Home: React.FC<HomeProps> = ({ items }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const [stage, setStage] = useState(0);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setStage(1), 100);
+    const t2 = setTimeout(() => setStage(2), 600);
+    const t3 = setTimeout(() => setStage(3), 1200);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
+  }, []);
 
   const handleAnimationComplete = () => {
     console.log("Animation completed!");
@@ -65,7 +82,6 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           </div>
 
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_30%_40%,rgba(255,215,120,0.08),transparent_60%)]" />
-
           <div className="pointer-events-none absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-[#090A0F]" />
 
           <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
@@ -73,80 +89,92 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
               <div>
                 <div className="text-xs font-medium uppercase tracking-[0.25em] mb-2 flex flex-wrap">
                   {"AOT:R Trading Hub".split("").map((char, i) => (
-                  <span key={i} className="silver-letter">
-                  {char === " " ? "\u00A0" : char}
+                    <span key={i} className="silver-letter">
+                      {char === " " ? "\u00A0" : char}
                     </span>
-                    ))}
+                  ))}
                 </div>
 
-                <SplitText
-                  text="AOT:R Values"
-                  tag="h1"
-                  className="text-4xl md:text-6xl font-extrabold text-[var(--gold-bright)] leading-tight drop-shadow-lg"
-                  delay={40}
-                  duration={1}
-                  ease="power3.out"
-                  splitType="chars"
-                  from={{ opacity: 0, y: 40 }}
-                  to={{ opacity: 1, y: 0 }}
-                />
+                {stage >= 1 && (
+                  <SplitText
+                    text="AOT:R Values"
+                    tag="h1"
+                    className="text-4xl md:text-6xl font-extrabold text-[var(--gold-bright)] leading-tight drop-shadow-lg"
+                    delay={40}
+                    duration={1}
+                    ease="power3.out"
+                    splitType="chars"
+                    from={{ opacity: 0, y: 40 }}
+                    to={{ opacity: 1, y: 0 }}
+                  />
+                )}
 
                 <div className="h-0.5 w-20 bg-gradient-to-r from-[var(--gold-soft)] via-[var(--gold-bright)] to-transparent rounded-full mt-3 mx-auto lg:mx-0" />
 
                 <div className="text-center lg:text-left space-y-4">
-                  <BlurText
-                    text="The ultimate hub for Attack on Titan Revolution trading. Discover values, analyze trades, and browse verified trade ads — all in one place."
-                    delay={200}
-                    animateBy="words"
-                    direction="top"
-                    onAnimationComplete={handleAnimationComplete}
-                    className="text-2xl mb-8"
-                  />
+                  {stage >= 1 && (
+                    <BlurText
+                      text="The ultimate hub for Attack on Titan Revolution trading. Discover values, analyze trades, and browse verified trade ads — all in one place."
+                      delay={200}
+                      animateBy="words"
+                      direction="top"
+                      onAnimationComplete={handleAnimationComplete}
+                      className="text-2xl mb-8"
+                    />
+                  )}
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
-  <StarBorder
-    as={Link}
-    to="/trade-ads"
-    className="px-6 py-3 bg-[#111] font-medium rounded-xl border border-gray-700 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] transition hover:-translate-y-0.5 flex flex-wrap justify-center"
-    color="#FFD700"
-    speed="2s"
-  >
-    {"Start Trading →".split("").map((char, i) => (
-      <span key={i} className="silver-letter">
-        {char === " " ? "\u00A0" : char}
-      </span>
-    ))}
-  </StarBorder>
+              {stage >= 2 && (
+                <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
+                  <StarBorder
+                    as={Link}
+                    to="/trade-ads"
+                    className="px-6 py-3 bg-[#111] font-medium rounded-xl border border-gray-700 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] transition hover:-translate-y-0.5 flex flex-wrap justify-center"
+                    color="#FFD700"
+                    speed="2s"
+                  >
+                    {"Start Trading →".split("").map((char, i) => (
+                      <span key={i} className="silver-letter">
+                        {char === " " ? "\u00A0" : char}
+                      </span>
+                    ))}
+                  </StarBorder>
 
-  <StarBorder
-    as={Link}
-    to="/value-list"
-    className="px-6 py-3 bg-[#111] font-medium rounded-xl border border-gray-700 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] transition hover:-translate-y-0.5 flex flex-wrap justify-center"
-    color="#FFD700"
-    speed="4s"
-  >
-    {"View Values ★".split("").map((char, i) => (
-      <span key={i} className="gold-letter">
-        {char === " " ? "\u00A0" : char}
-      </span>
-    ))}
-  </StarBorder>
-</div>
+                  <StarBorder
+                    as={Link}
+                    to="/value-list"
+                    className="px-6 py-3 bg-[#111] font-medium rounded-xl border border-gray-700 hover:border-[var(--gold-bright)] hover:bg-[#1a1a1a] transition hover:-translate-y-0.5 flex flex-wrap justify-center"
+                    color="#FFD700"
+                    speed="4s"
+                  >
+                    {"View Values ★".split("").map((char, i) => (
+                      <span key={i} className="gold-letter">
+                        {char === " " ? "\u00A0" : char}
+                      </span>
+                    ))}
+                  </StarBorder>
+                </div>
+              )}
             </div>
-            <div className="flex justify-center lg:justify-end lg:-ml-10 px-2 sm:px-0">
+
+            {stage >= 3 && (
+              <div className="flex justify-center lg:justify-end lg:-ml-10 px-2 sm:px-0">
                 <Carousel />
-            </div>
+              </div>
+            )}
           </div>
-          <div className="relative z-10 w-full flex justify-center mt-[90px] md:mt-[150px]">
+
+          {stage >= 3 && (
+            <div className="relative z-10 w-full flex justify-center mt-[90px] md:mt-[150px]">
               <Dock items={DockItems} />
-          </div>
+            </div>
+          )}
         </section>
 
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--gold-soft)] to-transparent opacity-25 mb-10 md:mb-14" />
-        </div> 
+        </div>
 
         <section className="relative max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-4">
@@ -168,7 +196,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
                   delay={200}
                   animateBy="words"
                   direction="top"
-                  enabled = {false}
+                  enabled={false}
                   onAnimationComplete={handleAnimationComplete}
                   className="text-1xl mb-2"
                 />
@@ -237,15 +265,15 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             to={{ opacity: 1, y: 0 }}
           />
           <p className="text-gray-400 mb-8 text-sm md:text-base max-w-xl flex flex-wrap">
-  {"Everything you need for successful Attack on Titan Revolution trading — from accurate values to smarter tools and safer deals."
-    .split(" ")
-    .map((word, i, arr) => (
-      <span key={i} className="silver-letter">
-        {word}
-        {i < arr.length - 1 && "\u00A0"}
-      </span>
-    ))}
-</p>
+            {"Everything you need for successful Attack on Titan Revolution trading — from accurate values to smarter tools and safer deals."
+              .split(" ")
+              .map((word, i, arr) => (
+                <span key={i} className="silver-letter">
+                  {word}
+                  {i < arr.length - 1 && "\u00A0"}
+                </span>
+              ))}
+          </p>
 
           <div className="grid sm:grid-cols-2 gap-5 md:gap-6">
             {[{
@@ -298,23 +326,25 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
                     </div>
 
                     <h3 className="text-xl font-semibold mb-1 flex flex-wrap">
-  {card.title.split("").map((char, i) => (
-    <span key={i} className="gold-letter">
-      {char === " " ? "\u00A0" : char}
-    </span>
-  ))}
-</h3>
+                      {card.title.split("").map((char, i) => (
+                        <span key={i} className="gold-letter">
+                          {char === " " ? "\u00A0" : char}
+                        </span>
+                      ))}
+                    </h3>
 
                     <p className="text-gray-400 text-sm mb-3 flex flex-wrap">
-  {card.desc.split(" ").map((word, i, arr) => (
-    <span key={i} className="silver-letter">
-      {word}
-      {i < arr.length - 1 && "\u00A0"}
-    </span>
-  ))}
-</p>
+                      {card.desc.split(" ").map((word, i, arr) => (
+                        <span key={i} className="silver-letter">
+                          {word}
+                          {i < arr.length - 1 && "\u00A0"}
+                        </span>
+                      ))}
+                    </p>
 
-                    <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">{card.cta}</span>
+                    <span className="text-[var(--gold-soft)] text-sm group-hover:text-[var(--gold-bright)]">
+                      {card.cta}
+                    </span>
                   </Link>
                 </BorderGlow>
               );
@@ -328,4 +358,4 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
       </div>
     </div>
   );
-}; 
+};
