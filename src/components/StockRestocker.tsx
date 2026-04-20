@@ -2,11 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useStockRotation } from "../hooks/useStockRotation";
 import { useItems } from "../hooks/useItems";
 import BorderGlow from "../Shared/BorderGlow";
+import Counter from "../Shared/Counter";
 
 export const StockRestocker: React.FC = () => {
   const { rotation } = useStockRotation();
   const { items } = useItems();
-  const [timeLeft, setTimeLeft] = useState("00:00:00");
+  const [timeLeft, setTimeLeft] = useState(0);
 
   const RESET_HOURS = [0, 6, 12, 18];
 
@@ -64,13 +65,7 @@ export const StockRestocker: React.FC = () => {
     }
 
     secondsUntilNext = Math.max(0, secondsUntilNext);
-
-    const h = Math.floor(secondsUntilNext / 3600);
-    const m = Math.floor((secondsUntilNext % 3600) / 60);
-    const s = Math.floor(secondsUntilNext % 60);
-
-    const pad = (n: number) => String(n).padStart(2, "0");
-    setTimeLeft(`${pad(h)}:${pad(m)}:${pad(s)}`);
+    setTimeLeft(secondsUntilNext);
   };
 
   useEffect(() => {
@@ -89,14 +84,18 @@ export const StockRestocker: React.FC = () => {
         ))}
       </h2>
 
-      <p className="mb-6 flex flex-wrap">
-        {`Next restock in: ${timeLeft}`.split(" ").map((word, i) => (
-          <span key={i} className="silver-letter">
-            {word}
-            {i < `Next restock in: ${timeLeft}`.split(" ").length - 1 && "\u00A0"}
-          </span>
-        ))}
-      </p>
+      {/* ✅ Animated Countdown */}
+      <div className="mb-6 flex flex-col items-start gap-2">
+        <span className="silver-letter">Next restock in:</span>
+
+        <div className="flex items-center gap-2">
+          <Counter value={Math.floor(timeLeft / 3600)} fontSize={26} />
+          <span className="text-gray-400">:</span>
+          <Counter value={Math.floor((timeLeft % 3600) / 60)} fontSize={26} />
+          <span className="text-gray-400">:</span>
+          <Counter value={timeLeft % 60} fontSize={26} />
+        </div>
+      </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {activeItems.map((item, i) => (
