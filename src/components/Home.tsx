@@ -122,7 +122,7 @@ useEffect(() => {
                       animateBy="words"
                       direction="top"
                       onAnimationComplete={handleAnimationComplete}
-                      className="text-2xl mb-8"
+                     className="text-2xl mb-8 text-center lg:text-left"
                     />
                   )}
                 </div>
