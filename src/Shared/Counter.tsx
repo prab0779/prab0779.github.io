@@ -132,7 +132,7 @@ export default function Counter({
   gap = 8,
   borderRadius = 4,
   horizontalPadding = 8,
-  textColor = 'inherit',
+  textColor = '#e5e7eb',
   fontWeight = 'inherit',
   containerStyle,
   counterStyle,
