@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useMemo, useCallback } from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Item } from "../types/Item";
 import CountUp from "../Shared/CountUp";
@@ -18,8 +18,6 @@ export const ItemCard = React.memo(({
   vizardValue,
   index = 0
 }: ItemCardProps) => {
-  const [modeState, setModeState] = useState<"regular" | "permanent">(mode);
-
   const getDemandVariant = useCallback((d: number): "red" | "yellow" | "green" =>
     d <= 3 ? "red" : d <= 6 ? "yellow" : "green", []);
 
@@ -85,7 +83,7 @@ export const ItemCard = React.memo(({
       animated={false}
       colors={["#FFD700", "#FFC94D", "#FFB347"]}
     >
-      <div className="p-5 flex flex-col">
+      <div className="p-5 flex flex-col h-full">
         <div className="flex justify-between items-center mb-3">
           <h2 className="font-bold text-lg">
             <GradientText variant="gold">
@@ -98,37 +96,13 @@ export const ItemCard = React.memo(({
           {renderIcon(item.emoji)}
         </div>
 
-        <div className="flex bg-gray-900 border border-gray-800 rounded-full w-max mx-auto mb-4">
-          <button
-            onClick={() => setModeState("regular")}
-            className={`px-3 py-1 text-xs rounded-full ${
-              modeState === "regular"
-                ? "bg-blue-600 text-white"
-                : "text-gray-300"
-            }`}
-          >
-            Key
-          </button>
-
-          <button
-            onClick={() => setModeState("permanent")}
-            className={`px-3 py-1 text-xs rounded-full ${
-              modeState === "permanent"
-                ? "bg-blue-600 text-white"
-                : "text-gray-300"
-            }`}
-          >
-            Vizard
-          </button>
-        </div>
-
         <div className="bg-black/40 rounded-xl p-4 space-y-3 border border-gray-800">
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">Value</GradientText>
             </span>
 
-            {modeState === "regular" ? (
+            {mode === "regular" ? (
               <span className="text-white font-bold">
                 <CountUp
                   from={0}
@@ -186,18 +160,18 @@ export const ItemCard = React.memo(({
             </span>
             <span className="font-bold">
               {tax.value > 0 ? (
-                <GradientText variant={tax.variant}>
-                  <CountUp
-                    from={0}
-                    to={tax.value}
-                    duration={1}
-                    delay={index < 20 ? (index % 4) * 0.08 + 0.1 : 0}
-                    format={(v) => v.toLocaleString()}
-                  />
-                </GradientText>
-              ) : (
-                <GradientText variant="silver">None</GradientText>
-              )}
+            <GradientText variant={tax.variant}>
+              <CountUp
+                from={0}
+                to={tax.value}
+                duration={1}
+                delay={index < 20 ? (index % 4) * 0.08 + 0.1 : 0}
+                format={(v) => v.toLocaleString()}
+              />
+            </GradientText>
+          ) : (
+            <GradientText variant="silver">None</GradientText>
+          )}
             </span>
           </div>
 
