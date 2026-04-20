@@ -49,9 +49,9 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
 useEffect(() => {
   const t1 = setTimeout(() => setStage(1), 100);   // heading
-  const t2 = setTimeout(() => setStage(2), 500);   // description
-  const t3 = setTimeout(() => setStage(3), 900);   // buttons
-  const t4 = setTimeout(() => setStage(4), 1300);  // carousel + dock
+  const t2 = setTimeout(() => setStage(2), 100);   // description
+  const t3 = setTimeout(() => setStage(3), 100);   // buttons
+  const t4 = setTimeout(() => setStage(4), 100);  // carousel + dock
 
   return () => {
     clearTimeout(t1);
