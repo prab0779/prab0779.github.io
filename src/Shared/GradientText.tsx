@@ -43,7 +43,15 @@ const PRESETS = {
     "#cecbf6",
     "#7f77dd",
     "#534ab7"
-  ]
+  ],
+
+  yellow: [
+  "#a86e00",
+  "#e89c00",
+  "#ffd95c",
+  "#e89c00",
+  "#a86e00"
+],
 };
 
 interface GradientTextProps {
