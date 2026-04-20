@@ -62,7 +62,10 @@ export const ItemCard: React.FC<ItemCardProps> = ({
   };
 
   const keysValue = item.value;
-  const vizardConverted = vizardValue > 0 ? item.value / vizardValue : 0;
+  const vizardConverted =
+  vizardValue > 0
+    ? Math.round((item.value / vizardValue) * 100) / 100
+    : 0;
 
   return (
     <BorderGlow
