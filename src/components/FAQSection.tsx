@@ -9,33 +9,7 @@ interface FAQItem {
   answer: string;
 }
 
-const faqItems: FAQItem[] = [
-  {
-    question: "What is Aotr Values?",
-    answer:
-      "Aotr Values is the ultimate resource for Attack on Titan Revolution item values, featuring a comprehensive trade calculator, real-time market data, and an extensive item database to help players make informed trading decisions. Aotr Values is a fan-made resource and is not affiliated with, sponsored by, or endorsed by Attack on Titan, its creators, or the Roblox game Attack on Titan Revolution.",
-  },
-  {
-    question: "How accurate are the values?",
-    answer:
-      "Our item values are updated regularly based on market trends, community feedback, and trading data to ensure the most accurate and current pricing information for Attack on Titan Revolution items.",
-  },
-  {
-    question: "How are values determined?",
-    answer:
-      "Values are for guidance purposes only and are not official. They change daily and are based on three key factors: Rarity, Demand, and Player Needs.",
-  },
-  {
-    question: "How often are values updated?",
-    answer:
-      "We update our AOTR trading values daily to reflect current market conditions.",
-  },
-  {
-    question: "What items are included?",
-    answer:
-      "Our database includes 200+ items including weapons, accessories, and rare collectibles.",
-  },
-];
+const faqItems: FAQItem[] = [ { question: "What is Aotr Values?", answer: "Aotr Values is the ultimate resource for Attack on Titan Revolution item values, featuring a comprehensive trade calculator, real-time market data, and an extensive item database to help players make informed trading decisions. Aotr Values is a fan-made resource and is not affiliated with, sponsored by, or endorsed by Attack on Titan, its creators, or the Roblox game Attack on Titan Revolution.", }, { question: "How accurate are the values?", answer: "Our item values are updated regularly based on market trends, community feedback, and trading data to ensure the most accurate and current pricing information for Attack on Titan Revolution items.", }, { question: "How are values determined?", answer: "Values are for guidance purposes only and are not official. They change daily and are based on three key factors: Rarity, Demand, and Player Needs. This means an item's value can shift depending on how hard it is to obtain, how many players want it, and what it's worth to the person you're trading with. Trading is about negotiation and finding a deal both sides agree on. We also advise against relying on unofficial value lists made by players, as they often misrepresent true market value.", }, { question: "How often are values updated?", answer: "We update our AOTR trading values daily to reflect current market conditions. Major value changes are tracked and displayed in our value changes section for transparency and market analysis.", }, { question: "What items are included in the AOTR value list?", answer: "Our comprehensive AOTR item database includes over 200+ items from Attack on Titan Revolution, covering weapons, accessories, clothing, consumables, and rare collectibles.", }, { question: "How does the AOTR trade calculator work?", answer: "Our AOTR trade calculator allows you to add items you're sending and receiving, automatically calculating total values, tax costs, and net profit/loss.", }, { question: "What do the demand ratings mean in AOTR?", answer: "Demand ratings (1–10) indicate how much players want specific items. Higher demand means items are more sought after.", }, { question: 'What does "Rate of Change" mean?', answer: "Rate of Change indicates whether an item's value is trending upward, downward, stable, or overpriced.", }, { question: "How do taxes work?", answer: "Some items require gem or gold taxes when trading. Our calculator automatically computes these costs.", }, { question: "Can I suggest updates?", answer: "Yes! Join our Discord to suggest value changes or report inaccurate information.", }, ];
 
 export const FAQSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
