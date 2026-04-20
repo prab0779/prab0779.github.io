@@ -32,6 +32,7 @@ const AuthCallback = lazy(() =>
   import("./routes/auth/callback").then(m => ({ default: m.default }))
 );
 
+/* Loading */
 const LoadingFallback = () => (
   <div className="flex items-center justify-center min-h-[400px]">
     <div
@@ -115,12 +116,19 @@ export default function App() {
 export const AppContent: React.FC = () => {
   const { items } = useItems();
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const location = useLocation();
 
   useEffect(() => {
     const saved = localStorage.getItem("maintenanceMode");
     if (saved) setMaintenanceMode(JSON.parse(saved));
   }, []);
+
+  useEffect(() => {
+    setPageLoading(true);
+    const timeout = setTimeout(() => setPageLoading(false), 500);
+    return () => clearTimeout(timeout);
+  }, [location.pathname]);
 
   const toggleMaintenanceMode = (enabled: boolean) => {
     setMaintenanceMode(enabled);
@@ -138,31 +146,35 @@ export const AppContent: React.FC = () => {
 
         <main className="flex-1">
           <div className="w-full">
-            <Suspense fallback={<LoadingFallback />}>
-              <Routes>
-                <Route path="/" element={<Home items={items} />} />
-                <Route path="/calculator" element={<TradeCalculator items={items} />} />
-                <Route path="/value-list" element={<ValueListPage items={items} />} />
-                <Route path="/value-changes" element={<ValueChangesPage />} />
-                <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
-                <Route path="/scam-logs" element={<ScamLogsPage />} />
-                <Route path="/auth/callback" element={<AuthCallback />} />
+            {pageLoading ? (
+              <LoadingFallback />
+            ) : (
+              <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                  <Route path="/" element={<Home items={items} />} />
+                  <Route path="/calculator" element={<TradeCalculator items={items} />} />
+                  <Route path="/value-list" element={<ValueListPage items={items} />} />
+                  <Route path="/value-changes" element={<ValueChangesPage />} />
+                  <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
+                  <Route path="/scam-logs" element={<ScamLogsPage />} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
 
-                <Route
-                  path="/admin"
-                  element={
-                    <ProtectedRoute>
-                      <AdminPage
-                        maintenanceMode={maintenanceMode}
-                        onMaintenanceModeChange={toggleMaintenanceMode}
-                      />
-                    </ProtectedRoute>
-                  }
-                />
+                  <Route
+                    path="/admin"
+                    element={
+                      <ProtectedRoute>
+                        <AdminPage
+                          maintenanceMode={maintenanceMode}
+                          onMaintenanceModeChange={toggleMaintenanceMode}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Suspense>
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </Suspense>
+            )}
           </div>
         </main>
 
