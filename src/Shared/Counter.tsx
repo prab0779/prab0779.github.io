@@ -115,7 +115,7 @@ interface CounterProps {
 
 export default function Counter({
   value,
-  fontSize = 100,
+  fontSize = 10,
   padding = 0,
   places = [...value.toString()].map((ch, i, a) => {
     if (ch === '.') {
