@@ -77,7 +77,7 @@ export const StockRestocker: React.FC = () => {
 
       <h2 className="text-2xl md:text-3xl font-bold mb-3">
         <GradientText
-          colors={["#c6a44b", "#f5d97a", "#fff3b0", "#f5d97a", "#c6a44b"]}
+          variant="gold"
           animationSpeed={6}
         >
           Cosmetic Market
