@@ -91,7 +91,7 @@ export const StockRestocker: React.FC = () => {
   <div className="flex items-center gap-2 text-white">
     <Counter
       value={Math.floor(timeLeft / 3600)}
-      fontSize={28}
+      fontSize={10}
       textColor="#e5e7eb" // silver/white
       gradientFrom="transparent"
       gradientTo="transparent"
@@ -101,7 +101,7 @@ export const StockRestocker: React.FC = () => {
 
     <Counter
       value={Math.floor((timeLeft % 3600) / 60)}
-      fontSize={28}
+      fontSize={10}
       textColor="#e5e7eb"
       gradientFrom="transparent"
       gradientTo="transparent"
@@ -111,7 +111,7 @@ export const StockRestocker: React.FC = () => {
 
     <Counter
       value={timeLeft % 60}
-      fontSize={28}
+      fontSize={10}
       textColor="#e5e7eb"
       gradientFrom="transparent"
       gradientTo="transparent"
