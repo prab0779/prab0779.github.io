@@ -84,52 +84,50 @@ export const StockRestocker: React.FC = () => {
         </GradientText>
       </h2>
 
-      {/* ⏱ COUNTDOWN */}
-      <div className="mb-6 flex flex-col items-start gap-2">
-        <GradientText
-          variant="silver"
-          animationSpeed={6}
-        >
-          Next restock in:
-        </GradientText>
+      <div className="mb-6 flex items-center gap-3">
 
-        <div className="flex items-center gap-2">
+  <GradientText variant="silver" animationSpeed={6}>
+    Next restock in:
+  </GradientText>
 
-          <Counter
-            value={hours}
-            places={[10, 1]}
-            fontSize={20}
-            textColor="#d1d5db"
-            digitStyle={{ width: "1ch" }}
-            gradientFrom="transparent" 
-            gradientTo="transparent"
-          />
+  <div className="flex items-center gap-2">
 
-          <GradientText variant="silver">:</GradientText> 
+    <Counter
+      value={hours}
+      places={[10, 1]}
+      fontSize={20}
+      textColor="#d1d5db"
+      digitStyle={{ width: "1ch", display: "inline-block" }}
+      gradientFrom="transparent"
+      gradientTo="transparent"
+    />
 
-          <Counter
-            value={minutes}
-            places={[10, 1]}
-            fontSize={20}
-            textColor="#d1d5db"
-            digitStyle={{ width: "1ch" }}
-            gradientFrom="transparent"
-            gradientTo="transparent"
-          />
- 
-          <GradientText variant="silver">:</GradientText>
+    <GradientText variant="silver">:</GradientText>
 
-          <Counter
-            value={seconds}
-            places={[10, 1]}
-            fontSize={20}
-            textColor="#d1d5db"
-            digitStyle={{ width: "1ch" }}
-            gradientFrom="transparent"
-            gradientTo="transparent"
-          />
-        </div>
-      </div>
+    <Counter
+      value={minutes}
+      places={[10, 1]}
+      fontSize={20}
+      textColor="#d1d5db"
+      digitStyle={{ width: "1ch", display: "inline-block" }}
+      gradientFrom="transparent"
+      gradientTo="transparent"
+    />
+
+    <GradientText variant="silver">:</GradientText>
+
+    <Counter
+      value={seconds}
+      places={[10, 1]}
+      fontSize={20}
+      textColor="#d1d5db"
+      digitStyle={{ width: "1ch", display: "inline-block" }}
+      gradientFrom="transparent"
+      gradientTo="transparent"
+    />
+
+  </div>
+</div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {activeItems.map((item, i) => (
