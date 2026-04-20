@@ -21,7 +21,6 @@ const PRESETS = {
 interface GradientTextProps {
   children: ReactNode;
   className?: string;
-  colors?: string[];
   variant?: 'gold' | 'silver';
   animationSpeed?: number;
   showBorder?: boolean;
