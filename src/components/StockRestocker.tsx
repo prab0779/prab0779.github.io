@@ -101,7 +101,7 @@ export const StockRestocker: React.FC = () => {
 
     <Counter
       value={Math.floor((timeLeft % 3600) / 60)}
-      fontSize={10}
+      fontSize={20}
       textColor="#e5e7eb"
       gradientFrom="transparent"
       gradientTo="transparent"
