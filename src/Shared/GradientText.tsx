@@ -35,7 +35,7 @@ export default function GradientText({
   className = '',
   colors,
   variant = 'gold',
-  animationSpeed = 12,
+  animationSpeed = 15,
   showBorder = false,
   direction = 'horizontal',
   pauseOnHover = false,
