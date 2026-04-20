@@ -24,8 +24,8 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
 
   useEffect(() => {
     const t1 = setTimeout(() => setStage(1), 100); // heading
-    const t2 = setTimeout(() => setStage(2), 200); // description
-    const t3 = setTimeout(() => setStage(3), 300); // rest
+    const t2 = setTimeout(() => setStage(2), 100); // description
+    const t3 = setTimeout(() => setStage(3), 100); // rest
 
     return () => {
       clearTimeout(t1);
