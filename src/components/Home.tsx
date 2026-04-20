@@ -92,7 +92,7 @@ useEffect(() => {
               <div>
                 <ShinyText
   text="AOT:R Trading Hub"
-  className="text-xs font-medium uppercase tracking-[0.25em] mb-2 flex flex-wra"
+   className="text-xs font-medium uppercase tracking-[0.25em] mb-2 flex flex-wrap justify-center text-center lg:justify-start lg:text-left"
   speed={3}
   delay={3}
   pauseOnHover
