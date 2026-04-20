@@ -99,7 +99,7 @@ export const StockRestocker: React.FC = () => {
             value={hours}
             places={[10, 1]}
             fontSize={20}
-            textColor="#9a9a9a"
+            textColor="#fff3b0"
             digitStyle={{ width: "1ch" }}
             gradientFrom="transparent"
             gradientTo="transparent"
@@ -111,7 +111,7 @@ export const StockRestocker: React.FC = () => {
             value={minutes}
             places={[10, 1]}
             fontSize={20}
-            textColor="#9a9a9a"
+            textColor="#fff3b0"
             digitStyle={{ width: "1ch" }}
             gradientFrom="transparent"
             gradientTo="transparent"
@@ -123,7 +123,7 @@ export const StockRestocker: React.FC = () => {
             value={seconds}
             places={[10, 1]}
             fontSize={20}
-            textColor="#9a9a9a"
+            textColor="#fff3b0"
             digitStyle={{ width: "1ch" }}
             gradientFrom="transparent"
             gradientTo="transparent"
