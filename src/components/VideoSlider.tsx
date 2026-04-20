@@ -55,9 +55,9 @@ const VideoCard = ({ id }: { id: string }) => {
     >
       {isVisible ? (
         <iframe
-          src={`https://www.youtube.com/embed/${id}?mute=1&autoplay=1&controls=0&loop=1&playlist=${id}`}
+          src={`https://www.youtube.com/embed/${id}`}
           className="w-full h-40 md:h-56"
-          allow="autoplay; encrypted-media"
+          allow="encrypted-media; picture-in-picture"
           allowFullScreen
         />
       ) : (
