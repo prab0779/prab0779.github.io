@@ -75,7 +75,6 @@ export const StockRestocker: React.FC = () => {
   return (
     <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14 mt-10">
 
-      {/* 🔥 TITLE */}
       <h2 className="text-2xl md:text-3xl font-bold mb-3">
         <GradientText
           colors={["#c6a44b", "#f5d97a", "#fff3b0", "#f5d97a", "#c6a44b"]}
@@ -132,7 +131,6 @@ export const StockRestocker: React.FC = () => {
         </div>
       </div>
 
-      {/* 🧱 ITEMS */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {activeItems.map((item, i) => (
           <BorderGlow
@@ -161,7 +159,6 @@ export const StockRestocker: React.FC = () => {
                     <span className="text-5xl mb-4">{item.emoji}</span>
                   )}
 
-                  {/* 🔥 ITEM NAME */}
                   <div className="text-lg font-bold mb-4 text-center">
                     <GradientText
                       colors={["#c6a44b", "#f5d97a", "#fff3b0", "#f5d97a", "#c6a44b"]}
