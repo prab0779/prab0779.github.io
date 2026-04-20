@@ -30,9 +30,6 @@ export const StockRestocker: React.FC = () => {
     const parts = new Intl.DateTimeFormat("en-GB", {
       timeZone: "Europe/London",
       hour12: false,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
@@ -42,9 +39,6 @@ export const StockRestocker: React.FC = () => {
       Number(parts.find((p) => p.type === type)?.value ?? 0);
 
     return {
-      year: get("year"),
-      month: get("month"),
-      day: get("day"),
       hour: get("hour"),
       minute: get("minute"),
       second: get("second"),
@@ -64,8 +58,7 @@ export const StockRestocker: React.FC = () => {
       secondsUntilNext = 24 * 3600 - nowSeconds;
     }
 
-    secondsUntilNext = Math.max(0, secondsUntilNext);
-    setTimeLeft(secondsUntilNext);
+    setTimeLeft(Math.max(0, secondsUntilNext));
   };
 
   useEffect(() => {
@@ -74,9 +67,16 @@ export const StockRestocker: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // ✅ Split time
+  const hours = Math.floor(timeLeft / 3600);
+  const minutes = Math.floor((timeLeft % 3600) / 60);
+  const seconds = timeLeft % 60;
+
   return (
     <section className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14 mt-10">
-      <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+      
+      {/* 🔥 Title */}
+      <h2 className="text-2xl md:text-3xl font-bold mb-3">
         {"Cosmetic Market".split("").map((char, i) => (
           <span key={i} className="gold-letter">
             {char === " " ? "\u00A0" : char}
@@ -84,50 +84,73 @@ export const StockRestocker: React.FC = () => {
         ))}
       </h2>
 
-     {/* ✅ Animated Countdown FIXED */}
-<div className="mb-6 flex flex-col items-start gap-2">
-  <span className="silver-letter">Next restock in:</span>
+      {/* ✅ Countdown */}
+      <div className="mb-6 flex flex-col items-start gap-2">
+        <span className="silver-letter">Next restock in:</span>
 
-  <div className="flex items-center gap-2 text-white">
-    <Counter
-      value={Math.floor(timeLeft / 3600)}
-      fontSize={20}
-      textColor="#e5e7eb" // silver/white
-      gradientFrom="transparent"
-      gradientTo="transparent"
-    />
+        <div className="flex items-center gap-2 text-white">
 
-    <span className="silver-letter">:</span>
+          {/* HOURS */}
+          <Counter
+            value={hours}
+            places={[10, 1]} // ✅ forces 2 digits (03)
+            fontSize={20}
+            textColor="#e5e7eb"
+            digitStyle={{ width: "1ch" }}
+            gradientFrom="transparent"
+            gradientTo="transparent"
+          />
 
-    <Counter
-      value={Math.floor((timeLeft % 3600) / 60)}
-      fontSize={20}
-      textColor="#e5e7eb"
-      gradientFrom="transparent"
-      gradientTo="transparent"
-    />
+          <span className="silver-letter">:</span>
 
-    <span className="silver-letter">:</span>
+          {/* MINUTES */}
+          <Counter
+            value={minutes}
+            places={[10, 1]}
+            fontSize={20}
+            textColor="#e5e7eb"
+            digitStyle={{ width: "1ch" }}
+            gradientFrom="transparent"
+            gradientTo="transparent"
+          />
 
-    <Counter
-      value={timeLeft % 60}
-      fontSize={20}
-      textColor="#e5e7eb"
-      gradientFrom="transparent"
-      gradientTo="transparent"
-    />
-  </div>
-</div>
+          <span className="silver-letter">:</span>
 
+          {/* SECONDS */}
+          <Counter
+            value={seconds}
+            places={[10, 1]}
+            fontSize={20}
+            textColor="#e5e7eb"
+            digitStyle={{ width: "1ch" }}
+            gradientFrom="transparent"
+            gradientTo="transparent"
+          />
+
+        </div>
+      </div>
+
+      {/* 🧱 Items Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {activeItems.map((item, i) => (
           <BorderGlow
+            key={i}
+            edgeSensitivity={30}
+            glowColor="40 80 80"
+            backgroundColor="#0c0c0c"
+            borderRadius={20}
+            glowRadius={30}
+            glowIntensity={1}
+            coneSpread={25}
+            animated={false}
+            colors={["#FFD700", "#FFC94D", "#FFB347"]}
           >
             <div className="relative rounded-xl p-5 flex flex-col items-center justify-between transition hover:scale-[1.02]">
+              
               {item ? (
                 <>
-                  {typeof item.emoji === "string" &&
-                  item.emoji.startsWith("/") ? (
+                  {/* Icon */}
+                  {typeof item.emoji === "string" && item.emoji.startsWith("/") ? (
                     <img
                       src={item.emoji}
                       alt={item.name}
@@ -137,21 +160,23 @@ export const StockRestocker: React.FC = () => {
                     <span className="text-5xl mb-4">{item.emoji}</span>
                   )}
 
+                  {/* Name */}
                   <div className="text-lg font-bold mb-4 tracking-wide text-center">
                     {item.name.split("").map((char, i) => (
                       <span key={i} className="gold-letter">
-                        {char === " " ? "" : char}
+                        {char === " " ? "\u00A0" : char}
                       </span>
                     ))}
                   </div>
 
+                  {/* Status */}
                   <div className="bg-gray-800 text-blue-300 text-center font-bold py-2 rounded-md w-full">
                     In Stock
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="text-lg font-bold mb-4 tracking-wide text-center">
+                  <div className="text-lg font-bold mb-4 text-center">
                     <span className="gold-letter">?</span>
                   </div>
 
@@ -160,6 +185,7 @@ export const StockRestocker: React.FC = () => {
                   </div>
                 </>
               )}
+
             </div>
           </BorderGlow>
         ))}
