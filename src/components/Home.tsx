@@ -11,6 +11,7 @@ import BlurText from "../Shared/BlurText";
 import ShinyText from "../Shared/ShinyText";
 import StarBorder from "../Shared/StarBorder";
 import BorderGlow from "../Shared/BorderGlow";
+import ScrollReveal from "../Shared/ScrollReveal";
 import Dock from "../Shared/Dock";
 import { FaDiscord, FaXTwitter } from "react-icons/fa6";
 import { SiRoblox } from "react-icons/si";
