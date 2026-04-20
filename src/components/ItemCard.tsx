@@ -3,6 +3,7 @@ import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Item } from "../types/Item";
 import CountUp from "../Shared/CountUp";
 import BorderGlow from "../Shared/BorderGlow";
+import GradientText from "../Shared/GradientText";
 
 interface ItemCardProps {
   item: Item;
@@ -63,9 +64,9 @@ export const ItemCard: React.FC<ItemCardProps> = ({
 
   const keysValue = item.value;
   const vizardConverted =
-  vizardValue > 0
-    ? Math.round((item.value / vizardValue) * 100) / 100
-    : 0;
+    vizardValue > 0
+      ? Math.round((item.value / vizardValue) * 100) / 100
+      : 0;
 
   return (
     <BorderGlow
@@ -81,12 +82,10 @@ export const ItemCard: React.FC<ItemCardProps> = ({
     >
       <div className="p-5 flex flex-col">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="font-bold text-lg flex flex-wrap">
-            {item.name.split("").map((char, i) => (
-              <span key={i} className="gold-letter">
-                {char === " " ? "\u00A0" : char}
-              </span>
-            ))}
+          <h2 className="font-bold text-lg">
+            <GradientText variant="gold">
+              {item.name}
+            </GradientText>
           </h2>
         </div>
 
@@ -120,12 +119,8 @@ export const ItemCard: React.FC<ItemCardProps> = ({
 
         <div className="bg-black/40 rounded-xl p-4 space-y-3 border border-gray-800">
           <div className="flex justify-between text-sm">
-            <span className="font-medium flex flex-wrap">
-              {"Value".split("").map((c, i) => (
-                <span key={i} className="silver-letter">
-                  {c}
-                </span>
-              ))}
+            <span className="font-medium">
+              <GradientText variant="silver">Value</GradientText>
             </span>
 
             {modeState === "regular" ? (
@@ -158,26 +153,22 @@ export const ItemCard: React.FC<ItemCardProps> = ({
           </div>
 
           <div className="flex justify-between text-sm">
-            <span className="font-medium flex flex-wrap">
-              {"Trend".split("").map((c, i) => (
-                <span key={i} className="silver-letter">
-                  {c}
-                </span>
-              ))}
+            <span className="font-medium">
+              <GradientText variant="silver">Trend</GradientText>
             </span>
-            <span className={`font-bold flex items-center gap-1 ${getRateColor(item.rateOfChange)}`}>
+            <span
+              className={`font-bold flex items-center gap-1 ${getRateColor(
+                item.rateOfChange
+              )}`}
+            >
               {getRateIcon(item.rateOfChange)}
               {item.rateOfChange}
             </span>
           </div>
 
           <div className="flex justify-between text-sm">
-            <span className="font-medium flex flex-wrap">
-              {"Demand".split("").map((c, i) => (
-                <span key={i} className="silver-letter">
-                  {c}
-                </span>
-              ))}
+            <span className="font-medium">
+              <GradientText variant="silver">Demand</GradientText>
             </span>
             <span className={`font-bold ${getDemandColor(item.demand)}`}>
               {item.demand}/10
@@ -185,12 +176,8 @@ export const ItemCard: React.FC<ItemCardProps> = ({
           </div>
 
           <div className="flex justify-between text-sm">
-            <span className="font-medium flex flex-wrap">
-              {tax.label.split("").map((c, i) => (
-                <span key={i} className="silver-letter">
-                  {c === " " ? "\u00A0" : c}
-                </span>
-              ))}
+            <span className="font-medium">
+              <GradientText variant="silver">{tax.label}</GradientText>
             </span>
             <span className={`font-bold ${tax.color}`}>
               {tax.value > 0 ? (
@@ -208,12 +195,8 @@ export const ItemCard: React.FC<ItemCardProps> = ({
           </div>
 
           <div className="flex justify-between text-sm">
-            <span className="font-medium flex flex-wrap">
-              {"Prestige".split("").map((c, i) => (
-                <span key={i} className="silver-letter">
-                  {c}
-                </span>
-              ))}
+            <span className="font-medium">
+              <GradientText variant="silver">Prestige</GradientText>
             </span>
             <span className="text-purple-300 font-bold">
               {item.prestige}
