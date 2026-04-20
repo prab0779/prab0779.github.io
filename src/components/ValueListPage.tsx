@@ -69,7 +69,7 @@ Do not rely on value lists for exact pricing. Always negotiate trades yourself a
         )} 
       </div> 
 
-      <div className="rounded-xl p-5 mb-12 mt-10 text-left backdrop-blur">
+      <div className="p-5 mb-12 mt-10 text-left backdrop-blur">
       </div>
 
       <div className="mb-12">
