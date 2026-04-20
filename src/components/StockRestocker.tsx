@@ -175,7 +175,7 @@ export const StockRestocker: React.FC = () => {
               ) : (
                 <>
                   <div className="text-lg font-bold mb-4 text-center">
-                    <GradientText colors={["#c6a44b","#f5d97a","#fff3b0"]}>?</GradientText>
+                    <GradientText variant="gold">?</GradientText>
                   </div>
 
                   <div className="bg-gray-800 text-blue-300 text-center font-bold py-2 rounded-md w-full">
