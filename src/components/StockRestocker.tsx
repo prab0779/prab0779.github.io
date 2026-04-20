@@ -105,7 +105,7 @@ export const StockRestocker: React.FC = () => {
             gradientTo="transparent"
           />
 
-          <GradientText variant="silver">>:</GradientText>
+          <GradientText colors={["#9a9a9a","#d1d5db","#ffffff","#d1d5db","#9a9a9a"]}>:</GradientText> 
 
           <Counter
             value={minutes}
