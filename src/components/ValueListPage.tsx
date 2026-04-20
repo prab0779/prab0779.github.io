@@ -65,7 +65,7 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
         )}
       </div>
 
-      <div className="bg-[#0b0b0d]/80 border border-[#D4AF37]/30 rounded-xl p-5 mb-12 mt-10 text-left backdrop-blur">
+      <div className="rounded-xl p-5 mb-12 mt-10 text-left backdrop-blur">
       </div>
 
       <div className="mb-12">
