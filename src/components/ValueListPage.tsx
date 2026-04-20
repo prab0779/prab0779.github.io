@@ -26,34 +26,69 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
         <GradientText variant="gold">
           AOT:R Value List
         </GradientText>
-      </h1>
+      </h1> 
 
       <div className="bg-[#0b0b0d]/80 border border-[#D4AF37]/30 rounded-xl p-5 mb-12 text-left backdrop-blur">
-  <GradientText
-    variant="silver"
-    className="text-sm leading-relaxed"
-  >
-    Browse our complete AOT:R value list ({items.length} items).{" "}
-    <span className="text-red-400 font-semibold">Notice:</span>{" "}
-    These values are{" "}
-    <span className="text-yellow-400 font-semibold">
-      UNOFFICIAL and currently OUTDATED
-    </span>{" "}
-    They are only shown to give a rough visual understanding of item worth.
-    <br /><br />
-    AOT:R trading is entirely{" "}
-    <span className="text-white font-semibold">player-driven</span>{" "}
-    and based on{" "}
-    <span className="text-yellow-400 font-semibold">
-      rarity, demand, and player needs
-    </span>.
-    <br /><br />
-    Do not rely on value lists for exact pricing. Always negotiate trades yourself and{" "}
-    <span className="text-yellow-400 font-semibold">
-      join our Discord for the latest insights.
-    </span>
-  </GradientText>
-</div>
+        <p className="text-sm leading-relaxed text-gray-400">
+
+          <GradientText variant="silver">
+            Browse our complete AOT:R value list (
+          </GradientText>
+
+          <span className="text-white font-semibold mx-1">
+            {items.length}
+          </span>
+
+          <GradientText variant="silver">
+            items).
+          </GradientText>
+
+          <span className="text-red-400 font-semibold ml-2">
+            Notice:
+          </span>
+
+          <GradientText variant="silver">
+            {" "}These values are{" "}
+          </GradientText>
+
+          <span className="text-yellow-400 font-semibold">
+            UNOFFICIAL and currently OUTDATED
+          </span>
+
+          <GradientText variant="silver">
+            {" "}They are only shown to give a rough visual understanding of item worth.
+          </GradientText>
+
+          <br /><br />
+
+          <GradientText variant="silver">
+            AOT:R trading is entirely{" "}
+          </GradientText>
+
+          <span className="text-white font-semibold">
+            player-driven
+          </span>
+
+          <GradientText variant="silver">
+            {" "}and based on{" "}
+          </GradientText>
+
+          <span className="text-yellow-400 font-semibold">
+            rarity, demand, and player needs
+          </span>
+
+          <br /><br />
+
+          <GradientText variant="silver">
+            Do not rely on value lists for exact pricing. Always negotiate trades yourself and{" "}
+          </GradientText>
+
+          <span className="text-yellow-400 font-semibold">
+            join our Discord for the latest insights.
+          </span>
+
+        </p>
+      </div>
 
       <div className="mb-12">
         <h3 className="font-semibold mb-3">
