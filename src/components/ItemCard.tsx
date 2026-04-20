@@ -24,8 +24,8 @@ export const ItemCard: React.FC<ItemCardProps> = ({
     setModeState(mode);
   }, [mode]);
 
-  const getDemandColor = (d: number) =>
-    d <= 3 ? "text-red-400" : d <= 6 ? "text-yellow-400" : "text-green-400";
+  const getDemandVariant = (d: number): "red" | "yellow" | "green" =>
+    d <= 3 ? "red" : d <= 6 ? "yellow" : "green";
 
   const getRateIcon = (r: string) =>
     r === "Rising" ? (
@@ -36,18 +36,18 @@ export const ItemCard: React.FC<ItemCardProps> = ({
       <Minus className="w-4 h-4 text-gray-400" />
     );
 
-  const getRateColor = (r: string) =>
+  const getRateVariant = (r: string): "green" | "red" | "yellow" =>
     r === "Rising"
-      ? "text-green-400"
+      ? "green"
       : r === "Falling"
-      ? "text-red-400"
-      : "text-yellow-400";
+      ? "red"
+      : "yellow";
 
   const tax = item.gemTax
-    ? { label: "Gem Tax", value: item.gemTax, color: "text-purple-300" }
+    ? { label: "Gem Tax", value: item.gemTax, variant: "purple" as const }
     : item.goldTax
-    ? { label: "Gold Tax", value: item.goldTax, color: "text-yellow-300" }
-    : { label: "Tax", value: 0, color: "text-gray-300" };
+    ? { label: "Gold Tax", value: item.goldTax, variant: "yellow" as const }
+    : { label: "Tax", value: 0, variant: "silver" as const };
 
   const renderIcon = (emoji: string) => {
     if (!emoji) return <span className="text-6xl">👹</span>;
@@ -140,14 +140,16 @@ export const ItemCard: React.FC<ItemCardProps> = ({
                 />
               </span>
             ) : (
-              <span className="text-purple-300 font-bold">
-                <CountUp
-                  from={0}
-                  to={vizardConverted}
-                  duration={1.2}
-                  delay={(index % 4) * 0.08}
-                  format={(v) => Number(v).toFixed(2)}
-                />
+              <span className="font-bold">
+                <GradientText variant="purple">
+                  <CountUp
+                    from={0}
+                    to={vizardConverted}
+                    duration={1.2}
+                    delay={(index % 4) * 0.08}
+                    format={(v) => Number(v).toFixed(2)}
+                  />
+                </GradientText>
               </span>
             )}
           </div>
@@ -156,13 +158,11 @@ export const ItemCard: React.FC<ItemCardProps> = ({
             <span className="font-medium">
               <GradientText variant="silver">Trend</GradientText>
             </span>
-            <span
-              className={`font-bold flex items-center gap-1 ${getRateColor(
-                item.rateOfChange
-              )}`}
-            >
+            <span className="font-bold flex items-center gap-1">
               {getRateIcon(item.rateOfChange)}
-              {item.rateOfChange}
+              <GradientText variant={getRateVariant(item.rateOfChange)}>
+                {item.rateOfChange}
+              </GradientText>
             </span>
           </div>
 
@@ -170,26 +170,28 @@ export const ItemCard: React.FC<ItemCardProps> = ({
             <span className="font-medium">
               <GradientText variant="silver">Demand</GradientText>
             </span>
-            <span className={`font-bold ${getDemandColor(item.demand)}`}>
+            <GradientText variant={getDemandVariant(item.demand)}>
               {item.demand}/10
-            </span>
+            </GradientText>
           </div>
 
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">{tax.label}</GradientText>
             </span>
-            <span className={`font-bold ${tax.color}`}>
+            <span className="font-bold">
               {tax.value > 0 ? (
-                <CountUp
-                  from={0}
-                  to={tax.value}
-                  duration={1}
-                  delay={(index % 4) * 0.08 + 0.1}
-                  format={(v) => v.toLocaleString()}
-                />
+                <GradientText variant={tax.variant}>
+                  <CountUp
+                    from={0}
+                    to={tax.value}
+                    duration={1}
+                    delay={(index % 4) * 0.08 + 0.1}
+                    format={(v) => v.toLocaleString()}
+                  />
+                </GradientText>
               ) : (
-                "None"
+                <GradientText variant="silver">None</GradientText>
               )}
             </span>
           </div>
@@ -198,9 +200,9 @@ export const ItemCard: React.FC<ItemCardProps> = ({
             <span className="font-medium">
               <GradientText variant="silver">Prestige</GradientText>
             </span>
-            <span className="text-purple-300 font-bold">
+            <GradientText variant="purple">
               {item.prestige}
-            </span>
+            </GradientText>
           </div>
         </div>
       </div>
