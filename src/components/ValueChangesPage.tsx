@@ -137,7 +137,7 @@ export const ValueChangesPage: React.FC = () => {
 
                   <div className="bg-[#111] rounded-lg p-2 text-center text-sm flex items-center justify-center">
                     <span className="flex flex-wrap">
-                      {("🔑 " + change.oldValue).split("").map((c, i) => (
+                      {("" + change.oldValue).split("").map((c, i) => (
                         <span key={i} className="silver-letter">
                           {c === " " ? "\u00A0" : c}
                         </span>
@@ -147,7 +147,7 @@ export const ValueChangesPage: React.FC = () => {
                     <span className="mx-2 text-zinc-500">→</span>
 
                     <span className="font-bold flex flex-wrap">
-                      {("🔑 " + change.newValue).split("").map((c, i) => (
+                      {("" + change.newValue).split("").map((c, i) => (
                         <span key={i} className="gold-letter">
                           {c === " " ? "\u00A0" : c}
                         </span>
