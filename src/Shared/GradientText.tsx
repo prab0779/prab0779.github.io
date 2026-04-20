@@ -45,7 +45,7 @@ export default function GradientText({
   const elapsedRef = useRef(0);
   const lastTimeRef = useRef<number | null>(null);
 
-  const resolvedColors = colors || PRESETS[variant];
+  const resolvedColors = PRESETS[variant];
   const animationDuration = animationSpeed * 1000;
 
   useAnimationFrame(time => {
