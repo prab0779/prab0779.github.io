@@ -113,7 +113,7 @@ export const StockRestocker: React.FC = () => {
       value={minutes}
       places={[10, 1]}
       fontSize={20}
-      textColor="transparent"
+      textColor="white"
       digitStyle={{ width: "1ch", display: "inline-block" }}
       gradientFrom="transparent"
       gradientTo="transparent"
