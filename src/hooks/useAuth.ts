@@ -7,47 +7,46 @@ export const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const applySession = (session: Session | null) => {
+    setSession(session);
+    setUser(session?.user ?? null);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    // Load session on page load
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+    // Initial load
+    supabase.auth.getSession().then(({ data }) => {
+      applySession(data.session);
     });
 
-    // Listen for sign-in changes
+    // Listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+      applySession(session);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
- const signInWithDiscord = async () => {
-  await supabase.auth.signInWithOAuth({
-    provider: "discord",
-    options: {
-      scope: "identify email",
-      redirectTo: `${window.location.origin}/#/auth/callback`,
-    },
-  });
-};
+  const signInWithDiscord = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "discord",
+      options: {
+        scope: "identify email",
+        redirectTo: `${window.location.origin}/#/auth/callback`,
+      },
+    });
+  };
 
   const signOut = async () => {
     await supabase.auth.signOut();
   };
 
-  // FIXED Discord metadata extraction
   const discord = user
     ? {
         id: user.user_metadata?.sub?.replace("discord|", "") || null,
-        username:
-          user.user_metadata?.name ??
-          "Unknown",
+        username: user.user_metadata?.name ?? "Unknown",
         avatar: user.user_metadata?.avatar_url ?? null,
       }
     : null;
