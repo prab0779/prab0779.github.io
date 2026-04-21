@@ -173,11 +173,9 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                       <div key={idx} className="flex gap-2 text-sm">
                         {renderItemIcon(i.emoji, i.itemName)}
                         <span className="flex flex-wrap">
-                          {i.itemName.split("").map((c, i2) => (
-                            <span key={i2} className="silver-letter">
-                              {c === " " ? "\u00A0" : c}
-                            </span>
-                          ))}
+                                                  <GradientText variant="silver">
+  {i.itemName}
+</GradientText>
                         </span>
                       </div>
                     ))}
