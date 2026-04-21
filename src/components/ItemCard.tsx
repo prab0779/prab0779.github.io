@@ -18,10 +18,8 @@ const ItemCardComponent = ({
   vizardValue,
   index = 0,
 }: ItemCardProps) => {
-  // 🔥 Only animate first visible batch (prevents scroll jank)
   const shouldAnimate = index < 12;
 
-  // Simple helpers (no need for useCallback)
   const getDemandVariant = (d: number): "red" | "yellow" | "green" =>
     d <= 3 ? "red" : d <= 6 ? "yellow" : "green";
 
@@ -37,7 +35,6 @@ const ItemCardComponent = ({
       <Minus className="w-4 h-4 text-gray-400" />
     );
 
-  // Inline tax (faster than useMemo)
   const tax =
     item.gemTax
       ? { label: "Gem Tax", value: item.gemTax, variant: "purple" as const }
@@ -52,22 +49,34 @@ const ItemCardComponent = ({
     : 0;
 
   const renderIcon = (emoji: string) => {
-    if (!emoji) return <span className="text-6xl">👹</span>;
+    if (!emoji)
+      return (
+        <div className="w-28 h-28 flex items-center justify-center">
+          <span className="text-6xl">👹</span>
+        </div>
+      );
 
     if (emoji.startsWith("/")) {
       return (
-        <img
-          key={emoji}
-          src={emoji}
-          alt={item.name}
-          loading="lazy"
-          decoding="async"
-          className="w-28 h-28 mx-auto object-contain pixelated"
-        />
+        <div className="w-28 h-28 mx-auto">
+          <img
+            src={emoji}
+            alt={item.name}
+            width={112}
+            height={112}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-contain pixelated"
+          />
+        </div>
       );
     }
 
-    return <span className="text-6xl">{emoji}</span>;
+    return (
+      <div className="w-28 h-28 flex items-center justify-center">
+        <span className="text-6xl">{emoji}</span>
+      </div>
+    );
   };
 
   return (
@@ -83,21 +92,17 @@ const ItemCardComponent = ({
       colors={["#FFD700", "#FFC94D", "#FFB347"]}
     >
       <div className="p-5 flex flex-col h-full">
-        {/* Title */}
         <div className="flex justify-between items-center mb-3">
           <h2 className="font-bold text-lg">
             <GradientText variant="gold">{item.name}</GradientText>
           </h2>
         </div>
 
-        {/* Icon */}
         <div className="flex justify-center mb-4">
           {renderIcon(item.emoji)}
         </div>
 
-        {/* Stats */}
         <div className="bg-black/40 rounded-xl p-4 space-y-3 border border-gray-800">
-          {/* Value */}
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">Value</GradientText>
@@ -134,7 +139,6 @@ const ItemCardComponent = ({
             )}
           </div>
 
-          {/* Trend */}
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">Trend</GradientText>
@@ -147,7 +151,6 @@ const ItemCardComponent = ({
             </span>
           </div>
 
-          {/* Demand */}
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">Demand</GradientText>
@@ -157,7 +160,6 @@ const ItemCardComponent = ({
             </GradientText>
           </div>
 
-          {/* Tax */}
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">{tax.label}</GradientText>
@@ -181,7 +183,6 @@ const ItemCardComponent = ({
             </span>
           </div>
 
-          {/* Prestige */}
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">Prestige</GradientText>
@@ -194,7 +195,6 @@ const ItemCardComponent = ({
   );
 };
 
-// 🔥 Custom comparison to prevent useless re-renders
 export const ItemCard = React.memo(
   ItemCardComponent,
   (prev, next) => {
