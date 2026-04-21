@@ -237,7 +237,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         ))}
       </div>
 
-      {/* MODAL */}
       {showCreateForm && user && (
         <CreateTradeAdModal
           items={items}
