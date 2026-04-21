@@ -7,6 +7,7 @@ import {
 import { AnimatedItem } from "../Shared/AnimatedList";
 import BorderGlow from "../Shared/BorderGlow";
 import GradientText from "../Shared/GradientText";
+import { CreateTradeAdModal } from "./CreateTradeAd";
 
 import { useTradeAds } from "../hooks/useTradeAds";
 import { useAuth } from "../hooks/useAuth";
