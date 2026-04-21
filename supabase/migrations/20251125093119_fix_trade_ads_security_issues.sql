@@ -1,36 +1,29 @@
-/*
-  # Fix Trade Ads Security Issues
+DROP POLICY IF EXISTS "Anyone can create trade ads" ON trade_ads;
+DROP POLICY IF EXISTS "Anyone can read trade ads" ON trade_ads;
+DROP POLICY IF EXISTS "Authors can delete their own trade ads" ON trade_ads;
+DROP POLICY IF EXISTS "Authors can update their own trade ads" ON trade_ads;
+DROP POLICY IF EXISTS "Everyone can read trade ads" ON trade_ads;
 
-  ## Security fixes applied:
-  1. Drop unused index `idx_trade_ads_created_at` to reduce overhead
-  2. Make function search_path immutable to prevent privilege escalation
-  
-  ## Changes:
-  - Removed: idx_trade_ads_created_at index (unused)
-  - Updated: update_trade_ads_updated_at function with SECURITY DEFINER and immutable search_path
-*/
+CREATE POLICY "select_active_trade_ads"
+ON trade_ads FOR SELECT
+TO public
+USING (
+  status = 'active'
+  AND expires_at > now()
+);
 
--- Drop unused index
-DROP INDEX IF EXISTS idx_trade_ads_created_at;
+CREATE POLICY "insert_own_trade_ads"
+ON trade_ads FOR INSERT
+TO authenticated
+WITH CHECK (auth.uid() = user_id);
 
--- Recreate function with SECURITY DEFINER and immutable search_path to prevent privilege escalation
-DROP TRIGGER IF EXISTS update_trade_ads_updated_at_trigger ON trade_ads;
-DROP FUNCTION IF EXISTS update_trade_ads_updated_at();
+CREATE POLICY "update_own_trade_ads"
+ON trade_ads FOR UPDATE
+TO authenticated
+USING (auth.uid() = user_id)
+WITH CHECK (auth.uid() = user_id);
 
-CREATE OR REPLACE FUNCTION public.update_trade_ads_updated_at()
-RETURNS TRIGGER 
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-  NEW.updated_at = now();
-  RETURN NEW;
-END;
-$$;
-
--- Recreate trigger
-CREATE TRIGGER update_trade_ads_updated_at_trigger
-  BEFORE UPDATE ON trade_ads
-  FOR EACH ROW
-  EXECUTE FUNCTION public.update_trade_ads_updated_at();
+CREATE POLICY "delete_own_trade_ads"
+ON trade_ads FOR DELETE
+TO authenticated
+USING (auth.uid() = user_id);
