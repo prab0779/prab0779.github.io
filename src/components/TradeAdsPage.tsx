@@ -1,11 +1,9 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Search, Eye } from "lucide-react";
-
 import { AnimatedItem } from "../Shared/AnimatedList";
 import BorderGlow from "../Shared/BorderGlow";
 import GradientText from "../Shared/GradientText";
 import { CreateTradeAdModal } from "./CreateTradeAd";
-
 import { useTradeAds } from "../hooks/useTradeAds";
 import { useAuth } from "../hooks/useAuth";
 import { Item } from "../types/Item";
@@ -35,12 +33,27 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
 
-  useEffect(() => setPage(1), [searchTerm, selectedTag]);
+  const lightweightItems = useMemo(
+    () => items.map(i => ({ name: i.name, emoji: i.emoji })),
+    [items]
+  );
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 250);
+    return () => clearTimeout(t);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, selectedTag]);
 
   const filteredTradeAds = useMemo(() => {
-    const q = searchTerm.toLowerCase();
+    const q = debouncedSearch.toLowerCase();
 
     return tradeAds.filter((ad) => {
       const matchSearch =
@@ -58,7 +71,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
       return matchSearch && matchTag;
     });
-  }, [tradeAds, searchTerm, selectedTag]);
+  }, [tradeAds, debouncedSearch, selectedTag]);
 
   const renderItemIcon = (emoji: string, name: string) => {
     if (!emoji) return <span>👹</span>;
@@ -67,6 +80,9 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         <img
           src={emoji}
           alt={name}
+          loading="lazy"
+          width={24}
+          height={24}
           className="w-6 h-6 object-contain"
         />
       );
@@ -83,12 +99,13 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
     return `${Math.floor(diff / 1440)}d ago`;
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div className="text-center py-12 text-zinc-400">
         Loading...
       </div>
     );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-14 mt-20 space-y-10">
@@ -118,7 +135,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         </button>
       </div>
 
-      {/* FILTER */}
       <div className="bg-[#0c0c0c] p-6 rounded-xl border border-white/5 flex gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-2 text-zinc-400 w-4 h-4" />
@@ -132,9 +148,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
         <select
           value={selectedTag}
-          onChange={(e) =>
-            setSelectedTag(e.target.value)
-          }
+          onChange={(e) => setSelectedTag(e.target.value)}
           className="bg-[#111] border border-zinc-800 rounded px-3 text-white"
         >
           <option value="">All</option>
@@ -150,94 +164,123 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {filteredTradeAds.map((ad, index) => (
-          <AnimatedItem
-            key={ad.id}
-            index={index}
-            delay={(index % 2) * 0.1}
-          >
-            <BorderGlow
-              edgeSensitivity={30}
-              glowColor="40 80 80"
-              backgroundColor="#0c0c0c"
-              borderRadius={16}
-              glowRadius={30}
-              glowIntensity={1}
-              coneSpread={25}
-              animated={false}
-              colors={['#FFD700','#FFC94D','#FFB347']}
+        {filteredTradeAds.map((ad, index) => {
+          const shouldAnimate = index < 10;
+
+          return (
+            <AnimatedItem
+              key={ad.id}
+              index={index}
+              delay={shouldAnimate ? (index % 2) * 0.1 : 0}
             >
-              <div className="p-6 rounded-xl">
+              <BorderGlow
+                edgeSensitivity={30}
+                glowColor="40 80 80"
+                backgroundColor="#0c0c0c"
+                borderRadius={16}
+                glowRadius={30}
+                glowIntensity={1}
+                coneSpread={25}
+                animated={false}
+                colors={["#FFD700","#FFC94D","#FFB347"]}
+              >
+                <div className="p-6 rounded-xl">
 
-                <div className="flex items-center mb-4 gap-2">
-                  <img
-                    src={ad.authorAvatar}
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <div>
-                    <p className="text-white text-sm">
-                      {ad.authorName}
-                    </p>
-                    <p className="text-zinc-500 text-xs">
-                      {getRelativeTime(ad.createdAt)}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-[#111] p-3 rounded border border-white/5">
-                    <GradientText variant="gold">
-                      Offering
-                    </GradientText>
-
-                    {ad.itemsOffering.map((i, idx) => (
-                      <div key={idx} className="flex gap-2 text-sm">
-                        {renderItemIcon(i.emoji, i.itemName)}
-                        <GradientText variant="silver">
-                          {i.itemName}
-                        </GradientText>
-                      </div>
-                    ))}
+                  <div className="flex items-center mb-4 gap-2">
+                    <img
+                      src={ad.authorAvatar}
+                      loading="lazy"
+                      width={32}
+                      height={32}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <div>
+                      <p className="text-white text-sm">
+                        {ad.authorName}
+                      </p>
+                      <p className="text-zinc-500 text-xs">
+                        {getRelativeTime(ad.createdAt)}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="bg-[#111] p-3 rounded border border-white/5">
-                    <GradientText variant="gold">
-                      Looking For
-                    </GradientText>
-
-                    {ad.itemsWanted.map((i, idx) => (
-                      <div key={idx} className="flex gap-2 text-sm">
-                        {renderItemIcon(i.emoji, i.itemName)}
-                        <GradientText variant="silver">
-                          {i.itemName}
-                        </GradientText>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {ad.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="px-2 py-1 bg-yellow-900/20 border border-yellow-700/30 rounded-full text-xs"
-                    >
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-[#111] p-3 rounded border border-white/5">
                       <GradientText variant="gold">
-                        {tag}
+                        Offering
                       </GradientText>
-                    </span>
-                  ))}
-                </div>
 
-              </div>
-            </BorderGlow>
-          </AnimatedItem>
-        ))}
+                      {ad.itemsOffering.map((i, idx) => (
+                        <div key={idx} className="flex gap-2 text-sm">
+                          {renderItemIcon(i.emoji, i.itemName)}
+                          <GradientText variant="silver">
+                            {i.itemName}
+                          </GradientText>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="bg-[#111] p-3 rounded border border-white/5">
+                      <GradientText variant="gold">
+                        Looking For
+                      </GradientText>
+
+                      {ad.itemsWanted.map((i, idx) => (
+                        <div key={idx} className="flex gap-2 text-sm">
+                          {renderItemIcon(i.emoji, i.itemName)}
+                          <GradientText variant="silver">
+                            {i.itemName}
+                          </GradientText>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {ad.tags.map((tag, i) => (
+                      <span
+                        key={i}
+                        className="px-2 py-1 bg-yellow-900/20 border border-yellow-700/30 rounded-full text-xs"
+                      >
+                        <GradientText variant="gold">
+                          {tag}
+                        </GradientText>
+                      </span>
+                    ))}
+                  </div>
+
+                </div>
+              </BorderGlow>
+            </AnimatedItem>
+          );
+        })}
+      </div>
+
+      <div className="flex justify-center gap-2 pt-6">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+          className="px-3 py-1 bg-[#111] border border-zinc-800 rounded text-white"
+        >
+          Prev
+        </button>
+
+        <span className="text-zinc-400 text-sm">
+          {page} / {totalPages}
+        </span>
+
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage(page + 1)}
+          className="px-3 py-1 bg-[#111] border border-zinc-800 rounded text-white"
+        >
+          Next
+        </button>
       </div>
 
       {showCreateForm && user && (
         <CreateTradeAdModal
-          items={items}
+          items={lightweightItems}
           tags={AVAILABLE_TAGS}
           onClose={() => setShowCreateForm(false)}
           onSubmit={createTradeAd}
