@@ -27,10 +27,11 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return <LoginForm />;
   }
 
-  const sub = user?.user_metadata?.sub || "";
-  const discordId = sub.startsWith("discord|")
-    ? sub.replace("discord|", "")
-    : null;
+  // Try multiple locations where Supabase may store the Discord user ID
+  const rawSub = user?.user_metadata?.sub || user?.user_metadata?.provider_id || "";
+  const discordId = rawSub.startsWith("discord|")
+    ? rawSub.replace("discord|", "")
+    : rawSub || null;
 
   if (!discordId || !ALLOWED_DISCORD_IDS.includes(discordId)) {
     return <Navigate to="/trade-ads" replace />;
