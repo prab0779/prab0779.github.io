@@ -19,8 +19,6 @@ interface Props {
   authorAvatar: string | null;
 }
 
-// ── Item Picker ──────────────────────────────────────────────────────────────
-
 interface ItemPickerProps {
   items: ItemOption[];
   selected: TradeAdItem[];
@@ -72,7 +70,6 @@ function ItemPicker({ items, selected, onAdd, onRemove, onQtyChange, placeholder
 
   return (
     <div className="space-y-2">
-      {/* Selected chips */}
       {selected.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {selected.map(item => (
@@ -110,7 +107,6 @@ function ItemPicker({ items, selected, onAdd, onRemove, onQtyChange, placeholder
         </div>
       )}
 
-      {/* Dropdown trigger */}
       <div ref={containerRef} className="relative">
         <button
           type="button"
@@ -123,7 +119,6 @@ function ItemPicker({ items, selected, onAdd, onRemove, onQtyChange, placeholder
 
         {open && (
           <div className="absolute z-50 top-full mt-1 w-full bg-[#111] border border-zinc-700 rounded-xl shadow-2xl overflow-hidden">
-            {/* Search input */}
             <div className="p-2 border-b border-zinc-800 flex items-center gap-2">
               <Search className="w-4 h-4 text-zinc-500 flex-shrink-0" />
               <input
@@ -141,7 +136,6 @@ function ItemPicker({ items, selected, onAdd, onRemove, onQtyChange, placeholder
               )}
             </div>
 
-            {/* Item list */}
             <div className="max-h-52 overflow-y-auto">
               {filtered.length === 0 ? (
                 <p className="text-zinc-500 text-sm text-center py-4">No items found</p>
@@ -197,11 +191,8 @@ function ItemPicker({ items, selected, onAdd, onRemove, onQtyChange, placeholder
   );
 }
 
-// ── Main Modal ───────────────────────────────────────────────────────────────
-
 export const CreateTradeAdModal: React.FC<Props> = ({
   items,
-  tags,
   onClose,
   onSubmit,
   authorName,
@@ -209,7 +200,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
 }) => {
   const [offering, setOffering] = useState<TradeAdItem[]>([]);
   const [wanted, setWanted] = useState<TradeAdItem[]>([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -230,12 +220,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
     ));
   };
 
-  const toggleTag = (tag: string) => {
-    setSelectedTags(prev =>
-      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
-    );
-  };
-
   const submit = async () => {
     if (offering.length === 0 && wanted.length === 0) {
       setError("Add at least one item to offer or request.");
@@ -248,7 +232,7 @@ export const CreateTradeAdModal: React.FC<Props> = ({
     const res = await onSubmit({
       itemsOffering: offering,
       itemsWanted: wanted,
-      tags: selectedTags,
+      tags: [],
       authorName,
       authorAvatar,
       contactInfo: "",
@@ -270,7 +254,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
     >
       <div className="bg-[#0c0c0c] rounded-2xl w-full max-w-xl border border-white/10 shadow-2xl overflow-hidden">
 
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
           <h2 className="text-lg font-bold">
             <GradientText variant="gold">Create Trade Ad</GradientText>
@@ -282,7 +265,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
 
         <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
 
-          {/* Author preview */}
           <div className="flex items-center gap-2.5 bg-[#111] rounded-lg px-3 py-2.5 border border-white/5">
             {authorAvatar && (
               <img src={authorAvatar} alt={authorName} className="w-8 h-8 rounded-full" />
@@ -293,7 +275,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
             </div>
           </div>
 
-          {/* Offering */}
           <div>
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 rounded-full bg-yellow-500" />
@@ -313,14 +294,12 @@ export const CreateTradeAdModal: React.FC<Props> = ({
             />
           </div>
 
-          {/* Divider with arrow */}
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-white/5" />
             <div className="text-zinc-600 text-xs font-medium tracking-widest">FOR</div>
             <div className="flex-1 h-px bg-white/5" />
           </div>
 
-          {/* Wanted */}
           <div>
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 rounded-full bg-blue-400" />
@@ -340,28 +319,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
             />
           </div>
 
-          {/* Tags */}
-          <div>
-            <p className="text-zinc-400 text-sm font-medium mb-2">Tags <span className="text-zinc-600 text-xs">(optional)</span></p>
-            <div className="flex flex-wrap gap-1.5">
-              {tags.map(tag => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => toggleTag(tag)}
-                  className={`px-2.5 py-1 text-xs rounded-full border transition-all ${
-                    selectedTags.includes(tag)
-                      ? "bg-yellow-700/30 border-yellow-600/50 text-yellow-300"
-                      : "bg-transparent border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-300"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Error */}
           {error && (
             <div className="bg-red-950/40 border border-red-800/40 rounded-lg px-4 py-3">
               <p className="text-red-400 text-sm">{error}</p>
@@ -369,7 +326,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           )}
         </div>
 
-        {/* Footer */}
         <div className="flex justify-end gap-2 px-6 py-4 border-t border-white/5 bg-[#0a0a0a]">
           <button
             onClick={onClose}
