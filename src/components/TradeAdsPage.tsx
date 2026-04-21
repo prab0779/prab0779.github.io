@@ -37,7 +37,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const [selectedTag, setSelectedTag] = useState("");
 
   const lightweightItems = useMemo(
-    () => items.map(i => ({ name: i.name, emoji: i.emoji })),
+    () => items.map(i => ({ name: i.name, emoji: i.emoji, category: i.category, value: i.value })),
     [items]
   );
 
