@@ -83,8 +83,10 @@ const { data, error, count } = await supabase
         const diffMinutes = Math.floor(diffMs / 60000);
         const diffSeconds = Math.floor((diffMs % 60000) / 1000);
 
-        if (diffMinutes < 60) {
-          const waitMinutes = 60 - diffMinutes;
+       const COOLDOWN_MINUTES = 5;
+
+if (diffMinutes < COOLDOWN_MINUTES) {
+  const waitMinutes = COOLDOWN_MINUTES - diffMinutes;
           const waitSeconds = diffMinutes === 59 ? 60 - diffSeconds : 0;
           return {
             data: null,
