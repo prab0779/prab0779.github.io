@@ -14,12 +14,10 @@ export const useAuth = () => {
   };
 
   useEffect(() => {
-    // Initial load
     supabase.auth.getSession().then(({ data }) => {
       applySession(data.session);
     });
 
-    // Listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -43,19 +41,25 @@ export const useAuth = () => {
     await supabase.auth.signOut();
   };
 
-  const discord = user
-    ? {
-        id: user.user_metadata?.sub?.replace("discord|", "") || null,
-        const rawName = user.user_metadata?.name || "Unknown";
+  let discord = null;
 
-const cleanName = rawName.endsWith("#0")
-  ? rawName.replace("#0", "")
-  : rawName;
+  if (user) {
+    const rawName =
+      user.user_metadata?.preferred_username ||
+      user.user_metadata?.global_name ||
+      user.user_metadata?.name ||
+      "Unknown";
 
-username: cleanName
-        avatar: user.user_metadata?.avatar_url ?? null,
-      }
-    : null;
+    const cleanName = rawName.endsWith("#0")
+      ? rawName.replace("#0", "")
+      : rawName;
+
+    discord = {
+      id: user.user_metadata?.sub?.replace("discord|", "") || null,
+      username: cleanName,
+      avatar: user.user_metadata?.avatar_url ?? null,
+    };
+  }
 
   return {
     user,
