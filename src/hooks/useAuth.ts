@@ -46,7 +46,13 @@ export const useAuth = () => {
   const discord = user
     ? {
         id: user.user_metadata?.sub?.replace("discord|", "") || null,
-        username: user.user_metadata?.name ?? "Unknown",
+        const rawName = user.user_metadata?.name || "Unknown";
+
+const cleanName = rawName.endsWith("#0")
+  ? rawName.replace("#0", "")
+  : rawName;
+
+username: cleanName
         avatar: user.user_metadata?.avatar_url ?? null,
       }
     : null;
