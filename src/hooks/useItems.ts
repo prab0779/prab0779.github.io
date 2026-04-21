@@ -33,30 +33,31 @@ export const useItems = () => {
     }));
   }, []);
 
-  const getCachedItems = useCallback((): Item[] | null => {
+  const getCache = useCallback(() => {
     try {
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (!cached) return null;
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
 
-      const { data, timestamp } = JSON.parse(cached);
-      if (Date.now() - timestamp > CACHE_TTL) {
+      const parsed = JSON.parse(raw);
+
+      if (Date.now() - parsed.timestamp > CACHE_TTL) {
         localStorage.removeItem(CACHE_KEY);
         return null;
       }
 
-      return data;
+      return parsed;
     } catch {
       localStorage.removeItem(CACHE_KEY);
       return null;
     }
   }, []);
 
-  const setCachedItems = useCallback((items: Item[]) => {
+  const setCache = useCallback((allItems: Item[]) => {
     try {
       localStorage.setItem(
         CACHE_KEY,
         JSON.stringify({
-          data: items,
+          data: allItems,
           timestamp: Date.now(),
         })
       );
@@ -74,8 +75,7 @@ export const useItems = () => {
 
         const { data, error } = await supabase
           .from("items")
-          .select(
-            `
+          .select(`
             id,
             name,
             value,
@@ -89,8 +89,7 @@ export const useItems = () => {
             category,
             rarity,
             emoji
-          `
-          )
+          `)
           .order("value", { ascending: false })
           .range(from, to);
 
@@ -98,17 +97,14 @@ export const useItems = () => {
 
         const transformed = transformItems(data);
 
-        setItems((prev) =>
-          append ? [...prev, ...transformed] : transformed
-        );
+        setItems((prev) => {
+          const updated = append ? [...prev, ...transformed] : transformed;
+          setCache(updated);
+          return updated;
+        });
 
         setHasMore(transformed.length === PAGE_SIZE);
         setPage(pageToFetch);
-
-        if (pageToFetch === 0) {
-          setCachedItems(transformed);
-        }
-
         setError(null);
       } catch (err) {
         setError(
@@ -119,21 +115,25 @@ export const useItems = () => {
         setLoadingMore(false);
       }
     },
-    [transformItems, setCachedItems]
+    [transformItems, setCache]
   );
 
   const fetchItems = useCallback(async () => {
-    const cached = getCachedItems();
+    const cached = getCache();
 
-    if (cached) {
-      setItems(cached);
-      setLoading(false);
+    if (cached?.data?.length) {
+      setItems(cached.data);
+
+      const cachedPages = Math.ceil(cached.data.length / PAGE_SIZE);
+      setPage(cachedPages - 1);
       setHasMore(true);
+
+      setLoading(false);
       return;
     }
 
     await fetchPage(0);
-  }, [getCachedItems, fetchPage]);
+  }, [getCache, fetchPage]);
 
   const loadMore = useCallback(() => {
     if (!hasMore || loadingMore) return;
@@ -141,6 +141,7 @@ export const useItems = () => {
   }, [page, hasMore, loadingMore, fetchPage]);
 
   const refresh = useCallback(async () => {
+    localStorage.removeItem(CACHE_KEY);
     await fetchPage(0);
   }, [fetchPage]);
 
