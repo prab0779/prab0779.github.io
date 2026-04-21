@@ -27,16 +27,15 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // FIXED DISCORD OAuth login
-  const signInWithDiscord = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "discord",
-      options: {
-        scope: "identify email",
-        redirectTo: `${window.location.origin}/auth/callback?type=oauth`,
-      },
-    });
-  };
+ const signInWithDiscord = async () => {
+  await supabase.auth.signInWithOAuth({
+    provider: "discord",
+    options: {
+      scope: "identify email",
+      redirectTo: `${window.location.origin}/#/auth/callback`,
+    },
+  });
+};
 
   const signOut = async () => {
     await supabase.auth.signOut();
