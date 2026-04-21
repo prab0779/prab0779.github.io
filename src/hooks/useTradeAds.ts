@@ -114,7 +114,6 @@ export const useTradeAds = () => {
             author_name: adData.authorName,
             author_avatar: adData.authorAvatar,
             contact_info: adData.contactInfo,
-            user_id: userId,
             status: "active",
             expires_at: expiresAt,
           },
