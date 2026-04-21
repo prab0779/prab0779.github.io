@@ -1,9 +1,7 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "../lib/supabase";
-import { useNavigate } from "react-router-dom";
 
 export default function AuthCallback() {
-  const navigate = useNavigate();
   const hasRun = useRef(false);
 
   useEffect(() => {
@@ -11,21 +9,24 @@ export default function AuthCallback() {
       if (hasRun.current) return;
       hasRun.current = true;
 
-      // Let Supabase handle everything
+      // Strip hash before sending to Supabase
+      const url = new URL(window.location.href);
+      url.hash = "";
+
       const { error } = await supabase.auth.exchangeCodeForSession(
-        window.location.href
+        url.toString()
       );
 
       if (error) {
         console.warn("Exchange error:", error.message);
       }
 
-      // Just go to trade ads after login
-      navigate("/trade-ads", { replace: true });
+      // Force reload so session is definitely available
+      window.location.replace("/#/trade-ads");
     };
 
     handleLogin();
-  }, [navigate]);
+  }, []);
 
   return (
     <div className="text-center text-white py-20">
