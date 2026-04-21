@@ -254,32 +254,32 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                   <>
                     <button
                       onClick={() => removeItem(mapIndex, side)}
-                      className="absolute top-2 right-2 z-10 rounded-md bg-black/60 p-1 text-zinc-200 hover:text-white transition"
+                      className="absolute top-1 right-1 z-10 rounded-md bg-black/60 p-0.5 sm:p-1 text-zinc-200 hover:text-white transition"
                       style={{ border: "1px solid rgba(255,255,255,0.08)" }}
                       title="Remove"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-3 h-3 sm:w-4 sm:h-4" />
                     </button>
 
-                    <div className="h-full w-full p-3 flex flex-col items-center justify-between">
-                      <div className="w-full flex-1 flex items-center justify-center overflow-hidden">
-                        <div className="w-14 h-14 sm:w-16 sm:h-16">
+                    <div className="h-full w-full p-1.5 sm:p-3 flex flex-col items-center justify-between">
+                      <div className="w-full flex-1 min-h-0 flex items-center justify-center overflow-hidden">
+                        <div className="w-9 h-9 sm:w-16 sm:h-16">
                           {renderItemIcon(tradeItem.item.emoji, tradeItem.item.name)}
                         </div>
                       </div>
 
-                      <div className="w-full text-center">
-                        <div className="text-[11px] sm:text-xs text-white/90 font-semibold leading-tight line-clamp-2 min-h-[28px]">
+                      <div className="w-full text-center shrink-0">
+                        <div className="text-[9px] sm:text-xs text-white/90 font-semibold leading-tight line-clamp-1">
                           {tradeItem.item.name}
                         </div>
 
-                        <div className="mt-1 flex items-center justify-center gap-1">
+                        <div className="mt-0.5 flex items-center justify-center gap-0.5 sm:gap-1">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               updateQuantity(mapIndex, tradeItem.quantity - 1, side);
                             }}
-                            className="w-6 h-6 rounded bg-zinc-900/70 border border-zinc-800 text-white hover:bg-zinc-800 transition"
+                            className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-zinc-900/70 border border-zinc-800 text-white hover:bg-zinc-800 transition text-xs"
                             disabled={tradeItem.quantity <= 1}
                             title="Decrease"
                           >
@@ -296,7 +296,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                             onChange={(e) =>
                               updateQuantity(mapIndex, parseInt(e.target.value) || 1, side)
                             }
-                            className="no-arrows w-10 h-6 rounded bg-zinc-900/70 border border-zinc-800 text-white text-center text-xs focus:outline-none"
+                            className="no-arrows w-7 sm:w-10 h-5 sm:h-6 rounded bg-zinc-900/70 border border-zinc-800 text-white text-center text-[10px] sm:text-xs focus:outline-none"
                             style={{ boxShadow: "none" }}
                           />
 
@@ -305,7 +305,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                               e.stopPropagation();
                               updateQuantity(mapIndex, tradeItem.quantity + 1, side);
                             }}
-                            className="w-6 h-6 rounded bg-zinc-900/70 border border-zinc-800 text-white hover:bg-zinc-800 transition"
+                            className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-zinc-900/70 border border-zinc-800 text-white hover:bg-zinc-800 transition text-xs"
                             disabled={tradeItem.quantity >= 999}
                             title="Increase"
                           >
