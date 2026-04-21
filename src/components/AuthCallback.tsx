@@ -13,39 +13,51 @@ export default function AuthCallback() {
       if (hasRun.current) return;
       hasRun.current = true;
 
-      // Extract query params from hash (HashRouter)
-      const hash = window.location.hash;
-      const queryString = hash.includes("?") ? hash.split("?")[1] : "";
+      // 1) Read params from real query
+      const realUrl = new URL(window.location.href);
+      const realParams = realUrl.searchParams;
 
-      // Build a clean URL for Supabase
-      const fixedUrl = `${window.location.origin}/auth/callback${
-        queryString ? `?${queryString}` : ""
-      }`;
+      // 2) Read params from hash (if present)
+      const hash = window.location.hash;
+      const hashQuery = hash.includes("?") ? hash.split("?")[1] : "";
+      const hashParams = new URLSearchParams(hashQuery);
+
+      // Prefer real query, fallback to hash query
+      const code = realParams.get("code") || hashParams.get("code");
+      const type = realParams.get("type") || hashParams.get("type");
+
+      // 3) Build a clean callback URL for Supabase (no hash)
+      const cleanUrl = `${window.location.origin}/auth/callback` +
+        (code ? `?code=${code}${type ? `&type=${type}` : ""}` : "");
 
       const { error: exchangeError } =
-        await supabase.auth.exchangeCodeForSession(fixedUrl);
+        await supabase.auth.exchangeCodeForSession(cleanUrl);
 
       if (exchangeError) {
         console.warn("Exchange error:", exchangeError.message);
       }
 
-      const { data, error } = await supabase.auth.getSession();
+      const { data } = await supabase.auth.getSession();
       const session = data?.session;
 
       if (session?.user) {
         const sub = session.user.user_metadata?.sub || "";
-
         const discordId = sub.startsWith("discord|")
           ? sub.replace("discord|", "")
           : null;
 
-        if (discordId && ALLOWED_ADMIN_IDS.includes(discordId)) {
-          navigate("/admin", { replace: true });
-        } else {
-          navigate("/trade-ads", { replace: true });
-        }
+        // 4) Clean URL + navigate (prevents `/auth/callback?...#/trade-ads`)
+        const target =
+          discordId && ALLOWED_ADMIN_IDS.includes(discordId)
+            ? "/#/admin"
+            : "/#/trade-ads";
+
+        window.history.replaceState(null, "", target);
+        window.location.replace(target);
       } else {
-        navigate("/trade-ads", { replace: true });
+        const target = "/#/trade-ads";
+        window.history.replaceState(null, "", target);
+        window.location.replace(target);
       }
     };
 
