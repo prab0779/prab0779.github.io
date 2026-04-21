@@ -5,7 +5,7 @@ import { Item } from "../types/Item";
 const CACHE_KEY = "aotr_items_cache";
 const CACHE_TTL = 60 * 60 * 1000;
 
-const PAGE_SIZE = 1000;
+const PAGE_SIZE = 50;
 
 export const useItems = () => {
   const [items, setItems] = useState<Item[]>([]);
