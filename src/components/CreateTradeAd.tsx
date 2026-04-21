@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Item } from "../types/Item";
+import React, { useState, useMemo } from "react";
 import { CreateTradeAdData } from "../types/TradeAd";
 import GradientText from "../Shared/GradientText";
 
@@ -26,8 +25,30 @@ export const CreateTradeAdModal: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // 🔥 O(1) lookup instead of .find()
+  const itemMap = useMemo(() => {
+    const map = new Map<string, string>();
+    items.forEach(i => map.set(i.name, i.emoji));
+    return map;
+  }, [items]);
+
   const toggle = (list: string[], set: any, value: string) => {
     set(list.includes(value) ? list.filter(v => v !== value) : [...list, value]);
+  };
+
+  const handleSelect = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    list: string[],
+    set: any
+  ) => {
+    const value = e.target.value;
+
+    if (!value || value === "Select item") return;
+
+    toggle(list, set, value);
+
+    // reset dropdown after selection
+    e.target.value = "Select item";
   };
 
   const submit = async () => {
@@ -37,11 +58,11 @@ export const CreateTradeAdModal: React.FC<Props> = ({
     const data: CreateTradeAdData = {
       itemsOffering: offering.map(name => ({
         itemName: name,
-        emoji: items.find(i => i.name === name)?.emoji || ""
+        emoji: itemMap.get(name) || ""
       })),
       itemsWanted: wanted.map(name => ({
         itemName: name,
-        emoji: items.find(i => i.name === name)?.emoji || ""
+        emoji: itemMap.get(name) || ""
       })),
       tags: selectedTags,
       authorName,
@@ -67,17 +88,16 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           <GradientText variant="gold">Create Trade Ad</GradientText>
         </h2>
 
+        {/* OFFERING */}
         <div>
           <GradientText variant="silver">Offering</GradientText>
           <select
-            onChange={(e) => toggle(offering, setOffering, e.target.value)}
-            className="w-full mt-1 bg-[#111] text-white p-2 border border-zinc-800 rounded focus:outline-none"
+            onChange={(e) => handleSelect(e, offering, setOffering)}
+            className="w-full mt-1 bg-[#111] text-white p-2 border border-zinc-800 rounded"
           >
-            <option className="bg-black">Select item</option>
+            <option>Select item</option>
             {items.map(i => (
-              <option key={i.id} className="bg-black text-white">
-                {i.name}
-              </option>
+              <option key={i.name}>{i.name}</option>
             ))}
           </select>
 
@@ -88,17 +108,16 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           )}
         </div>
 
+        {/* WANTED */}
         <div>
           <GradientText variant="silver">Looking For</GradientText>
           <select
-            onChange={(e) => toggle(wanted, setWanted, e.target.value)}
-            className="w-full mt-1 bg-[#111] text-white p-2 border border-zinc-800 rounded focus:outline-none"
+            onChange={(e) => handleSelect(e, wanted, setWanted)}
+            className="w-full mt-1 bg-[#111] text-white p-2 border border-zinc-800 rounded"
           >
-            <option className="bg-black">Select item</option>
+            <option>Select item</option>
             {items.map(i => (
-              <option key={i.id} className="bg-black text-white">
-                {i.name}
-              </option>
+              <option key={i.name}>{i.name}</option>
             ))}
           </select>
 
@@ -109,6 +128,7 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           )}
         </div>
 
+        {/* TAGS */}
         <div>
           <GradientText variant="silver">Tags</GradientText>
           <div className="flex flex-wrap gap-2 mt-2">
@@ -128,10 +148,12 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           </div>
         </div>
 
+        {/* ERROR */}
         {error && (
           <p className="text-red-400 text-sm text-center">{error}</p>
         )}
 
+        {/* ACTIONS */}
         <div className="flex justify-end gap-2 pt-2">
           <button
             onClick={onClose}
