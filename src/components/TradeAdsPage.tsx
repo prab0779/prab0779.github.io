@@ -79,11 +79,9 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         </h1>
 
         <p className="mb-6 flex flex-wrap justify-center text-sm">
-          {"Post and browse trade offers (broken)".split(" ").map((w, i, arr) => (
-            <span key={i} className="silver-letter">
-              {w}{i < arr.length - 1 && "\u00A0"}
-            </span>
-          ))}
+         <GradientText variant="silver">
+  Post and browse trade offers (broken)
+</GradientText>
         </p>
 
         <button
