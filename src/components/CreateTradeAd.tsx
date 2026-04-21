@@ -23,7 +23,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
   const [offering, setOffering] = useState<string[]>([]);
   const [wanted, setWanted] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [contact, setContact] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,7 +44,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
         emoji: items.find(i => i.name === name)?.emoji || ""
       })),
       tags: selectedTags,
-      contactInfo: contact,
       authorName,
       authorAvatar
     };
@@ -62,47 +60,69 @@ export const CreateTradeAdModal: React.FC<Props> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="bg-[#0c0c0c] p-6 rounded-xl w-full max-w-lg space-y-4">
-        <h2 className="text-xl font-bold">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-[#0c0c0c] p-6 rounded-xl w-full max-w-lg space-y-5 border border-white/5">
+
+        <h2 className="text-xl font-bold text-center">
           <GradientText variant="gold">Create Trade Ad</GradientText>
         </h2>
 
+        {/* Offering */}
         <div>
-          <p className="text-sm mb-1">Offering</p>
+          <GradientText variant="silver">Offering</GradientText>
           <select
             onChange={(e) => toggle(offering, setOffering, e.target.value)}
-            className="w-full bg-[#111] p-2 border border-zinc-800"
+            className="w-full mt-1 bg-[#111] text-white p-2 border border-zinc-800 rounded focus:outline-none"
           >
-            <option>Select item</option>
-            {items.map(i => <option key={i.id}>{i.name}</option>)}
+            <option className="bg-black">Select item</option>
+            {items.map(i => (
+              <option key={i.id} className="bg-black text-white">
+                {i.name}
+              </option>
+            ))}
           </select>
-          <div className="text-xs mt-1">{offering.join(", ")}</div>
+
+          {offering.length > 0 && (
+            <div className="text-xs mt-2 text-gray-400">
+              {offering.join(", ")}
+            </div>
+          )}
         </div>
 
+        {/* Looking For */}
         <div>
-          <p className="text-sm mb-1">Looking For</p>
+          <GradientText variant="silver">Looking For</GradientText>
           <select
             onChange={(e) => toggle(wanted, setWanted, e.target.value)}
-            className="w-full bg-[#111] p-2 border border-zinc-800"
+            className="w-full mt-1 bg-[#111] text-white p-2 border border-zinc-800 rounded focus:outline-none"
           >
-            <option>Select item</option>
-            {items.map(i => <option key={i.id}>{i.name}</option>)}
+            <option className="bg-black">Select item</option>
+            {items.map(i => (
+              <option key={i.id} className="bg-black text-white">
+                {i.name}
+              </option>
+            ))}
           </select>
-          <div className="text-xs mt-1">{wanted.join(", ")}</div>
+
+          {wanted.length > 0 && (
+            <div className="text-xs mt-2 text-gray-400">
+              {wanted.join(", ")}
+            </div>
+          )}
         </div>
 
+        {/* Tags */}
         <div>
-          <p className="text-sm mb-1">Tags</p>
-          <div className="flex flex-wrap gap-2">
+          <GradientText variant="silver">Tags</GradientText>
+          <div className="flex flex-wrap gap-2 mt-2">
             {tags.map(t => (
               <button
                 key={t}
                 onClick={() => toggle(selectedTags, setSelectedTags, t)}
-                className={`px-2 py-1 text-xs border ${
+                className={`px-3 py-1 text-xs rounded border transition ${
                   selectedTags.includes(t)
-                    ? "bg-yellow-700"
-                    : "bg-[#111] border-zinc-800"
+                    ? "bg-yellow-700 text-white border-yellow-500"
+                    : "bg-[#111] text-gray-300 border-zinc-800 hover:border-yellow-600"
                 }`}
               >
                 {t}
@@ -111,25 +131,28 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           </div>
         </div>
 
-        <input
-          placeholder="Contact info (Discord, etc)"
-          value={contact}
-          onChange={(e) => setContact(e.target.value)}
-          className="w-full bg-[#111] p-2 border border-zinc-800"
-        />
+        {error && (
+          <p className="text-red-400 text-sm text-center">{error}</p>
+        )}
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {/* Actions */}
+        <div className="flex justify-end gap-2 pt-2">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded"
+          >
+            Cancel
+          </button>
 
-        <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2 bg-zinc-700">Cancel</button>
           <button
             onClick={submit}
             disabled={loading}
-            className="px-4 py-2 bg-yellow-700"
+            className="px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded"
           >
             {loading ? "Posting..." : "Post"}
           </button>
         </div>
+
       </div>
     </div>
   );
