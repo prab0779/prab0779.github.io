@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import { ValueChange } from '../types/Item';
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+import { ValueChange } from "../types/Item";
 
 export const useValueChanges = () => {
   const [valueChanges, setValueChanges] = useState<ValueChange[]>([]);
@@ -10,15 +10,15 @@ export const useValueChanges = () => {
   const fetchValueChanges = async () => {
     try {
       setLoading(true);
+
       const { data, error } = await supabase
-        .from('value_changes')
-        .select('*')
-        .order('change_date', { ascending: false });
+        .from("value_changes")
+        .select("*")
+        .order("change_date", { ascending: false });
 
       if (error) throw error;
 
-      // Transform database rows to ValueChange interface
-      const transformedChanges: ValueChange[] = (data || []).map(row => ({
+      const transformedChanges: ValueChange[] = (data || []).map((row) => ({
         id: row.id,
         itemId: row.item_id,
         itemName: row.item_name,
@@ -37,26 +37,40 @@ export const useValueChanges = () => {
       setValueChanges(transformedChanges);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch value changes');
-      console.error('Error fetching value changes:', err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to fetch value changes"
+      );
+      console.error("Error fetching value changes:", err);
     } finally {
       setLoading(false);
     }
   };
 
   const deleteValueChange = async (id: string) => {
+    const previous = valueChanges;
+
+    setValueChanges((prev) => prev.filter((item) => item.id !== id));
+
     try {
       const { error } = await supabase
-        .from('value_changes')
+        .from("value_changes")
         .delete()
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) throw error;
 
-      await fetchValueChanges(); // Refresh the list
       return { error: null };
     } catch (err) {
-      const error = err instanceof Error ? err.message : 'Failed to delete value change';
+      // Rollback if it fails
+      setValueChanges(previous);
+
+      const error =
+        err instanceof Error
+          ? err.message
+          : "Failed to delete value change";
+
       return { error };
     }
   };
