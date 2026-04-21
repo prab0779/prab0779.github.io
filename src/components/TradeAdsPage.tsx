@@ -147,9 +147,9 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-[#111] p-3 rounded border border-white/5">
                     <p className="text-sm mb-2 flex flex-wrap">
-                      {"Offering".split("").map((c, i) => (
-                        <span key={i} className="gold-letter">{c}</span>
-                      ))}
+                      <GradientText variant="gold">
+  Offering
+</GradientText>
                     </p>
                     {ad.itemsOffering.map((i, idx) => (
                       <div key={idx} className="flex gap-2 text-sm">
