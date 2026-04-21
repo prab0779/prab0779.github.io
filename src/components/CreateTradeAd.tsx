@@ -67,7 +67,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           <GradientText variant="gold">Create Trade Ad</GradientText>
         </h2>
 
-        {/* Offering */}
         <div>
           <GradientText variant="silver">Offering</GradientText>
           <select
@@ -89,7 +88,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           )}
         </div>
 
-        {/* Looking For */}
         <div>
           <GradientText variant="silver">Looking For</GradientText>
           <select
@@ -111,7 +109,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           )}
         </div>
 
-        {/* Tags */}
         <div>
           <GradientText variant="silver">Tags</GradientText>
           <div className="flex flex-wrap gap-2 mt-2">
@@ -135,7 +132,6 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           <p className="text-red-400 text-sm text-center">{error}</p>
         )}
 
-        {/* Actions */}
         <div className="flex justify-end gap-2 pt-2">
           <button
             onClick={onClose}
