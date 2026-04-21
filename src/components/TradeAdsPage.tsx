@@ -190,11 +190,9 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                       key={i}
                       className="px-2 py-1 bg-yellow-900/20 border border-yellow-700/30 rounded-full text-xs flex flex-wrap"
                     >
-                      {tag.split("").map((c, i2) => (
-                        <span key={i2} className="gold-letter">
-                          {c === " " ? "\u00A0" : c}
-                        </span>
-                      ))}
+                     <GradientText variant="gold">
+  {tag}
+</GradientText>
                     </span>
                   ))}
                 </div>
