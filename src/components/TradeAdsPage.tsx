@@ -42,9 +42,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   );
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      setDebouncedSearch(searchTerm);
-    }, 250);
+    const t = setTimeout(() => setDebouncedSearch(searchTerm), 250);
     return () => clearTimeout(t);
   }, [searchTerm]);
 
@@ -59,12 +57,8 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       const matchSearch =
         !q ||
         ad.authorName.toLowerCase().includes(q) ||
-        ad.itemsOffering.some((i) =>
-          i.itemName.toLowerCase().includes(q)
-        ) ||
-        ad.itemsWanted.some((i) =>
-          i.itemName.toLowerCase().includes(q)
-        );
+        ad.itemsOffering.some((i) => i.itemName.toLowerCase().includes(q)) ||
+        ad.itemsWanted.some((i) => i.itemName.toLowerCase().includes(q));
 
       const matchTag =
         !selectedTag || ad.tags.includes(selectedTag);
@@ -81,30 +75,24 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
           src={emoji}
           alt={name}
           loading="lazy"
-          width={40}
-          height={40}
-          className="w-10 h-10 object-contain"
+          width={48}
+          height={48}
+          className="w-12 h-12 object-contain"
         />
       );
     }
-    return <span className="text-lg">{emoji}</span>;
+    return <span className="text-xl">{emoji}</span>;
   };
 
   const getRelativeTime = (d: string) => {
-    const diff = Math.floor(
-      (Date.now() - new Date(d).getTime()) / 60000
-    );
+    const diff = Math.floor((Date.now() - new Date(d).getTime()) / 60000);
     if (diff < 60) return `${diff}m ago`;
     if (diff < 1440) return `${Math.floor(diff / 60)}h ago`;
     return `${Math.floor(diff / 1440)}d ago`;
   };
 
   if (loading) {
-    return (
-      <div className="text-center py-12 text-zinc-400">
-        Loading...
-      </div>
-    );
+    return <div className="text-center py-12 text-zinc-400">Loading...</div>;
   }
 
   return (
@@ -112,9 +100,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
       <div className="text-center">
         <h1 className="text-4xl font-extrabold mb-4 flex justify-center">
-          <GradientText variant="gold">
-            Trade Ads
-          </GradientText>
+          <GradientText variant="gold">Trade Ads</GradientText>
         </h1>
 
         <p className="mb-6 text-sm flex justify-center">
@@ -125,9 +111,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
         <button
           onClick={() =>
-            !user
-              ? signInWithDiscord()
-              : setShowCreateForm(true)
+            !user ? signInWithDiscord() : setShowCreateForm(true)
           }
           className="px-6 py-3 bg-yellow-700 hover:bg-yellow-600 text-white rounded-lg border border-yellow-500/20"
         >
@@ -164,108 +148,78 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {filteredTradeAds.map((ad, index) => {
-          const shouldAnimate = index < 10;
-
-          return (
-            <AnimatedItem
-              key={ad.id}
-              index={index}
-              delay={shouldAnimate ? (index % 2) * 0.1 : 0}
+        {filteredTradeAds.map((ad, index) => (
+          <AnimatedItem key={ad.id} index={index}>
+            <BorderGlow
+              edgeSensitivity={30}
+              glowColor="40 80 80"
+              backgroundColor="#0c0c0c"
+              borderRadius={16}
+              glowRadius={30}
+              glowIntensity={1}
+              coneSpread={25}
+              animated={false}
+              colors={["#FFD700","#FFC94D","#FFB347"]}
             >
-              <BorderGlow
-                edgeSensitivity={30}
-                glowColor="40 80 80"
-                backgroundColor="#0c0c0c"
-                borderRadius={16}
-                glowRadius={30}
-                glowIntensity={1}
-                coneSpread={25}
-                animated={false}
-                colors={["#FFD700","#FFC94D","#FFB347"]}
-              >
-                <div className="p-6 rounded-xl flex flex-col h-full">
+              <div className="p-6 rounded-xl space-y-4">
 
-                  <div className="flex items-center mb-4 gap-2">
-                    <img
-                      src={ad.authorAvatar}
-                      loading="lazy"
-                      width={32}
-                      height={32}
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <div>
-                      <p className="text-white text-sm">
-                        {ad.authorName}
-                      </p>
-                      <p className="text-zinc-500 text-xs">
-                        {getRelativeTime(ad.createdAt)}
-                      </p>
+                <div className="flex items-center gap-2">
+                  <img
+                    src={ad.authorAvatar}
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <div>
+                    <p className="text-white text-sm">{ad.authorName}</p>
+                    <p className="text-zinc-500 text-xs">
+                      {getRelativeTime(ad.createdAt)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+
+                  <div className="bg-[#111] p-4 rounded-xl border border-white/5">
+                    <GradientText variant="gold">Offering</GradientText>
+
+                    <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
+                      {ad.itemsOffering.map((i, idx) => (
+                        <div
+                          key={idx}
+                          className="min-w-[120px] bg-gradient-to-br from-purple-700/40 to-pink-700/40 border border-white/10 rounded-xl p-3 flex flex-col items-center justify-center text-center"
+                        >
+                          {renderItemIcon(i.emoji, i.itemName)}
+                          <p className="text-xs text-zinc-200 mt-2 truncate w-full">
+                            {i.itemName}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 flex-1">
-                    <div className="bg-[#111] p-4 rounded-xl border border-white/5 flex flex-col">
-                      <GradientText variant="gold">
-                        Offering
-                      </GradientText>
+                  <div className="bg-[#111] p-4 rounded-xl border border-white/5">
+                    <GradientText variant="gold">Looking For</GradientText>
 
-                      <div className="mt-3 grid grid-cols-2 gap-3 flex-1">
-                        {ad.itemsOffering.map((i, idx) => (
-                          <div
-                            key={idx}
-                            className="bg-[#0c0c0c] border border-white/10 rounded-lg p-3 flex flex-col items-center justify-center text-center min-h-[90px]"
-                          >
-                            {renderItemIcon(i.emoji, i.itemName)}
-
-                            <p className="text-xs text-zinc-300 mt-2 truncate w-full">
-                              {i.itemName}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
+                    <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
+                      {ad.itemsWanted.map((i, idx) => (
+                        <div
+                          key={idx}
+                          className="min-w-[120px] bg-gradient-to-br from-green-700/40 to-emerald-700/40 border border-white/10 rounded-xl p-3 flex flex-col items-center justify-center text-center"
+                        >
+                          {renderItemIcon(i.emoji, i.itemName)}
+                          <p className="text-xs text-zinc-200 mt-2 truncate w-full">
+                            {i.itemName}
+                          </p>
+                        </div>
+                      ))}
                     </div>
-
-                    <div className="bg-[#111] p-4 rounded-xl border border-white/5 flex flex-col">
-                      <GradientText variant="gold">
-                        Looking For
-                      </GradientText>
-
-                      <div className="mt-3 grid grid-cols-2 gap-3 flex-1">
-                        {ad.itemsWanted.map((i, idx) => (
-                          <div
-                            key={idx}
-                            className="bg-[#0c0c0c] border border-white/10 rounded-lg p-3 flex flex-col items-center justify-center text-center min-h-[90px]"
-                          >
-                            {renderItemIcon(i.emoji, i.itemName)}
-
-                            <p className="text-xs text-zinc-300 mt-2 truncate w-full">
-                              {i.itemName}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {ad.tags.map((tag, i) => (
-                      <span
-                        key={i}
-                        className="px-2 py-1 bg-yellow-900/20 border border-yellow-700/30 rounded-full text-xs"
-                      >
-                        <GradientText variant="gold">
-                          {tag}
-                        </GradientText>
-                      </span>
-                    ))}
                   </div>
 
                 </div>
-              </BorderGlow>
-            </AnimatedItem>
-          );
-        })}
+
+              </div>
+            </BorderGlow>
+          </AnimatedItem>
+        ))}
       </div>
 
       <div className="flex justify-center gap-2 pt-6">
