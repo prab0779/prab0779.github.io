@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
 
-// Allowed admin Discord IDs
 const ALLOWED_ADMIN_IDS = ["512671808886013962"];
 
 export default function AuthCallback() {
@@ -14,11 +13,17 @@ export default function AuthCallback() {
       if (hasRun.current) return;
       hasRun.current = true;
 
-      const url = window.location.href;
+      // Extract query params from hash (HashRouter)
+      const hash = window.location.hash;
+      const queryString = hash.includes("?") ? hash.split("?")[1] : "";
 
-      // Exchange OAuth code for session
+      // Build a clean URL for Supabase
+      const fixedUrl = `${window.location.origin}/auth/callback${
+        queryString ? `?${queryString}` : ""
+      }`;
+
       const { error: exchangeError } =
-        await supabase.auth.exchangeCodeForSession(url);
+        await supabase.auth.exchangeCodeForSession(fixedUrl);
 
       if (exchangeError) {
         console.warn("Exchange error:", exchangeError.message);
@@ -27,25 +32,20 @@ export default function AuthCallback() {
       const { data, error } = await supabase.auth.getSession();
       const session = data?.session;
 
-      console.log("SESSION AFTER CALLBACK:", session, error);
-
       if (session?.user) {
         const sub = session.user.user_metadata?.sub || "";
 
-        // Extract Discord ID from "discord|1234567890"
         const discordId = sub.startsWith("discord|")
           ? sub.replace("discord|", "")
           : null;
 
-        console.log("Parsed Discord ID:", discordId);
-
         if (discordId && ALLOWED_ADMIN_IDS.includes(discordId)) {
-          navigate("/admin");
+          navigate("/admin", { replace: true });
         } else {
-          navigate("/trade-ads");
+          navigate("/trade-ads", { replace: true });
         }
       } else {
-        navigate("/trade-ads");
+        navigate("/trade-ads", { replace: true });
       }
     };
 
