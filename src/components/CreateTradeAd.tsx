@@ -4,7 +4,7 @@ import { CreateTradeAdData } from "../types/TradeAd";
 import GradientText from "../Shared/GradientText";
 
 interface Props {
-  items: Item[];
+  items: { name: string; emoji: string }[];
   tags: string[];
   onClose: () => void;
   onSubmit: (data: CreateTradeAdData) => Promise<{ error: string | null }>;
