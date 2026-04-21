@@ -3,43 +3,36 @@ import { ItemCard } from "./ItemCard";
 import { SearchAndFilter } from "./SearchAndFilter";
 import { Item } from "../types/Item";
 import { AnimatedItem } from "../Shared/AnimatedList";
+import { useFilteredItems } from "../hooks/useFilteredItems";
 
 interface ItemFlipGridProps {
   items: Item[];
   mode: "regular" | "permanent";
 }
 
-export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
+export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({
+  items,
+  mode,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  const vizardMask = useMemo(
-    () => items.find((i) => i.name.toLowerCase() === "vizard mask"),
-    [items]
-  ); 
+  // 🔥 Shared filtering logic (no duplication anymore)
+  const { filteredItems, categories } = useFilteredItems({
+    items,
+    searchTerm,
+    selectedCategory,
+    sortOrder,
+  });
 
-  const vizardValue = vizardMask?.value ?? 0;
-
-  const categories = useMemo(() => {
-    return Array.from(new Set(items.map((i) => i.category))).sort();
-  }, [items]);
-
-  const filteredItems = useMemo(() => {
-    const lowerSearch = searchTerm.toLowerCase();
-
-    const filtered = items.filter((item) => {
-      const matchesSearch = item.name.toLowerCase().includes(lowerSearch);
-      const matchesCategory =
-        !selectedCategory || item.category === selectedCategory;
-
-      return matchesSearch && matchesCategory;
-    });
-
-    return filtered.sort((a, b) =>
-      sortOrder === "asc" ? a.value - b.value : b.value - a.value
+  // Vizard calculation (keep memo)
+  const vizardValue = useMemo(() => {
+    const vizard = items.find(
+      (i) => i.name.toLowerCase() === "vizard mask"
     );
-  }, [items, searchTerm, selectedCategory, sortOrder]);
+    return vizard?.value ?? 0;
+  }, [items]);
 
   return (
     <div className="space-y-6">
@@ -53,21 +46,26 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
         onSortOrderChange={setSortOrder}
       />
 
+      {/* ⚠️ Still non-virtualized — fine under ~100 items */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-16">
-        {filteredItems.map((item, index) => (
-          <AnimatedItem
-            key={item.id}
-            index={index}
-            delay={(index % 4) * 0.08} // stagger animation
-          >
-            <ItemCard
-              item={item}
-              mode={mode}
-              vizardValue={vizardValue}
-              index={index} // required for animations
-            />
-          </AnimatedItem>
-        ))}
+        {filteredItems.map((item, index) => {
+          const shouldAnimate = index < 16; // limit animations
+
+          return (
+            <AnimatedItem
+              key={item.id}
+              index={index}
+              delay={shouldAnimate ? (index % 4) * 0.08 : 0}
+            >
+              <ItemCard
+                item={item}
+                mode={mode}
+                vizardValue={vizardValue}
+                index={index}
+              />
+            </AnimatedItem>
+          );
+        })}
       </div>
 
       {filteredItems.length === 0 && (
@@ -77,4 +75,4 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
       )}
     </div>
   );
-}; 
+};
