@@ -24,7 +24,7 @@ export const VideoSlider = () => {
         style={{ animationPlayState: paused ? "paused" : "running" }}
       >
         {loop.map((id, i) => (
-          <VideoCard key={i} id={id} />
+          <VideoCard key={`${id}-${i}`} id={id} />
         ))}
       </div>
     </div>
@@ -33,15 +33,22 @@ export const VideoSlider = () => {
 
 const VideoCard = ({ id }: { id: string }) => {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.6 }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+        }
+      },
+      {
+        threshold: 0.2,
+        rootMargin: "200px",
+      }
     );
 
     observer.observe(el);
@@ -53,20 +60,23 @@ const VideoCard = ({ id }: { id: string }) => {
       ref={ref}
       className="min-w-[260px] md:min-w-[360px] bg-black border border-gray-700 rounded-xl shadow-lg overflow-hidden"
     >
-      {isVisible ? (
-        <iframe
-          src={`https://www.youtube.com/embed/${id}`}
-          className="w-full h-40 md:h-56"
-          allow="encrypted-media; picture-in-picture"
-          allowFullScreen
-        />
-      ) : (
-        <img
-          src={`https://img.youtube.com/vi/${id}/hqdefault.jpg`}
-          className="w-full h-40 md:h-56 object-cover"
-          loading="lazy"
-        />
-      )}
+      <div className="relative w-full aspect-video">
+        {shouldLoad ? (
+          <iframe
+            src={`https://www.youtube.com/embed/${id}`}
+            className="absolute inset-0 w-full h-full"
+            allow="encrypted-media; picture-in-picture"
+            allowFullScreen
+          />
+        ) : (
+          <img
+            src={`https://img.youtube.com/vi/${id}/hqdefault.jpg`}
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+            alt=""
+          />
+        )}
+      </div>
     </div>
   );
 };
