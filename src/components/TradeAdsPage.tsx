@@ -81,13 +81,13 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
           src={emoji}
           alt={name}
           loading="lazy"
-          width={24}
-          height={24}
-          className="w-6 h-6 object-contain"
+          width={40}
+          height={40}
+          className="w-10 h-10 object-contain"
         />
       );
     }
-    return <span>{emoji}</span>;
+    return <span className="text-lg">{emoji}</span>;
   };
 
   const getRelativeTime = (d: string) => {
@@ -184,7 +184,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                 animated={false}
                 colors={["#FFD700","#FFC94D","#FFB347"]}
               >
-                <div className="p-6 rounded-xl">
+                <div className="p-6 rounded-xl flex flex-col h-full">
 
                   <div className="flex items-center mb-4 gap-2">
                     <img
@@ -204,35 +204,47 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-[#111] p-3 rounded border border-white/5">
+                  <div className="grid grid-cols-2 gap-4 flex-1">
+                    <div className="bg-[#111] p-4 rounded-xl border border-white/5 flex flex-col">
                       <GradientText variant="gold">
                         Offering
                       </GradientText>
 
-                      {ad.itemsOffering.map((i, idx) => (
-                        <div key={idx} className="flex gap-2 text-sm">
-                          {renderItemIcon(i.emoji, i.itemName)}
-                          <GradientText variant="silver">
-                            {i.itemName}
-                          </GradientText>
-                        </div>
-                      ))}
+                      <div className="mt-3 grid grid-cols-2 gap-3 flex-1">
+                        {ad.itemsOffering.map((i, idx) => (
+                          <div
+                            key={idx}
+                            className="bg-[#0c0c0c] border border-white/10 rounded-lg p-3 flex flex-col items-center justify-center text-center min-h-[90px]"
+                          >
+                            {renderItemIcon(i.emoji, i.itemName)}
+
+                            <p className="text-xs text-zinc-300 mt-2 truncate w-full">
+                              {i.itemName}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
-                    <div className="bg-[#111] p-3 rounded border border-white/5">
+                    <div className="bg-[#111] p-4 rounded-xl border border-white/5 flex flex-col">
                       <GradientText variant="gold">
                         Looking For
                       </GradientText>
 
-                      {ad.itemsWanted.map((i, idx) => (
-                        <div key={idx} className="flex gap-2 text-sm">
-                          {renderItemIcon(i.emoji, i.itemName)}
-                          <GradientText variant="silver">
-                            {i.itemName}
-                          </GradientText>
-                        </div>
-                      ))}
+                      <div className="mt-3 grid grid-cols-2 gap-3 flex-1">
+                        {ad.itemsWanted.map((i, idx) => (
+                          <div
+                            key={idx}
+                            className="bg-[#0c0c0c] border border-white/10 rounded-lg p-3 flex flex-col items-center justify-center text-center min-h-[90px]"
+                          >
+                            {renderItemIcon(i.emoji, i.itemName)}
+
+                            <p className="text-xs text-zinc-300 mt-2 truncate w-full">
+                              {i.itemName}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
