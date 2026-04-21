@@ -388,5 +388,5 @@ export const CreateTradeAdModal: React.FC<Props> = ({
 
       </div>
     </div>
-  );
+  ); 
 };
