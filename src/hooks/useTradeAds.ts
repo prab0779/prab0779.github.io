@@ -37,7 +37,7 @@ export const useTradeAds = () => {
         itemsOffering: row.items_offering || [],
         tags: row.tags || [],
         status: row.status || "active",
-        authorName: row.author_name,
+        authorName: row.author_name?.endsWith("#0") ? row.author_name.slice(0, -2) : (row.author_name ?? ""),
         authorAvatar: row.author_avatar,
         contactInfo: row.contact_info,
         createdAt: row.created_at,
@@ -65,41 +65,6 @@ export const useTradeAds = () => {
 
       const userId = sessionData.session.user.id;
 
-      const { data: recentAd, error: recentError } = await supabase
-        .from("trade_ads")
-        .select("created_at")
-        .eq("user_id", userId)
-        .eq("status", "active") // same behavior (only active ads)
-        .order("created_at", { ascending: false })
-        .maybeSingle();
-
-      if (recentError) throw recentError;
-
-      const COOLDOWN_MINUTES = 5;
-
-      if (recentAd) {
-        const createdTime = new Date(recentAd.created_at).getTime();
-        const now = Date.now();
-        const diffMs = now - createdTime;
-        const diffMinutes = Math.floor(diffMs / 60000);
-        const diffSeconds = Math.floor((diffMs % 60000) / 1000);
-
-        if (diffMinutes < COOLDOWN_MINUTES) {
-          const waitMinutes = COOLDOWN_MINUTES - diffMinutes;
-          const waitSeconds =
-            diffMinutes === COOLDOWN_MINUTES - 1
-              ? 60 - diffSeconds
-              : 0;
-
-          return {
-            data: null,
-            error: `You're on a ${COOLDOWN_MINUTES}-minute cooldown. Try again in ${waitMinutes}m${
-              waitSeconds > 0 ? ` ${waitSeconds}s` : ""
-            }.`,
-          };
-        }
-      }
-
       const expiresAt = new Date(
         Date.now() + 3 * 24 * 60 * 60 * 1000
       ).toISOString();
@@ -112,7 +77,7 @@ export const useTradeAds = () => {
       items_wanted: adData.itemsWanted,
       items_offering: adData.itemsOffering,
       tags: adData.tags,
-      author_name: adData.authorName,
+      author_name: adData.authorName.endsWith("#0") ? adData.authorName.slice(0, -2) : adData.authorName,
       author_avatar: adData.authorAvatar,
       contact_info: adData.contactInfo,
       status: "active",
@@ -145,7 +110,7 @@ export const useTradeAds = () => {
             itemsOffering: data.items_offering || [],
             tags: data.tags || [],
             status: data.status || "active",
-            authorName: data.author_name,
+            authorName: data.author_name?.endsWith("#0") ? data.author_name.slice(0, -2) : (data.author_name ?? ""),
             authorAvatar: data.author_avatar,
             contactInfo: data.contact_info,
             createdAt: data.created_at,
