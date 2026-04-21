@@ -19,18 +19,15 @@ export const useTradeAds = () => {
       const from = (pageToLoad - 1) * pageSize;
       const to = from + pageSize - 1;
 
-      const cutoff = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
-
-const { data, error, count } = await supabase
-  .from("trade_ads")
-  .select(
-    "id, items_wanted, items_offering, tags, status, author_name, author_avatar, contact_info, created_at, updated_at, expires_at",
-    { count: "exact" }
-  )
-  .eq("status", "active")
-  .gte("created_at", cutoff) // ✅ only last 3 days
-  .order("created_at", { ascending: false })
-  .range(from, to);
+      const { data, error, count } = await supabase
+        .from("trade_ads")
+        .select(
+          "id, items_wanted, items_offering, tags, status, author_name, author_avatar, contact_info, created_at, updated_at, expires_at",
+          { count: "exact" }
+        )
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .range(from, to);
 
       if (error) throw error;
 
@@ -39,7 +36,7 @@ const { data, error, count } = await supabase
         itemsWanted: row.items_wanted || [],
         itemsOffering: row.items_offering || [],
         tags: row.tags || [],
-        status: row.status || 'active',
+        status: row.status || "active",
         authorName: row.author_name,
         authorAvatar: row.author_avatar,
         contactInfo: row.contact_info,
@@ -62,7 +59,9 @@ const { data, error, count } = await supabase
   const createTradeAd = async (adData: CreateTradeAdData) => {
     try {
       const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData?.session) return { data: null, error: "Not authenticated" };
+      if (!sessionData?.session) {
+        return { data: null, error: "Not authenticated" };
+      }
 
       const userId = sessionData.session.user.id;
 
@@ -70,11 +69,13 @@ const { data, error, count } = await supabase
         .from("trade_ads")
         .select("created_at")
         .eq("user_id", userId)
-        .eq("status", "active")
+        .eq("status", "active") // same behavior (only active ads)
         .order("created_at", { ascending: false })
         .maybeSingle();
 
       if (recentError) throw recentError;
+
+      const COOLDOWN_MINUTES = 5;
 
       if (recentAd) {
         const createdTime = new Date(recentAd.created_at).getTime();
@@ -83,19 +84,25 @@ const { data, error, count } = await supabase
         const diffMinutes = Math.floor(diffMs / 60000);
         const diffSeconds = Math.floor((diffMs % 60000) / 1000);
 
-       const COOLDOWN_MINUTES = 5;
+        if (diffMinutes < COOLDOWN_MINUTES) {
+          const waitMinutes = COOLDOWN_MINUTES - diffMinutes;
+          const waitSeconds =
+            diffMinutes === COOLDOWN_MINUTES - 1
+              ? 60 - diffSeconds
+              : 0;
 
-if (diffMinutes < COOLDOWN_MINUTES) {
-  const waitMinutes = COOLDOWN_MINUTES - diffMinutes;
-          const waitSeconds = diffMinutes === 59 ? 60 - diffSeconds : 0;
           return {
             data: null,
-            error: `You're on a 60-minute posting cooldown. Try again in ${waitMinutes}m${waitSeconds > 0 ? ` ${waitSeconds}s` : ''}.`
+            error: `You're on a ${COOLDOWN_MINUTES}-minute cooldown. Try again in ${waitMinutes}m${
+              waitSeconds > 0 ? ` ${waitSeconds}s` : ""
+            }.`,
           };
         }
       }
 
-      const expiresAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
+      const expiresAt = new Date(
+        Date.now() + 3 * 24 * 60 * 60 * 1000
+      ).toISOString();
 
       const { data, error } = await supabase
         .from("trade_ads")
@@ -118,21 +125,26 @@ if (diffMinutes < COOLDOWN_MINUTES) {
       if (error) {
         const errorMsg = error.message || "";
         if (errorMsg.includes("violates row level security policy")) {
-          return { data: null, error: "Unable to post. Please try logging out and back in." };
+          return {
+            data: null,
+            error: "Unable to post. Please try logging out and back in.",
+          };
         }
         throw error;
       }
 
       setTotal((t) => t + 1);
+
       if (page === 1) {
         setTradeAds((prev) => {
           if (prev.some((a) => a.id === data.id)) return prev;
+
           const mapped: TradeAd = {
             id: data.id,
             itemsWanted: data.items_wanted || [],
             itemsOffering: data.items_offering || [],
             tags: data.tags || [],
-            status: data.status || 'active',
+            status: data.status || "active",
             authorName: data.author_name,
             authorAvatar: data.author_avatar,
             contactInfo: data.contact_info,
@@ -140,33 +152,45 @@ if (diffMinutes < COOLDOWN_MINUTES) {
             updatedAt: data.updated_at,
             expiresAt: data.expires_at,
           };
+
           return [mapped, ...prev].slice(0, pageSize);
         });
       }
 
       return { data, error: null };
     } catch (err) {
-      const error = err instanceof Error ? err.message : "Failed to create trade ad";
+      const error =
+        err instanceof Error ? err.message : "Failed to create trade ad";
       console.error("Insert error:", err);
       return { data: null, error };
     }
   };
 
-  const updateTradeAdStatus = async (id: string, status: "completed" | "cancelled") => {
+  const updateTradeAdStatus = async (
+    id: string,
+    status: "completed" | "cancelled"
+  ) => {
     try {
-      const { error } = await supabase.from("trade_ads").update({ status }).eq("id", id);
+      const { error } = await supabase
+        .from("trade_ads")
+        .update({ status })
+        .eq("id", id);
+
       if (error) throw error;
 
       setTradeAds((prev) => prev.filter((ad) => ad.id !== id));
       setTotal((t) => Math.max(0, t - 1));
+
       return { error: null };
     } catch (err) {
-      const error = err instanceof Error ? err.message : "Failed to update trade ad";
+      const error =
+        err instanceof Error
+          ? err.message
+          : "Failed to update trade ad";
       return { error };
     }
   };
 
-  // Fetch whenever page changes
   useEffect(() => {
     fetchTradeAds(page);
   }, [page, fetchTradeAds]);
