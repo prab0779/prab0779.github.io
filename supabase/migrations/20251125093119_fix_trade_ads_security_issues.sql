@@ -1,12 +1,10 @@
-DROP POLICY IF EXISTS "Anyone can create trade ads" ON trade_ads;
-DROP POLICY IF EXISTS "Anyone can read trade ads" ON trade_ads;
-DROP POLICY IF EXISTS "Authors can delete their own trade ads" ON trade_ads;
-DROP POLICY IF EXISTS "Authors can update their own trade ads" ON trade_ads;
 DROP POLICY IF EXISTS "Everyone can read trade ads" ON trade_ads;
+DROP POLICY IF EXISTS "Authenticated users can create trade ads" ON trade_ads;
+DROP POLICY IF EXISTS "Users can update own trade ads" ON trade_ads;
+DROP POLICY IF EXISTS "Users can delete own trade ads" ON trade_ads;
 
 CREATE POLICY "select_active_trade_ads"
 ON trade_ads FOR SELECT
-TO public
 USING (
   status = 'active'
   AND expires_at > now()
