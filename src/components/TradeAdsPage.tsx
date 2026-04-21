@@ -1,8 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import {
-  Search,
-  Eye
-} from "lucide-react";
+import { Search, Eye } from "lucide-react";
 
 import { AnimatedItem } from "../Shared/AnimatedList";
 import BorderGlow from "../Shared/BorderGlow";
@@ -25,9 +22,15 @@ const AVAILABLE_TAGS = [
 
 export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const { user, signInWithDiscord } = useAuth();
+
   const {
-    tradeAds, loading,
-    page, totalPages, setPage, total
+    tradeAds,
+    loading,
+    page,
+    totalPages,
+    setPage,
+    total,
+    createTradeAd
   } = useTradeAds();
 
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -38,14 +41,21 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
   const filteredTradeAds = useMemo(() => {
     const q = searchTerm.toLowerCase();
+
     return tradeAds.filter((ad) => {
       const matchSearch =
         !q ||
         ad.authorName.toLowerCase().includes(q) ||
-        ad.itemsOffering.some((i) => i.itemName.toLowerCase().includes(q)) ||
-        ad.itemsWanted.some((i) => i.itemName.toLowerCase().includes(q));
+        ad.itemsOffering.some((i) =>
+          i.itemName.toLowerCase().includes(q)
+        ) ||
+        ad.itemsWanted.some((i) =>
+          i.itemName.toLowerCase().includes(q)
+        );
 
-      const matchTag = !selectedTag || ad.tags.includes(selectedTag);
+      const matchTag =
+        !selectedTag || ad.tags.includes(selectedTag);
+
       return matchSearch && matchTag;
     });
   }, [tradeAds, searchTerm, selectedTag]);
@@ -53,40 +63,56 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const renderItemIcon = (emoji: string, name: string) => {
     if (!emoji) return <span>👹</span>;
     if (emoji.startsWith("/") || emoji.startsWith("./")) {
-      return <img src={emoji} alt={name} className="w-6 h-6 object-contain" />;
+      return (
+        <img
+          src={emoji}
+          alt={name}
+          className="w-6 h-6 object-contain"
+        />
+      );
     }
     return <span>{emoji}</span>;
   };
 
   const getRelativeTime = (d: string) => {
-    const diff = Math.floor((Date.now() - new Date(d).getTime()) / 60000);
+    const diff = Math.floor(
+      (Date.now() - new Date(d).getTime()) / 60000
+    );
     if (diff < 60) return `${diff}m ago`;
     if (diff < 1440) return `${Math.floor(diff / 60)}h ago`;
     return `${Math.floor(diff / 1440)}d ago`;
   };
 
   if (loading)
-    return <div className="text-center py-12 text-zinc-400">Loading...</div>;
+    return (
+      <div className="text-center py-12 text-zinc-400">
+        Loading...
+      </div>
+    );
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-14 mt-20 space-y-10">
 
       {/* HEADER */}
       <div className="text-center">
-        <h1 className="text-4xl font-extrabold mb-4 flex flex-wrap justify-center">
-         <GradientText variant="gold">
-  Trade Ads
-</GradientText>
+        <h1 className="text-4xl font-extrabold mb-4 flex justify-center">
+          <GradientText variant="gold">
+            Trade Ads
+          </GradientText>
         </h1>
 
-        <p className="mb-6 flex flex-wrap justify-center text-sm">
-         <GradientText variant="silver">
-  Post and browse trade offers (broken)
-</GradientText>
+        <p className="mb-6 text-sm flex justify-center">
+          <GradientText variant="silver">
+            Post and browse trade offers
+          </GradientText>
         </p>
 
         <button
-          onClick={() => (!user ? signInWithDiscord() : setShowCreateForm(true))}
+          onClick={() =>
+            !user
+              ? signInWithDiscord()
+              : setShowCreateForm(true)
+          }
           className="px-6 py-3 bg-yellow-700 hover:bg-yellow-600 text-white rounded-lg border border-yellow-500/20"
         >
           {user ? "Post Trade Ad" : "Login with Discord"}
@@ -107,11 +133,15 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
         <select
           value={selectedTag}
-          onChange={(e) => setSelectedTag(e.target.value)}
+          onChange={(e) =>
+            setSelectedTag(e.target.value)
+          }
           className="bg-[#111] border border-zinc-800 rounded px-3 text-white"
         >
           <option value="">All</option>
-          {AVAILABLE_TAGS.map((t) => <option key={t}>{t}</option>)}
+          {AVAILABLE_TAGS.map((t) => (
+            <option key={t}>{t}</option>
+          ))}
         </select>
 
         <div className="flex items-center px-3 bg-[#111] border border-zinc-800 rounded text-white">
@@ -123,7 +153,11 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       {/* ADS */}
       <div className="grid lg:grid-cols-2 gap-6">
         {filteredTradeAds.map((ad, index) => (
-          <AnimatedItem key={ad.id} index={index} delay={(index % 2) * 0.1}>
+          <AnimatedItem
+            key={ad.id}
+            index={index}
+            delay={(index % 2) * 0.1}
+          >
             <BorderGlow
               edgeSensitivity={30}
               glowColor="40 80 80"
@@ -133,51 +167,52 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
               glowIntensity={1}
               coneSpread={25}
               animated={false}
-              colors={['#FFD700', '#FFC94D', '#FFB347']}
+              colors={['#FFD700','#FFC94D','#FFB347']}
             >
               <div className="p-6 rounded-xl">
 
                 <div className="flex items-center mb-4 gap-2">
-                  <img src={ad.authorAvatar} className="w-8 h-8 rounded-full" />
+                  <img
+                    src={ad.authorAvatar}
+                    className="w-8 h-8 rounded-full"
+                  />
                   <div>
-                    <p className="text-white text-sm">{ad.authorName}</p>
-                    <p className="text-zinc-500 text-xs">{getRelativeTime(ad.createdAt)}</p>
+                    <p className="text-white text-sm">
+                      {ad.authorName}
+                    </p>
+                    <p className="text-zinc-500 text-xs">
+                      {getRelativeTime(ad.createdAt)}
+                    </p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-[#111] p-3 rounded border border-white/5">
-                    <p className="text-sm mb-2 flex flex-wrap">
-                      <GradientText variant="gold">
-  Offering
-</GradientText>
-                    </p>
+                    <GradientText variant="gold">
+                      Offering
+                    </GradientText>
+
                     {ad.itemsOffering.map((i, idx) => (
                       <div key={idx} className="flex gap-2 text-sm">
                         {renderItemIcon(i.emoji, i.itemName)}
-                        <span className="flex flex-wrap">
-                         <GradientText variant="silver">
-  {i.itemName}
-</GradientText>
-                        </span>
+                        <GradientText variant="silver">
+                          {i.itemName}
+                        </GradientText>
                       </div>
                     ))}
                   </div>
 
                   <div className="bg-[#111] p-3 rounded border border-white/5">
-                    <p className="text-sm mb-2 flex flex-wrap">
-                      <GradientText variant="gold">
-  Looking For
-</GradientText>
-                    </p>
+                    <GradientText variant="gold">
+                      Looking For
+                    </GradientText>
+
                     {ad.itemsWanted.map((i, idx) => (
                       <div key={idx} className="flex gap-2 text-sm">
                         {renderItemIcon(i.emoji, i.itemName)}
-                        <span className="flex flex-wrap">
-                                                  <GradientText variant="silver">
-  {i.itemName}
-</GradientText>
-                        </span>
+                        <GradientText variant="silver">
+                          {i.itemName}
+                        </GradientText>
                       </div>
                     ))}
                   </div>
@@ -187,11 +222,11 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                   {ad.tags.map((tag, i) => (
                     <span
                       key={i}
-                      className="px-2 py-1 bg-yellow-900/20 border border-yellow-700/30 rounded-full text-xs flex flex-wrap"
+                      className="px-2 py-1 bg-yellow-900/20 border border-yellow-700/30 rounded-full text-xs"
                     >
-                     <GradientText variant="gold">
-  {tag}
-</GradientText>
+                      <GradientText variant="gold">
+                        {tag}
+                      </GradientText>
                     </span>
                   ))}
                 </div>
@@ -201,6 +236,18 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
           </AnimatedItem>
         ))}
       </div>
+
+      {/* MODAL */}
+      {showCreateForm && user && (
+        <CreateTradeAdModal
+          items={items}
+          tags={AVAILABLE_TAGS}
+          onClose={() => setShowCreateForm(false)}
+          onSubmit={createTradeAd}
+          authorName={user.user_metadata?.name || "User"}
+          authorAvatar={user.user_metadata?.avatar_url || null}
+        />
+      )}
 
     </div>
   );
