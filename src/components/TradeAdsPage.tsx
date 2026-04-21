@@ -93,7 +93,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   return (
     <div className="max-w-6xl mx-auto px-4 py-14 mt-20 space-y-10">
 
-      {/* HEADER */}
       <div className="text-center">
         <h1 className="text-4xl font-extrabold mb-4 flex justify-center">
           <GradientText variant="gold">
@@ -150,7 +149,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         </div>
       </div>
 
-      {/* ADS */}
       <div className="grid lg:grid-cols-2 gap-6">
         {filteredTradeAds.map((ad, index) => (
           <AnimatedItem
