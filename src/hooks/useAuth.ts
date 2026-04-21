@@ -32,7 +32,7 @@ export const useAuth = () => {
       provider: "discord",
       options: {
         scope: "identify email",
-        redirectTo: `${window.location.origin}/#/auth/callback`,
+        redirectTo: `${window.location.origin}/`,
       },
     });
   };

@@ -1,31 +1,26 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { supabase } from "../../lib/supabase";
 
 export default function AuthCallback() {
-  const hasRun = useRef(false);
-
   useEffect(() => {
-    const handleLogin = async () => {
-      if (hasRun.current) return;
-      hasRun.current = true;
-
-      // Strip hash so Supabase gets a clean URL
-      const url = new URL(window.location.href);
-      url.hash = "";
-
-      const { error } = await supabase.auth.exchangeCodeForSession(
-        url.toString()
-      );
-
-      if (error) {
-        console.error("OAuth exchange error:", error.message);
+    // With implicit flow, Supabase detects the token from the URL hash automatically.
+    // We just wait for the session to be set then redirect.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        subscription.unsubscribe();
+        window.location.replace("/#/trade-ads");
       }
+    });
 
-      // Force clean redirect (prevents race condition + bad URL)
-      window.location.replace("/#/trade-ads");
-    };
+    // Fallback: if already signed in (e.g. page refresh), redirect immediately
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        subscription.unsubscribe();
+        window.location.replace("/#/trade-ads");
+      }
+    });
 
-    handleLogin();
+    return () => subscription.unsubscribe();
   }, []);
 
   return (
