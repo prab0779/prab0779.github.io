@@ -105,21 +105,22 @@ export const useTradeAds = () => {
       ).toISOString();
 
       const { data, error } = await supabase
-        .from("trade_ads")
-        .insert([
-          {
-            items_wanted: adData.itemsWanted,
-            items_offering: adData.itemsOffering,
-            tags: adData.tags,
-            author_name: adData.authorName,
-            author_avatar: adData.authorAvatar,
-            contact_info: adData.contactInfo,
-            status: "active",
-            expires_at: expiresAt,
-          },
-        ])
-        .select()
-        .single();
+  .from("trade_ads")
+  .insert([
+    {
+      user_id: userId, // ✅ ADD THIS LINE
+      items_wanted: adData.itemsWanted,
+      items_offering: adData.itemsOffering,
+      tags: adData.tags,
+      author_name: adData.authorName,
+      author_avatar: adData.authorAvatar,
+      contact_info: adData.contactInfo,
+      status: "active",
+      expires_at: expiresAt,
+    },
+  ])
+  .select()
+  .single();
 
       if (error) {
         const errorMsg = error.message || "";
