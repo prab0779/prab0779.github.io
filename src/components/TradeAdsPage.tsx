@@ -167,9 +167,9 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
                   <div className="bg-[#111] p-3 rounded border border-white/5">
                     <p className="text-sm mb-2 flex flex-wrap">
-                      {"Looking For".split("").map((c, i) => (
-                        <span key={i} className="gold-letter">{c === " " ? "\u00A0" : c}</span>
-                      ))}
+                      <GradientText variant="gold">
+  Looking For
+</GradientText>
                     </p>
                     {ad.itemsWanted.map((i, idx) => (
                       <div key={idx} className="flex gap-2 text-sm">
