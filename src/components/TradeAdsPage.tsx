@@ -73,11 +73,9 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       {/* HEADER */}
       <div className="text-center">
         <h1 className="text-4xl font-extrabold mb-4 flex flex-wrap justify-center">
-          {"Trade Ads".split("").map((c, i) => (
-            <span key={i} className="gold-letter">
-              {c === " " ? "\u00A0" : c}
-            </span>
-          ))}
+         <GradientText variant="gold">
+  Trade Ads
+</GradientText>
         </h1>
 
         <p className="mb-6 flex flex-wrap justify-center text-sm">
