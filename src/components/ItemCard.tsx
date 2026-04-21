@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Item } from "../types/Item";
 import CountUp from "../Shared/CountUp";
@@ -12,48 +12,54 @@ interface ItemCardProps {
   index?: number;
 }
 
-export const ItemCard = React.memo(({
+const ItemCardComponent = ({
   item,
   mode,
   vizardValue,
-  index = 0
+  index = 0,
 }: ItemCardProps) => {
-  const getDemandVariant = useCallback((d: number): "red" | "yellow" | "green" =>
-    d <= 3 ? "red" : d <= 6 ? "yellow" : "green", []);
+  // 🔥 Only animate first visible batch (prevents scroll jank)
+  const shouldAnimate = index < 12;
 
-  const getRateIcon = useCallback((r: string) =>
+  // Simple helpers (no need for useCallback)
+  const getDemandVariant = (d: number): "red" | "yellow" | "green" =>
+    d <= 3 ? "red" : d <= 6 ? "yellow" : "green";
+
+  const getRateVariant = (r: string): "green" | "red" | "yellow" =>
+    r === "Rising" ? "green" : r === "Falling" ? "red" : "yellow";
+
+  const getRateIcon = (r: string) =>
     r === "Rising" ? (
       <TrendingUp className="w-4 h-4 text-green-400" />
     ) : r === "Falling" ? (
       <TrendingDown className="w-4 h-4 text-red-400" />
     ) : (
       <Minus className="w-4 h-4 text-gray-400" />
-    ), []);
+    );
 
-  const getRateVariant = useCallback((r: string): "green" | "red" | "yellow" =>
-    r === "Rising"
-      ? "green"
-      : r === "Falling"
-      ? "red"
-      : "yellow", []);
+  // Inline tax (faster than useMemo)
+  const tax =
+    item.gemTax
+      ? { label: "Gem Tax", value: item.gemTax, variant: "purple" as const }
+      : item.goldTax
+      ? { label: "Gold Tax", value: item.goldTax, variant: "yellow" as const }
+      : { label: "Tax", value: 0, variant: "silver" as const };
 
-  const tax = useMemo(() => {
-    if (item.gemTax) {
-      return { label: "Gem Tax", value: item.gemTax, variant: "purple" as const };
-    }
-    if (item.goldTax) {
-      return { label: "Gold Tax", value: item.goldTax, variant: "yellow" as const };
-    }
-    return { label: "Tax", value: 0, variant: "silver" as const };
-  }, [item]);
+  const keysValue = item.value;
 
-  const renderIcon = useCallback((emoji: string) => {
+  const vizardConverted = vizardValue
+    ? Math.round((item.value / vizardValue) * 100) / 100
+    : 0;
+
+  const renderIcon = (emoji: string) => {
     if (!emoji) return <span className="text-6xl">👹</span>;
 
     if (emoji.startsWith("/")) {
       return (
         <img
+          key={emoji}
           src={emoji}
+          alt={item.name}
           loading="lazy"
           decoding="async"
           className="w-28 h-28 mx-auto object-contain pixelated"
@@ -62,14 +68,7 @@ export const ItemCard = React.memo(({
     }
 
     return <span className="text-6xl">{emoji}</span>;
-  }, []);
-
-  const keysValue = item.value;
-
-  const vizardConverted = useMemo(() => {
-    if (!vizardValue) return 0;
-    return Math.round((item.value / vizardValue) * 100) / 100;
-  }, [item.value, vizardValue]);
+  };
 
   return (
     <BorderGlow
@@ -84,19 +83,21 @@ export const ItemCard = React.memo(({
       colors={["#FFD700", "#FFC94D", "#FFB347"]}
     >
       <div className="p-5 flex flex-col h-full">
+        {/* Title */}
         <div className="flex justify-between items-center mb-3">
           <h2 className="font-bold text-lg">
-            <GradientText variant="gold">
-              {item.name}
-            </GradientText>
+            <GradientText variant="gold">{item.name}</GradientText>
           </h2>
         </div>
 
+        {/* Icon */}
         <div className="flex justify-center mb-4">
           {renderIcon(item.emoji)}
         </div>
 
+        {/* Stats */}
         <div className="bg-black/40 rounded-xl p-4 space-y-3 border border-gray-800">
+          {/* Value */}
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">Value</GradientText>
@@ -105,10 +106,10 @@ export const ItemCard = React.memo(({
             {mode === "regular" ? (
               <span className="text-white font-bold">
                 <CountUp
-                  from={0}
+                  from={shouldAnimate ? 0 : keysValue}
                   to={keysValue}
-                  duration={1.2}
-                  delay={index < 20 ? (index % 4) * 0.08 : 0}
+                  duration={shouldAnimate ? 1.2 : 0}
+                  delay={shouldAnimate ? (index % 4) * 0.08 : 0}
                   format={(v) => {
                     if (v >= 1_000_000_000)
                       return (v / 1_000_000_000).toFixed(2) + "B";
@@ -122,10 +123,10 @@ export const ItemCard = React.memo(({
               <span className="font-bold">
                 <GradientText variant="purple">
                   <CountUp
-                    from={0}
+                    from={shouldAnimate ? 0 : vizardConverted}
                     to={vizardConverted}
-                    duration={1.2}
-                    delay={index < 20 ? (index % 4) * 0.08 : 0}
+                    duration={shouldAnimate ? 1.2 : 0}
+                    delay={shouldAnimate ? (index % 4) * 0.08 : 0}
                     format={(v) => Number(v).toFixed(2)}
                   />
                 </GradientText>
@@ -133,6 +134,7 @@ export const ItemCard = React.memo(({
             )}
           </div>
 
+          {/* Trend */}
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">Trend</GradientText>
@@ -145,6 +147,7 @@ export const ItemCard = React.memo(({
             </span>
           </div>
 
+          {/* Demand */}
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">Demand</GradientText>
@@ -154,37 +157,54 @@ export const ItemCard = React.memo(({
             </GradientText>
           </div>
 
+          {/* Tax */}
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">{tax.label}</GradientText>
             </span>
             <span className="font-bold">
               {tax.value > 0 ? (
-            <GradientText variant={tax.variant}>
-              <CountUp
-                from={0}
-                to={tax.value}
-                duration={1}
-                delay={index < 20 ? (index % 4) * 0.08 + 0.1 : 0}
-                format={(v) => v.toLocaleString()}
-              />
-            </GradientText>
-          ) : (
-            <GradientText variant="silver">None</GradientText>
-          )}
+                <GradientText variant={tax.variant}>
+                  <CountUp
+                    from={shouldAnimate ? 0 : tax.value}
+                    to={tax.value}
+                    duration={shouldAnimate ? 1 : 0}
+                    delay={
+                      shouldAnimate ? (index % 4) * 0.08 + 0.1 : 0
+                    }
+                    format={(v) => v.toLocaleString()}
+                  />
+                </GradientText>
+              ) : (
+                <GradientText variant="silver">None</GradientText>
+              )}
             </span>
           </div>
 
+          {/* Prestige */}
           <div className="flex justify-between text-sm">
             <span className="font-medium">
               <GradientText variant="silver">Prestige</GradientText>
             </span>
-            <GradientText variant="blue">
-              {item.prestige}
-            </GradientText>
+            <GradientText variant="blue">{item.prestige}</GradientText>
           </div>
         </div>
       </div>
     </BorderGlow>
   );
-});
+};
+
+// 🔥 Custom comparison to prevent useless re-renders
+export const ItemCard = React.memo(
+  ItemCardComponent,
+  (prev, next) => {
+    return (
+      prev.item.id === next.item.id &&
+      prev.item.value === next.item.value &&
+      prev.item.rateOfChange === next.item.rateOfChange &&
+      prev.item.demand === next.item.demand &&
+      prev.mode === next.mode &&
+      prev.vizardValue === next.vizardValue
+    );
+  }
+);
