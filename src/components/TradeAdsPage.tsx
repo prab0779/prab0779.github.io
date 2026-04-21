@@ -199,7 +199,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                   <div className="bg-[#111] p-4 rounded-xl border border-white/5">
                     <GradientText variant="gold">Looking For</GradientText>
 
-                    <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
+                    <div className="mt-3 flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                       {ad.itemsWanted.map((i, idx) => (
                         <div
                           key={idx}
