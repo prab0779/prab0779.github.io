@@ -1,6 +1,7 @@
 import React from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Item } from "../types/Item";
+import { getItemImageUrl } from "../lib/supabase";
 import CountUp from "../Shared/CountUp";
 import BorderGlow from "../Shared/BorderGlow";
 import GradientText from "../Shared/GradientText";
@@ -56,11 +57,11 @@ const ItemCardComponent = ({
         </div>
       );
 
-    if (emoji.startsWith("/")) {
+    if (emoji.startsWith("/") || emoji.startsWith("./") || emoji.startsWith("http")) {
       return (
         <div className="w-28 h-28 mx-auto">
           <img
-            src={emoji}
+            src={getItemImageUrl(emoji)}
             alt={item.name}
             width={112}
             height={112}

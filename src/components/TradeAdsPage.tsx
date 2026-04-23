@@ -7,6 +7,7 @@ import { CreateTradeAdModal } from "./CreateTradeAd";
 import { useTradeAds } from "../hooks/useTradeAds";
 import { useAuth } from "../hooks/useAuth";
 import { Item } from "../types/Item";
+import { getItemImageUrl } from "../lib/supabase";
 
 interface TradeAdsPageProps {
   items: Item[];
@@ -69,10 +70,10 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
   const renderItemIcon = (emoji: string, name: string) => {
     if (!emoji) return <span>👹</span>;
-    if (emoji.startsWith("/") || emoji.startsWith("./")) {
+    if (emoji.startsWith("/") || emoji.startsWith("./") || emoji.startsWith("http")) {
       return (
         <img
-          src={emoji}
+          src={getItemImageUrl(emoji)}
           alt={name}
           loading="lazy"
           width={48}

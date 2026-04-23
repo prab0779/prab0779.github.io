@@ -2,6 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { X, Search, Plus, Minus, ChevronDown } from "lucide-react";
 import { CreateTradeAdData, TradeAdItem } from "../types/TradeAd";
 import GradientText from "../Shared/GradientText";
+import { getItemImageUrl } from "../lib/supabase";
 
 interface ItemOption {
   name: string;
@@ -34,7 +35,7 @@ const isImagePath = (s: string) => s.startsWith("/") || s.startsWith("./") || s.
 function ItemEmoji({ emoji, name, size = "md" }: { emoji: string; name: string; size?: "sm" | "md" | "lg" }) {
   const sizeMap = { sm: "w-5 h-5", md: "w-7 h-7", lg: "w-9 h-9" };
   if (isImagePath(emoji))
-    return <img src={emoji} alt={name} className={`${sizeMap[size]} object-contain rounded`} />;
+    return <img src={getItemImageUrl(emoji)} alt={name} className={`${sizeMap[size]} object-contain rounded`} />;
   return <span className={size === "lg" ? "text-xl" : size === "md" ? "text-base" : "text-sm"}>{emoji || "?"}</span>;
 }
 
