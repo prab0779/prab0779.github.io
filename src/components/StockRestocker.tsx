@@ -4,6 +4,7 @@ import { useItems } from "../hooks/useItems";
 import BorderGlow from "../Shared/BorderGlow";
 import Counter from "../Shared/Counter";
 import GradientText from "../Shared/GradientText";
+import { getItemImageUrl } from "../lib/supabase";
 
 export const StockRestocker: React.FC = () => {
   const { rotation } = useStockRotation();
@@ -147,9 +148,9 @@ export const StockRestocker: React.FC = () => {
 
               {item ? (
                 <>
-                  {typeof item.emoji === "string" && item.emoji.startsWith("/") ? (
+                  {typeof item.emoji === "string" && (item.emoji.startsWith("/") || item.emoji.startsWith("./") || item.emoji.startsWith("http")) ? (
                     <img
-                      src={item.emoji}
+                      src={getItemImageUrl(item.emoji)}
                       alt={item.name}
                       className="w-16 h-16 object-contain mb-4"
                     />

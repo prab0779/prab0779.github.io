@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Plus, X, Search } from "lucide-react";
 import { Item, TradeItem, TradeCalculation } from "../types/Item";
 import GradientText from "../Shared/GradientText";
+import { getItemImageUrl } from "../lib/supabase";
 
 interface TradeCalculatorProps {
   items: Item[];
@@ -85,11 +86,10 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
   const renderItemIcon = (emoji: string, itemName: string) => {
     if (!emoji || typeof emoji !== "string") return <span className="text-4xl leading-none">👹</span>;
 
-    if (emoji.startsWith("/") || emoji.startsWith("./")) {
-      const src = emoji.startsWith("./") ? emoji.slice(2) : emoji;
+    if (emoji.startsWith("/") || emoji.startsWith("./") || emoji.startsWith("http")) {
       return (
         <img
-          src={src}
+          src={getItemImageUrl(emoji)}
           alt={itemName}
           className="w-full h-full object-contain"
           style={{ imageRendering: "pixelated" as any }}
