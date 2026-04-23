@@ -200,7 +200,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                             {i.itemName}
                           </p>
                           {i.quantity && i.quantity > 1 && (
-                            <span className="text-[10px] text-yellow-400 mt-1 font-semibold">
+                            <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1.5 py-0.5 rounded font-bold shadow">
                               x{i.quantity}
                             </span>
                           )}
