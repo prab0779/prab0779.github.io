@@ -191,7 +191,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                       {ad.itemsOffering.map((i, idx) => (
                         <div
                           key={idx}
-                          className="min-w-[120px] bg-[#121212] border border-white/10 hover:border-yellow-500/40 rounded-xl p-3 flex flex-col items-center justify-center text-center transition-all duration-200"
+                          className="relative min-w-[120px] bg-[#121212] border border-white/10 hover:border-yellow-500/40 rounded-xl p-3 flex flex-col items-center justify-center text-center transition-all duration-200">
                         >
                           <div className="mb-2">
                             {renderItemIcon(i.emoji, i.itemName)}
