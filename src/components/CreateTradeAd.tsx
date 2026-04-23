@@ -221,8 +221,14 @@ export const CreateTradeAdModal: React.FC<Props> = ({
   };
 
   const submit = async () => {
-    if (offering.length === 0 && wanted.length === 0) {
-      setError("Add at least one item to offer or request.");
+    // Require at least one item in BOTH offering and wanted
+    if (offering.length === 0) {
+      setError("You must add at least one item you're offering.");
+      return;
+    }
+
+    if (wanted.length === 0) {
+      setError("You must add at least one item you're looking for.");
       return;
     }
 
@@ -278,7 +284,9 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 rounded-full bg-yellow-500" />
-              <GradientText variant="gold" className="text-sm font-semibold">Offering</GradientText>
+              <GradientText variant="gold" className="text-sm font-semibold">
+                Offering <span className="text-red-400">*</span>
+              </GradientText>
               {offering.length > 0 && (
                 <span className="ml-auto text-xs text-zinc-500">{offering.length} item{offering.length !== 1 ? "s" : ""}</span>
               )}
@@ -303,7 +311,9 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 rounded-full bg-blue-400" />
-              <GradientText variant="blue" className="text-sm font-semibold">Looking For</GradientText>
+              <GradientText variant="blue" className="text-sm font-semibold">
+                Looking For <span className="text-red-400">*</span>
+              </GradientText>
               {wanted.length > 0 && (
                 <span className="ml-auto text-xs text-zinc-500">{wanted.length} item{wanted.length !== 1 ? "s" : ""}</span>
               )}
@@ -335,7 +345,7 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           </button>
           <button
             onClick={submit}
-            disabled={loading}
+            disabled={loading || offering.length === 0 || wanted.length === 0}
             className="px-5 py-2 text-sm bg-yellow-600 hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed text-black font-semibold rounded-lg transition-colors"
           >
             {loading ? "Posting..." : "Post Ad"}
