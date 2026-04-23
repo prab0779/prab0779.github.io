@@ -31,7 +31,7 @@ export const useAuth = () => {
     await supabase.auth.signInWithOAuth({
       provider: "discord",
       options: {
-        scope: "identify email",
+        scope: "identify",
         redirectTo: `${window.location.origin}/`,
       },
     });
