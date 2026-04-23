@@ -65,30 +65,6 @@ export const useTradeAds = () => {
 
       const userId = sessionData.session.user.id;
 
-      const { data: recentAd, error: recentError } = await supabase
-        .from("trade_ads")
-        .select("created_at")
-        .eq("user_id", userId)
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .maybeSingle();
-
-      if (recentError) throw recentError;
-
-      const COOLDOWN_MINUTES = 5;
-      if (recentAd) {
-        const diffMs = Date.now() - new Date(recentAd.created_at).getTime();
-        const diffMinutes = Math.floor(diffMs / 60000);
-        if (diffMinutes < COOLDOWN_MINUTES) {
-          const waitMinutes = COOLDOWN_MINUTES - diffMinutes;
-          const waitSeconds = Math.ceil((60000 - (diffMs % 60000)) / 1000);
-          return {
-            data: null,
-            error: `You're on a cooldown. Try again in ${waitMinutes}m ${waitSeconds}s.`,
-          };
-        }
-      }
-
       const expiresAt = new Date(
         Date.now() + 3 * 24 * 60 * 60 * 1000
       ).toISOString();

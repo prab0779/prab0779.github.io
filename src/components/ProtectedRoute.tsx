@@ -1,6 +1,5 @@
 import React from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { useAdminCheck } from '../hooks/useAdminCheck';
 import { LoginForm } from './LoginForm';
 import { Navigate } from 'react-router-dom';
 
@@ -8,11 +7,12 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user, loading: authLoading } = useAuth();
-  const { isAdmin, loading: adminLoading } = useAdminCheck(user?.id);
+const ALLOWED_DISCORD_IDS = ["512671808886013962"];
 
-  if (authLoading || adminLoading) {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
@@ -27,7 +27,13 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return <LoginForm />;
   }
 
-  if (!isAdmin) {
+  // Try multiple locations where Supabase may store the Discord user ID
+  const rawSub = user?.user_metadata?.sub || user?.user_metadata?.provider_id || "";
+  const discordId = rawSub.startsWith("discord|")
+    ? rawSub.replace("discord|", "")
+    : rawSub || null;
+
+  if (!discordId || !ALLOWED_DISCORD_IDS.includes(discordId)) {
     return <Navigate to="/trade-ads" replace />;
   }
 

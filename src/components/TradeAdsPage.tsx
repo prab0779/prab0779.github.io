@@ -7,7 +7,6 @@ import { CreateTradeAdModal } from "./CreateTradeAd";
 import { useTradeAds } from "../hooks/useTradeAds";
 import { useAuth } from "../hooks/useAuth";
 import { Item } from "../types/Item";
-import { getItemImageUrl } from "../lib/supabase";
 
 interface TradeAdsPageProps {
   items: Item[];
@@ -70,10 +69,10 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
   const renderItemIcon = (emoji: string, name: string) => {
     if (!emoji) return <span>👹</span>;
-    if (emoji.startsWith("/") || emoji.startsWith("./") || emoji.startsWith("http")) {
+    if (emoji.startsWith("/") || emoji.startsWith("./")) {
       return (
         <img
-          src={getItemImageUrl(emoji)}
+          src={emoji}
           alt={name}
           loading="lazy"
           width={48}
@@ -168,7 +167,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                   <img
                     src={ad.authorAvatar}
                     className="w-8 h-8 rounded-full"
-                    alt={ad.authorName}
                   />
                   <div>
                     <p className="text-white text-sm">{ad.authorName}</p>
@@ -181,77 +179,40 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                 <div className="space-y-4">
 
                   <div className="bg-[#111] p-4 rounded-xl border border-white/5">
-                    <div className="flex items-center justify-between mb-3">
-                      <GradientText variant="gold">Offering</GradientText>
-                      <span className="text-xs text-zinc-500">
-                        {ad.itemsOffering.length} {ad.itemsOffering.length === 1 ? 'item' : 'items'}
-                      </span>
-                    </div>
+                    <GradientText variant="gold">Offering</GradientText>
 
-                   <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+                   <div className="mt-3 flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                       {ad.itemsOffering.map((i, idx) => (
                         <div
                           key={idx}
-                          className="relative min-w-[120px] bg-[#121212] border border-white/10 hover:border-yellow-500/40 rounded-xl p-3 flex flex-col items-center justify-center text-center transition-all duration-200">
-                        
-                          <div className="mb-2">
-                            {renderItemIcon(i.emoji, i.itemName)}
-                          </div>
-                          <p className="text-xs text-zinc-200 truncate w-full px-1">
+                          className="min-w-[120px] bg-[#121212] border border-white/10 hover:border-yellow-500/40 rounded-xl p-3 flex flex-col items-center justify-center text-center transition"
+                        >
+                          {renderItemIcon(i.emoji, i.itemName)}
+                          <p className="text-xs text-zinc-200 mt-2 truncate w-full">
                             {i.itemName}
                           </p>
-                          {i.quantity && i.quantity > 1 && (
-                            <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1.5 py-0.5 rounded font-bold shadow">
-                              x{i.quantity}
-                            </span>
-                          )}
                         </div>
                       ))}
                     </div>
                   </div>
 
                   <div className="bg-[#111] p-4 rounded-xl border border-white/5">
-                    <div className="flex items-center justify-between mb-3">
-                      <GradientText variant="gold">Looking For</GradientText>
-                      <span className="text-xs text-zinc-500">
-                        {ad.itemsWanted.length} {ad.itemsWanted.length === 1 ? 'item' : 'items'}
-                      </span>
-                    </div>
+                    <GradientText variant="gold">Looking For</GradientText>
 
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+                    <div className="mt-3 flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                       {ad.itemsWanted.map((i, idx) => (
                         <div
                           key={idx}
-                          className="min-w-[120px] bg-[#121212] border border-white/10 hover:border-yellow-500/40 rounded-xl p-3 flex flex-col items-center justify-center text-center transition-all duration-200"
+                          className="min-w-[120px] bg-[#121212] border border-white/10 hover:border-yellow-500/40 rounded-xl p-3 flex flex-col items-center justify-center text-center transition"
                         >
-                          <div className="mb-2">
-                            {renderItemIcon(i.emoji, i.itemName)}
-                          </div>
-                          <p className="text-xs text-zinc-200 truncate w-full px-1">
+                          {renderItemIcon(i.emoji, i.itemName)}
+                          <p className="text-xs text-zinc-200 mt-2 truncate w-full">
                             {i.itemName}
                           </p>
-                          {i.quantity && i.quantity > 1 && (
-                            <span className="text-[10px] text-yellow-400 mt-1 font-semibold">
-                              x{i.quantity}
-                            </span>
-                          )}
                         </div>
                       ))}
                     </div>
                   </div>
-
-                  {ad.tags && ad.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {ad.tags.map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2 py-1 bg-yellow-700/20 text-yellow-400 text-xs rounded border border-yellow-700/30"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
 
                 </div>
 
@@ -265,19 +226,19 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         <button
           disabled={page === 1}
           onClick={() => setPage(page - 1)}
-          className="px-4 py-2 bg-[#111] border border-zinc-800 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-800 transition"
+          className="px-3 py-1 bg-[#111] border border-zinc-800 rounded text-white"
         >
           Prev
         </button>
 
-        <span className="text-zinc-400 text-sm flex items-center px-4">
+        <span className="text-zinc-400 text-sm">
           {page} / {totalPages}
         </span>
 
         <button
           disabled={page === totalPages}
           onClick={() => setPage(page + 1)}
-          className="px-4 py-2 bg-[#111] border border-zinc-800 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-800 transition"
+          className="px-3 py-1 bg-[#111] border border-zinc-800 rounded text-white"
         >
           Next
         </button>

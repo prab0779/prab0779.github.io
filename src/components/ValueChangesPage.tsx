@@ -4,7 +4,6 @@ import { useValueChanges } from "../hooks/useValueChanges";
 import { AnimatedItem } from "../Shared/AnimatedList";
 import BorderGlow from "../Shared/BorderGlow";
 import GradientText from "../Shared/GradientText";
-import { getItemImageUrl } from "../lib/supabase";
 
 export const ValueChangesPage: React.FC = () => {
   const { valueChanges, loading, error } = useValueChanges();
@@ -116,13 +115,16 @@ const ValueChangeCard = React.memo(
 
       if (
         change.emoji.startsWith("/") ||
-        change.emoji.startsWith("./") ||
-        change.emoji.startsWith("http")
+        change.emoji.startsWith("./")
       ) {
+        const src = change.emoji.startsWith("./")
+          ? change.emoji.slice(2)
+          : change.emoji;
+
         return (
           <div className="w-8 h-8 flex items-center justify-center">
             <img
-              src={getItemImageUrl(change.emoji)}
+              src={src}
               alt={change.itemName}
               width={32}
               height={32}

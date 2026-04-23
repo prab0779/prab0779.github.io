@@ -2,7 +2,6 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { X, Search, Plus, Minus, ChevronDown } from "lucide-react";
 import { CreateTradeAdData, TradeAdItem } from "../types/TradeAd";
 import GradientText from "../Shared/GradientText";
-import { getItemImageUrl } from "../lib/supabase";
 
 interface ItemOption {
   name: string;
@@ -35,7 +34,7 @@ const isImagePath = (s: string) => s.startsWith("/") || s.startsWith("./") || s.
 function ItemEmoji({ emoji, name, size = "md" }: { emoji: string; name: string; size?: "sm" | "md" | "lg" }) {
   const sizeMap = { sm: "w-5 h-5", md: "w-7 h-7", lg: "w-9 h-9" };
   if (isImagePath(emoji))
-    return <img src={getItemImageUrl(emoji)} alt={name} className={`${sizeMap[size]} object-contain rounded`} />;
+    return <img src={emoji} alt={name} className={`${sizeMap[size]} object-contain rounded`} />;
   return <span className={size === "lg" ? "text-xl" : size === "md" ? "text-base" : "text-sm"}>{emoji || "?"}</span>;
 }
 
@@ -222,14 +221,8 @@ export const CreateTradeAdModal: React.FC<Props> = ({
   };
 
   const submit = async () => {
-    // Require at least one item in BOTH offering and wanted
-    if (offering.length === 0) {
-      setError("You must add at least one item you're offering.");
-      return;
-    }
-
-    if (wanted.length === 0) {
-      setError("You must add at least one item you're looking for.");
+    if (offering.length === 0 && wanted.length === 0) {
+      setError("Add at least one item to offer or request.");
       return;
     }
 
@@ -285,9 +278,7 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 rounded-full bg-yellow-500" />
-              <GradientText variant="gold" className="text-sm font-semibold">
-                Offering <span className="text-red-400">*</span>
-              </GradientText>
+              <GradientText variant="gold" className="text-sm font-semibold">Offering</GradientText>
               {offering.length > 0 && (
                 <span className="ml-auto text-xs text-zinc-500">{offering.length} item{offering.length !== 1 ? "s" : ""}</span>
               )}
@@ -312,9 +303,7 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <div className="w-2 h-2 rounded-full bg-blue-400" />
-              <GradientText variant="blue" className="text-sm font-semibold">
-                Looking For <span className="text-red-400">*</span>
-              </GradientText>
+              <GradientText variant="blue" className="text-sm font-semibold">Looking For</GradientText>
               {wanted.length > 0 && (
                 <span className="ml-auto text-xs text-zinc-500">{wanted.length} item{wanted.length !== 1 ? "s" : ""}</span>
               )}
@@ -346,7 +335,7 @@ export const CreateTradeAdModal: React.FC<Props> = ({
           </button>
           <button
             onClick={submit}
-            disabled={loading || offering.length === 0 || wanted.length === 0}
+            disabled={loading}
             className="px-5 py-2 text-sm bg-yellow-600 hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed text-black font-semibold rounded-lg transition-colors"
           >
             {loading ? "Posting..." : "Post Ad"}

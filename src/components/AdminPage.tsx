@@ -9,7 +9,6 @@ import { useOnlineUsers } from '../hooks/useOnlineUsers';
 import { useScamLogs } from '../hooks/useScamLogs';
 import { useScamLogsAdmin } from '../hooks/useScamLogsAdmin';
 import { StockRotationAdmin } from "./StockRotationAdmin";
-import { getItemImageUrl } from '../lib/supabase';
 
 import { Item } from '../types/Item';
 
@@ -176,11 +175,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
       return <span className="text-xl sm:text-2xl">👹</span>;
     }
     
-    if (emoji.startsWith('/') || emoji.startsWith('./') || emoji.startsWith('http')) {
+    if (emoji.startsWith('/') || emoji.startsWith('./')) {
       return (
         <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
-          <img
-            src={getItemImageUrl(emoji)}
+          <img 
+            src={emoji.startsWith('./') ? emoji.slice(2) : emoji.slice(1)} 
             alt={itemName}
             className="w-6 h-6 sm:w-8 sm:h-8 object-contain pixelated"
             style={{ imageRendering: 'pixelated' }}
