@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useStockRotation } from "../hooks/useStockRotation";
-import { useItems } from "../hooks/useItems";
+import { useItemsContext } from "../contexts/ItemsContext";
 import BorderGlow from "../Shared/BorderGlow";
 import Counter from "../Shared/Counter";
 import GradientText from "../Shared/GradientText";
@@ -8,7 +8,7 @@ import { getItemImageUrl } from "../lib/supabase";
 
 export const StockRestocker: React.FC = () => {
   const { rotation } = useStockRotation();
-  const { items } = useItems();
+  const { items } = useItemsContext();
   const [timeLeft, setTimeLeft] = useState(0);
 
   const RESET_HOURS = [0, 6, 12, 18];

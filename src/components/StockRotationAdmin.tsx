@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useStockRotation, StockRotation } from "../hooks/useStockRotation";
-import { useItems } from "../hooks/useItems";
+import { useItemsContext } from "../contexts/ItemsContext";
 
 type SlotPickerProps = {
   label: string;
@@ -121,7 +121,7 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ label, value, items, onChange }
 
 export const StockRotationAdmin: React.FC = () => {
   const { rotation, loading, saving, saveRotation, reload } = useStockRotation();
-  const { items } = useItems();
+  const { items } = useItemsContext();
 
   const [draft, setDraft] = useState<StockRotation>(rotation);
   const [msg, setMsg] = useState<string | null>(null);

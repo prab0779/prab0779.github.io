@@ -23,7 +23,7 @@ export const useTradeAds = () => {
         .from("trade_ads")
         .select(
           "id, items_wanted, items_offering, tags, status, author_name, author_avatar, contact_info, created_at, updated_at, expires_at",
-          { count: "exact" }
+          { count: "estimated" }
         )
         .eq("status", "active")
         .order("created_at", { ascending: false })

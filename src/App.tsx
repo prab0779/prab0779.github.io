@@ -5,7 +5,7 @@ import { Footer } from "./components/Footer";
 import { MaintenancePopup } from "./components/MaintenancePopup";
 import { Home } from "./components/Home";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { useItems } from "./hooks/useItems";
+import { ItemsProvider, useItemsContext } from "./contexts/ItemsContext";
 import ClickSpark from "./Shared/ClickSpark";
 import { OnlinePresenceProvider } from "./components/OnlinePresenceProvider";
 
@@ -100,21 +100,23 @@ const LoadingFallback = () => (
 export default function App() {
   return (
     <OnlinePresenceProvider>
-      <ClickSpark
-        sparkColor="#fff"
-        sparkSize={10}
-        sparkRadius={15}
-        sparkCount={8}
-        duration={400}
-      >
-        <AppContent />
-      </ClickSpark>
+      <ItemsProvider>
+        <ClickSpark
+          sparkColor="#fff"
+          sparkSize={10}
+          sparkRadius={15}
+          sparkCount={8}
+          duration={400}
+        >
+          <AppContent />
+        </ClickSpark>
+      </ItemsProvider>
     </OnlinePresenceProvider>
   );
 }
 
 export const AppContent: React.FC = () => {
-  const { items } = useItems();
+  const { items } = useItemsContext();
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const location = useLocation();

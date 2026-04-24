@@ -13,7 +13,7 @@ export const useScamLogs = () => {
       robloxId: row.roblox_id,
       discordId: row.discord_id,
       reason: row.reason,
-      evidenceUrl: row.evidence?.url ?? null,
+      evidenceUrl: row.evidence_url ?? null,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
     }));
@@ -25,9 +25,9 @@ export const useScamLogs = () => {
 
     const { data, error } = await supabase
       .from('scam_logs')
-      .select('id, roblox_id, discord_id, reason, evidence, created_at')
+      .select('id, roblox_id, discord_id, reason, evidence->>url as evidence_url, created_at')
       .order('created_at', { ascending: false })
-      .range(0, 24); // 🔥 Only load first 25 logs
+      .range(0, 24);
 
     if (error) throw error;
 

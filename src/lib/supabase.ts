@@ -16,13 +16,17 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
 });
 
 const ITEM_IMAGES_BUCKET = 'Item Images';
+const imageUrlCache = new Map<string, string>();
 
 export function getItemImageUrl(emoji: string): string {
   if (!emoji) return '';
-  // Already a full URL — return as-is
   if (emoji.startsWith('http')) return emoji;
-  // Local path like "/blade.png" or "./blade.png" — resolve from storage bucket
+
+  const cached = imageUrlCache.get(emoji);
+  if (cached) return cached;
+
   const filename = emoji.replace(/^\.?\//, '');
   const { data } = supabase.storage.from(ITEM_IMAGES_BUCKET).getPublicUrl(filename);
+  imageUrlCache.set(emoji, data.publicUrl);
   return data.publicUrl;
 }

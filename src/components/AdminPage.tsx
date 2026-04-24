@@ -4,6 +4,7 @@ import { PresenceContext } from "../components/OnlinePresenceProvider";
 import { Plus, CreditCard as Edit, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useItems } from '../hooks/useItems';
+import { useItemsContext } from '../contexts/ItemsContext';
 import { useValueChanges } from '../hooks/useValueChanges';
 import { useOnlineUsers } from '../hooks/useOnlineUsers';
 import { useScamLogs } from '../hooks/useScamLogs';
@@ -20,7 +21,8 @@ interface AdminPageProps {
 
 export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMaintenanceModeChange }) => {
   const { user, signOut } = useAuth();
-  const { items, loading, error, createItem, updateItem, deleteItem } = useItems();
+  const { items, loading, error } = useItemsContext();
+  const { createItem, updateItem, deleteItem } = useItems() as any;
   const { valueChanges, loading: changesLoading, deleteValueChange } = useValueChanges();
   const { onlineCount, loading: usersLoading } = useContext(PresenceContext);
   const { scamLogs, loading: scamLogsLoading } = useScamLogs();
