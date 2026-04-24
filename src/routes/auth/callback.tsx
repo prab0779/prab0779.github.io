@@ -3,20 +3,21 @@ import { supabase } from "../../lib/supabase";
 
 export default function AuthCallback() {
   useEffect(() => {
-    // With implicit flow, Supabase detects the token from the URL hash automatically.
-    // We just wait for the session to be set then redirect.
+    // detectSessionInUrl:true on the supabase client automatically parses the
+    // access_token from the URL hash when this page loads (implicit flow).
+    // Listen for the resulting SIGNED_IN event then redirect home.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) {
+      if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session) {
         subscription.unsubscribe();
-        window.location.replace("/#/trade-ads");
+        window.location.replace("/");
       }
     });
 
-    // Fallback: if already signed in (e.g. page refresh), redirect immediately
+    // Fallback: session may already be parsed synchronously before this effect runs.
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
         subscription.unsubscribe();
-        window.location.replace("/#/trade-ads");
+        window.location.replace("/");
       }
     });
 
@@ -24,8 +25,11 @@ export default function AuthCallback() {
   }, []);
 
   return (
-    <div className="text-center text-white py-20">
-      Logging in...
+    <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-gray-400">Signing you in...</p>
+      </div>
     </div>
   );
 }
