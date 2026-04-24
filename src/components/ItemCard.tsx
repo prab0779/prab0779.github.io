@@ -24,34 +24,39 @@ const formatValue = (v: number) => {
   return v.toLocaleString();
 };
 
+const CardWrapper = ({ children }: { children: React.ReactNode }) => {
+  if (isMobile) {
+    return (
+      <div className="relative border border-white/15 rounded-2xl bg-[#0c0c0c]">
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <BorderGlow
+      edgeSensitivity={30}
+      glowColor="40 80 80"
+      backgroundColor="#0c0c0c"
+      borderRadius={24}
+      glowRadius={40}
+      glowIntensity={1}
+      coneSpread={25}
+      animated={false}
+      colors={["#FFD700", "#FFC94D", "#FFB347"]}
+    >
+      {children}
+    </BorderGlow>
+  );
+};
+
 const ItemCardComponent = ({
   item,
   mode,
   vizardValue,
   index = 0,
 }: ItemCardProps) => {
-  const cardRef = React.useRef<HTMLDivElement | null>(null);
-  const [hasAnimated, setHasAnimated] = React.useState(false);
-
-  React.useEffect(() => {
-    if (!cardRef.current || isMobile) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setHasAnimated(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    observer.observe(cardRef.current);
-
-    return () => observer.disconnect();
-  }, []);
-
-  const shouldAnimate = !isMobile && hasAnimated;
+  const shouldAnimate = !isMobile;
 
   const getDemandVariant = (d: number): "red" | "yellow" | "green" =>
     d <= 3 ? "red" : d <= 6 ? "yellow" : "green";
@@ -118,18 +123,8 @@ const ItemCardComponent = ({
   };
 
   return (
-    <BorderGlow
-      edgeSensitivity={30}
-      glowColor="40 80 80"
-      backgroundColor="#0c0c0c"
-      borderRadius={24}
-      glowRadius={40}
-      glowIntensity={1}
-      coneSpread={25}
-      animated={false}
-      colors={["#FFD700", "#FFC94D", "#FFB347"]}
-    >
-      <div ref={cardRef} className="p-5 flex flex-col h-full">
+    <CardWrapper>
+      <div className="p-5 flex flex-col h-full">
         <div className="flex justify-between items-center mb-3">
           <h2 className="font-bold text-lg">
             <GradientText variant="gold">{item.name}</GradientText>
@@ -148,31 +143,31 @@ const ItemCardComponent = ({
 
             {mode === "regular" ? (
               <span className="text-white font-bold">
-                {isMobile ? (
-                  formatValue(keysValue)
-                ) : (
+                {shouldAnimate ? (
                   <CountUp
-                    from={shouldAnimate ? 0 : keysValue}
+                    from={0}
                     to={keysValue}
-                    duration={shouldAnimate ? 1.2 : 0}
+                    duration={1.2}
                     delay={(index % 4) * 0.08}
                     format={formatValue}
                   />
+                ) : (
+                  formatValue(keysValue)
                 )}
               </span>
             ) : (
               <span className="font-bold">
                 <GradientText variant="purple">
-                  {isMobile ? (
-                    vizardConverted.toFixed(2)
-                  ) : (
+                  {shouldAnimate ? (
                     <CountUp
-                      from={shouldAnimate ? 0 : vizardConverted}
+                      from={0}
                       to={vizardConverted}
-                      duration={shouldAnimate ? 1.2 : 0}
+                      duration={1.2}
                       delay={(index % 4) * 0.08}
                       format={(v) => Number(v).toFixed(2)}
                     />
+                  ) : (
+                    vizardConverted.toFixed(2)
                   )}
                 </GradientText>
               </span>
@@ -207,16 +202,16 @@ const ItemCardComponent = ({
             <span className="font-bold">
               {tax.value > 0 ? (
                 <GradientText variant={tax.variant}>
-                  {isMobile ? (
-                    tax.value.toLocaleString()
-                  ) : (
+                  {shouldAnimate ? (
                     <CountUp
-                      from={shouldAnimate ? 0 : tax.value}
+                      from={0}
                       to={tax.value}
-                      duration={shouldAnimate ? 1 : 0}
+                      duration={1}
                       delay={(index % 4) * 0.08 + 0.1}
                       format={(v) => v.toLocaleString()}
                     />
+                  ) : (
+                    tax.value.toLocaleString()
                   )}
                 </GradientText>
               ) : (
@@ -233,7 +228,7 @@ const ItemCardComponent = ({
           </div>
         </div>
       </div>
-    </BorderGlow>
+    </CardWrapper>
   );
 };
 
