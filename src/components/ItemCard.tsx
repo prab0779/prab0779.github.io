@@ -30,7 +30,28 @@ const ItemCardComponent = ({
   vizardValue,
   index = 0,
 }: ItemCardProps) => {
-  const shouldAnimate = !isMobile && index < 12;
+  const cardRef = React.useRef<HTMLDivElement | null>(null);
+  const [hasAnimated, setHasAnimated] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!cardRef.current || isMobile) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasAnimated(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(cardRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  const shouldAnimate = !isMobile && hasAnimated;
 
   const getDemandVariant = (d: number): "red" | "yellow" | "green" =>
     d <= 3 ? "red" : d <= 6 ? "yellow" : "green";
@@ -108,7 +129,7 @@ const ItemCardComponent = ({
       animated={false}
       colors={["#FFD700", "#FFC94D", "#FFB347"]}
     >
-      <div className="p-5 flex flex-col h-full">
+      <div ref={cardRef} className="p-5 flex flex-col h-full">
         <div className="flex justify-between items-center mb-3">
           <h2 className="font-bold text-lg">
             <GradientText variant="gold">{item.name}</GradientText>
@@ -134,7 +155,7 @@ const ItemCardComponent = ({
                     from={shouldAnimate ? 0 : keysValue}
                     to={keysValue}
                     duration={shouldAnimate ? 1.2 : 0}
-                    delay={shouldAnimate ? (index % 4) * 0.08 : 0}
+                    delay={(index % 4) * 0.08}
                     format={formatValue}
                   />
                 )}
@@ -149,7 +170,7 @@ const ItemCardComponent = ({
                       from={shouldAnimate ? 0 : vizardConverted}
                       to={vizardConverted}
                       duration={shouldAnimate ? 1.2 : 0}
-                      delay={shouldAnimate ? (index % 4) * 0.08 : 0}
+                      delay={(index % 4) * 0.08}
                       format={(v) => Number(v).toFixed(2)}
                     />
                   )}
@@ -193,7 +214,7 @@ const ItemCardComponent = ({
                       from={shouldAnimate ? 0 : tax.value}
                       to={tax.value}
                       duration={shouldAnimate ? 1 : 0}
-                      delay={shouldAnimate ? (index % 4) * 0.08 + 0.1 : 0}
+                      delay={(index % 4) * 0.08 + 0.1}
                       format={(v) => v.toLocaleString()}
                     />
                   )}
