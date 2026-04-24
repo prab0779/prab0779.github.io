@@ -118,19 +118,12 @@ export default function App() {
 export const AppContent: React.FC = () => {
   const { items } = useItemsContext();
   const [maintenanceMode, setMaintenanceMode] = useState(false);
-  const [pageLoading, setPageLoading] = useState(true);
   const location = useLocation();
 
   useEffect(() => {
     const saved = localStorage.getItem("maintenanceMode");
     if (saved) setMaintenanceMode(JSON.parse(saved));
   }, []);
-
-  useEffect(() => {
-    setPageLoading(true);
-    const timeout = setTimeout(() => setPageLoading(false), 500);
-    return () => clearTimeout(timeout);
-  }, [location.pathname]);
 
   const toggleMaintenanceMode = (enabled: boolean) => {
     setMaintenanceMode(enabled);
@@ -148,9 +141,6 @@ export const AppContent: React.FC = () => {
 
         <main className="flex-1">
           <div className="w-full">
-            {pageLoading ? (
-              <LoadingFallback />
-            ) : (
               <Suspense fallback={<LoadingFallback />}>
                 <Routes>
                   <Route path="/" element={<Home items={items} />} />
@@ -176,7 +166,6 @@ export const AppContent: React.FC = () => {
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </Suspense>
-            )}
           </div>
         </main>
 
