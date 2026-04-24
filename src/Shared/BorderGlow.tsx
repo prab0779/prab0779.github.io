@@ -1,4 +1,4 @@
-import { useRef, useCallback, useState, useEffect, type ReactNode } from 'react';
+import { useRef, useCallback, useState, useEffect, useMemo, type ReactNode } from 'react';
 
 interface BorderGlowProps {
   children?: ReactNode;
@@ -70,6 +70,11 @@ function buildMeshGradients(colors: string[]): string[] {
   return gradients;
 }
 
+// Detect touch-primary devices once at module level — avoids per-instance detection
+const isTouchDevice =
+  typeof window !== 'undefined' &&
+  (navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches);
+
 const BorderGlow: React.FC<BorderGlowProps> = ({
   children,
   className = '',
@@ -89,6 +94,12 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
   const [cursorAngle, setCursorAngle] = useState(45);
   const [edgeProximity, setEdgeProximity] = useState(0);
   const [sweepActive, setSweepActive] = useState(false);
+
+  // Memoize static gradient strings — only recomputed when colors prop changes
+  const meshGradients = useMemo(() => buildMeshGradients(colors), [colors]);
+  const borderBg = useMemo(() => meshGradients.map(g => `${g} border-box`), [meshGradients]);
+  const fillBg = useMemo(() => meshGradients.map(g => `${g} padding-box`).join(', '), [meshGradients]);
+  const boxShadow = useMemo(() => buildBoxShadow(glowColor, glowIntensity), [glowColor, glowIntensity]);
 
   const getCenterOfElement = useCallback((el: HTMLElement) => {
     const { width, height } = el.getBoundingClientRect();
@@ -118,6 +129,8 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
   }, [getCenterOfElement]);
 
   const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    // Skip touch events — glow tracking is pointer-only
+    if (e.pointerType === 'touch') return;
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
@@ -126,6 +139,16 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
     setEdgeProximity(getEdgeProximity(card, x, y));
     setCursorAngle(getCursorAngle(card, x, y));
   }, [getEdgeProximity, getCursorAngle]);
+
+  const handlePointerEnter = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'touch') return;
+    setIsHovered(true);
+  }, []);
+
+  const handlePointerLeave = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'touch') return;
+    setIsHovered(false);
+  }, []);
 
   useEffect(() => {
     if (!animated) return;
@@ -147,6 +170,24 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
     });
   }, [animated]);
 
+  // On touch-primary devices skip all glow layers — just render a plain styled card
+  if (isTouchDevice && !animated) {
+    return (
+      <div
+        className={`relative grid isolate border border-white/15 ${className}`}
+        style={{
+          background: backgroundColor,
+          borderRadius: `${borderRadius}px`,
+          boxShadow: 'rgba(0,0,0,0.15) 0 2px 8px, rgba(0,0,0,0.1) 0 8px 24px',
+        }}
+      >
+        <div className="flex flex-col relative overflow-hidden z-[1]">
+          {children}
+        </div>
+      </div>
+    );
+  }
+
   const colorSensitivity = edgeSensitivity + 20;
   const isVisible = isHovered || sweepActive;
   const borderOpacity = isVisible
@@ -156,17 +197,14 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
     ? Math.max(0, (edgeProximity * 100 - edgeSensitivity) / (100 - edgeSensitivity))
     : 0;
 
-  const meshGradients = buildMeshGradients(colors);
-  const borderBg = meshGradients.map(g => `${g} border-box`);
-  const fillBg = meshGradients.map(g => `${g} padding-box`);
   const angleDeg = `${cursorAngle.toFixed(3)}deg`;
 
   return (
     <div
       ref={cardRef}
       onPointerMove={handlePointerMove}
-      onPointerEnter={() => setIsHovered(true)}
-      onPointerLeave={() => setIsHovered(false)}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
       className={`relative grid isolate border border-white/15 ${className}`}
       style={{
         background: backgroundColor,
@@ -197,7 +235,7 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
         className="absolute inset-0 rounded-[inherit] -z-[1]"
         style={{
           border: '1px solid transparent',
-          background: fillBg.join(', '),
+          background: fillBg,
           maskImage: [
             'linear-gradient(to bottom, black, black)',
             'radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%)',
@@ -240,7 +278,7 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
           className="absolute rounded-[inherit]"
           style={{
             inset: `${glowRadius}px`,
-            boxShadow: buildBoxShadow(glowColor, glowIntensity),
+            boxShadow: boxShadow,
           }}
         />
       </span>
@@ -253,4 +291,3 @@ const BorderGlow: React.FC<BorderGlowProps> = ({
 };
 
 export default BorderGlow;
- 
