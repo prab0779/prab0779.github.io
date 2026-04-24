@@ -289,7 +289,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
     </div>
   </CardWrapper>
 );
-          );
+      
 
           return isMobile ? (
             <div key={ad.id}>{content}</div>
