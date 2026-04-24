@@ -1,16 +1,18 @@
-import React, { useState, useMemo } from 'react';
-import { useContext } from "react";
-import { PresenceContext } from "../components/OnlinePresenceProvider";
-import { Plus, CreditCard as Edit, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, Image as ImageIcon, FolderOpen } from 'lucide-react';
+import React, { useState, useMemo, useCallback, useContext, memo } from 'react';
+import { PresenceContext } from '../components/OnlinePresenceProvider';
+import {
+  Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle,
+  History, TrendingUp, TrendingDown, Minus, Search, Filter,
+  ArrowUpDown, Users, Eye, ImageIcon, FolderOpen, LayoutGrid,
+  Settings, Package, CreditCard as EditIcon, ShieldAlert,
+} from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useItems } from '../hooks/useItems';
 import { useItemsContext } from '../contexts/ItemsContext';
 import { useValueChanges } from '../hooks/useValueChanges';
-import { useOnlineUsers } from '../hooks/useOnlineUsers';
-import { StockRotationAdmin } from "./StockRotationAdmin";
-import { ImageManager } from "./ImageManager";
+import { StockRotationAdmin } from './StockRotationAdmin';
+import { ImageManager } from './ImageManager';
 import { getItemImageUrl } from '../lib/supabase';
-
 import { Item } from '../types/Item';
 
 interface AdminPageProps {
@@ -18,1063 +20,713 @@ interface AdminPageProps {
   onMaintenanceModeChange: (enabled: boolean) => void;
 }
 
+type View = 'items' | 'changes' | 'images' | 'settings' | 'stock';
+
+// ─── tiny reusable primitives ───────────────────────────────────────────────
+
+const GoldBadge: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
+  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-[#6f572c] bg-[#4b3a1d]/60 text-[#c4a04a] ${className}`}>
+    {children}
+  </span>
+);
+
+const StatusBadge: React.FC<{ status: Item['status'] }> = ({ status }) => {
+  const map: Record<Item['status'], string> = {
+    Obtainable: 'border-emerald-700/60 bg-emerald-900/30 text-emerald-400',
+    Limited: 'border-amber-700/60 bg-amber-900/30 text-amber-400',
+    Unobtainable: 'border-red-800/60 bg-red-900/30 text-red-400',
+  };
+  return (
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${map[status]}`}>
+      {status}
+    </span>
+  );
+};
+
+const RateIcon: React.FC<{ rate: string }> = ({ rate }) => {
+  if (rate === 'Rising') return <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />;
+  if (rate === 'Falling') return <TrendingDown className="w-3.5 h-3.5 text-red-400" />;
+  return <Minus className="w-3.5 h-3.5 text-white/30" />;
+};
+
+// ─── item icon renderer ──────────────────────────────────────────────────────
+
+const ItemIcon = memo(({ emoji, name, size = 'md' }: { emoji: string; name: string; size?: 'sm' | 'md' }) => {
+  const dim = size === 'sm' ? 'w-6 h-6' : 'w-8 h-8';
+  if (!emoji || typeof emoji !== 'string') return <span className="text-xl">⚔️</span>;
+  if (emoji.startsWith('/') || emoji.startsWith('./') || emoji.startsWith('http')) {
+    return (
+      <div className={`${dim} flex items-center justify-center flex-shrink-0`}>
+        <img
+          src={getItemImageUrl(emoji)}
+          alt={name}
+          className={`${dim} object-contain pixelated`}
+          loading="lazy"
+          onError={(e) => {
+            const t = e.target as HTMLImageElement;
+            t.style.display = 'none';
+            const s = t.nextElementSibling as HTMLElement;
+            if (s) s.style.display = 'inline';
+          }}
+        />
+        <span className="text-xl hidden">⚔️</span>
+      </div>
+    );
+  }
+  return <span className="text-xl leading-none">{emoji}</span>;
+});
+
+// ─── field component for the form ───────────────────────────────────────────
+
+const Field: React.FC<{ label: string; required?: boolean; children: React.ReactNode; span?: boolean }> = ({
+  label, required, children, span,
+}) => (
+  <div className={span ? 'sm:col-span-2' : ''}>
+    <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">
+      {label}{required && <span className="text-[#c4a04a] ml-0.5">*</span>}
+    </label>
+    {children}
+  </div>
+);
+
+const inputCls = 'w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#c4a04a]/60 focus:border-[#c4a04a]/60 transition-colors placeholder-white/20';
+const selectCls = `${inputCls} appearance-none`;
+
+// ─── item form modal ─────────────────────────────────────────────────────────
+
+const ItemForm: React.FC<{
+  item?: Item;
+  onSubmit: (data: Omit<Item, 'id'>) => void;
+  onCancel: () => void;
+  renderIcon: (emoji: string, name: string) => React.ReactNode;
+}> = ({ item, onSubmit, onCancel, renderIcon }) => {
+  const [formData, setFormData] = useState<Omit<Item, 'id'>>({
+    name: item?.name ?? '',
+    value: item?.value ?? 0,
+    demand: item?.demand ?? 5,
+    rateOfChange: item?.rateOfChange ?? 'Stable',
+    prestige: item?.prestige ?? 0,
+    status: item?.status ?? 'Obtainable',
+    obtainedFrom: item?.obtainedFrom ?? '',
+    gemTax: item?.gemTax ?? null,
+    goldTax: item?.goldTax ?? null,
+    category: item?.category ?? '',
+    rarity: item?.rarity ?? null,
+    emoji: item?.emoji ?? '⚔️',
+  });
+  const [showImagePicker, setShowImagePicker] = useState(false);
+
+  const set = useCallback(<K extends keyof typeof formData>(key: K, val: (typeof formData)[K]) =>
+    setFormData((p) => ({ ...p, [key]: val })), []);
+
+  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); onSubmit(formData); };
+
+  return (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      {showImagePicker ? (
+        <div className="bg-[#0d0d10] rounded-2xl border border-[#6f572c]/60 shadow-[0_0_60px_rgba(196,160,74,0.08)] w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d10] z-10">
+            <span className="text-sm font-semibold text-white/80">Choose from Storage</span>
+            <button onClick={() => setShowImagePicker(false)} className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="p-5">
+            <ImageManager selectionMode selectedImage={formData.emoji} onSelectImage={(f) => { set('emoji', f); setShowImagePicker(false); }} />
+          </div>
+        </div>
+      ) : (
+        <div className="bg-[#0d0d10] rounded-2xl border border-[#6f572c]/60 shadow-[0_0_60px_rgba(196,160,74,0.08)] w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d10] z-10">
+            <h3 className="text-base font-semibold text-white">{item ? 'Edit Item' : 'New Item'}</h3>
+            <button onClick={onCancel} className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="p-5 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Field label="Name" required span>
+                <input type="text" required value={formData.name} onChange={(e) => set('name', e.target.value)} className={inputCls} placeholder="Item name" />
+              </Field>
+
+              <Field label="Value" required>
+                <input type="number" required min="0" value={formData.value} onChange={(e) => set('value', parseInt(e.target.value) || 0)} className={inputCls} />
+              </Field>
+
+              <Field label="Demand (1–10)" required>
+                <input type="number" required min="1" max="10" value={formData.demand} onChange={(e) => set('demand', parseInt(e.target.value) || 5)} className={inputCls} />
+              </Field>
+
+              <Field label="Rate of Change" required>
+                <select value={formData.rateOfChange} onChange={(e) => set('rateOfChange', e.target.value as Item['rateOfChange'])} className={selectCls}>
+                  <option value="Rising">Rising</option>
+                  <option value="Falling">Falling</option>
+                  <option value="Stable">Stable</option>
+                  <option value="Overpriced">Overpriced</option>
+                </select>
+              </Field>
+
+              <Field label="Prestige" required>
+                <input type="number" required min="0" value={formData.prestige} onChange={(e) => set('prestige', parseInt(e.target.value) || 0)} className={inputCls} />
+              </Field>
+
+              <Field label="Status" required>
+                <select value={formData.status} onChange={(e) => set('status', e.target.value as Item['status'])} className={selectCls}>
+                  <option value="Obtainable">Obtainable</option>
+                  <option value="Unobtainable">Unobtainable</option>
+                  <option value="Limited">Limited</option>
+                </select>
+              </Field>
+
+              <Field label="Category" required>
+                <input type="text" required value={formData.category} onChange={(e) => set('category', e.target.value)} className={inputCls} placeholder="e.g. Swords" />
+              </Field>
+
+              <Field label="Rarity (%)">
+                <input type="number" min="0" max="100" step="0.01" value={formData.rarity ?? ''} onChange={(e) => set('rarity', e.target.value ? parseFloat(e.target.value) : null)} className={inputCls} placeholder="0.00" />
+              </Field>
+
+              <Field label="Gem Tax">
+                <input type="number" min="0" value={formData.gemTax ?? ''} onChange={(e) => set('gemTax', e.target.value ? parseInt(e.target.value) : null)} className={inputCls} />
+              </Field>
+
+              <Field label="Gold Tax">
+                <input type="number" min="0" value={formData.goldTax ?? ''} onChange={(e) => set('goldTax', e.target.value ? parseInt(e.target.value) : null)} className={inputCls} />
+              </Field>
+
+              {/* Image / Emoji picker */}
+              <Field label="Image / Emoji" span>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={formData.emoji}
+                    onChange={(e) => set('emoji', e.target.value)}
+                    className={`${inputCls} flex-1 font-mono text-xs`}
+                    placeholder="🎯 or /image.png"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowImagePicker(true)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#6f572c]/60 bg-[#4b3a1d]/30 text-[#c4a04a] hover:bg-[#4b3a1d]/60 transition-colors text-xs font-medium whitespace-nowrap"
+                  >
+                    <FolderOpen className="w-3.5 h-3.5" />
+                    Browse
+                  </button>
+                  <div className="w-9 h-9 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center flex-shrink-0">
+                    {renderIcon(formData.emoji, formData.name)}
+                  </div>
+                </div>
+              </Field>
+
+              <Field label="Obtained From" required span>
+                <textarea required value={formData.obtainedFrom} onChange={(e) => set('obtainedFrom', e.target.value)} className={`${inputCls} resize-none`} rows={2} placeholder="Source description" />
+              </Field>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2 border-t border-white/[0.06]">
+              <button type="button" onClick={onCancel} className="px-4 py-2 text-sm text-white/40 hover:text-white transition-colors">Cancel</button>
+              <button
+                type="submit"
+                className="flex items-center gap-2 px-5 py-2 rounded-lg bg-[#c4a04a] hover:bg-[#d4b05a] text-black font-semibold text-sm transition-colors shadow-[0_0_20px_rgba(196,160,74,0.2)]"
+              >
+                <Save className="w-3.5 h-3.5" />
+                {item ? 'Save Changes' : 'Create Item'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── main admin page ──────────────────────────────────────────────────────────
+
 export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMaintenanceModeChange }) => {
   const { user, signOut } = useAuth();
   const { items, loading, error } = useItemsContext();
   const { createItem, updateItem, deleteItem } = useItems() as any;
   const { valueChanges, loading: changesLoading, deleteValueChange } = useValueChanges();
-  const { onlineCount, loading: usersLoading } = useContext(PresenceContext);
+  const { onlineCount } = useContext(PresenceContext);
+
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [currentView, setCurrentView] = useState<'items' | 'changes' | 'settings' | 'stock' | 'images'>('items');
-
+  const [currentView, setCurrentView] = useState<View>('items');
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
-  
-  // Search and filter states for items
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [sortField, setSortField] = useState<'name' | 'value' | 'demand' | 'prestige' | 'category'>('value');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
-  const showNotification = (type: 'success' | 'error', message: string) => {
+  const showNotification = useCallback((type: 'success' | 'error', message: string) => {
     setNotification({ type, message });
     setTimeout(() => setNotification(null), 3000);
-  };
+  }, []);
 
-  const handleSignOut = async () => {
-    await signOut();
-  };
+  const categories = useMemo(() => Array.from(new Set(items.map((i) => i.category))).sort(), [items]);
 
-  // Get unique categories in alphabetical order
-  const categories = useMemo(() => {
-    return Array.from(new Set(items.map(item => item.category))).sort();
-  }, [items]);
-
-  // Filter and sort items
-  const filteredAndSortedItems = useMemo(() => {
-    let filtered = items.filter(item => {
-      const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = !selectedCategory || item.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    });
-
-    // Sort items
-    filtered.sort((a, b) => {
-      let aValue: any = a[sortField];
-      let bValue: any = b[sortField];
-
-      // Handle string sorting
-      if (typeof aValue === 'string') {
-        aValue = aValue.toLowerCase();
-        bValue = bValue.toLowerCase();
-      }
-
-      if (sortOrder === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-      }
-    });
-
-    return filtered;
+  const filteredItems = useMemo(() => {
+    const q = searchTerm.toLowerCase();
+    return items
+      .filter((i) => i.name.toLowerCase().includes(q) && (!selectedCategory || i.category === selectedCategory))
+      .sort((a, b) => {
+        let av: any = a[sortField];
+        let bv: any = b[sortField];
+        if (typeof av === 'string') { av = av.toLowerCase(); bv = (bv as string).toLowerCase(); }
+        if (sortOrder === 'asc') return av < bv ? -1 : av > bv ? 1 : 0;
+        return av > bv ? -1 : av < bv ? 1 : 0;
+      });
   }, [items, searchTerm, selectedCategory, sortField, sortOrder]);
 
-  const handleCreateItem = async (itemData: Omit<Item, 'id'>) => {
-    const { error } = await createItem(itemData);
-    if (error) {
-      showNotification('error', error);
-    } else {
-      showNotification('success', 'Item created successfully!');
-      setShowCreateForm(false);
-    }
+  const handleCreateItem = async (data: Omit<Item, 'id'>) => {
+    const { error } = await createItem(data);
+    if (error) showNotification('error', error);
+    else { showNotification('success', 'Item created'); setShowCreateForm(false); }
   };
 
-  const handleUpdateItem = async (id: string, updates: Partial<Item>) => {
-    const { error } = await updateItem(id, updates);
-    if (error) {
-      showNotification('error', error);
-    } else {
-      showNotification('success', 'Item updated successfully!');
-      setEditingItem(null);
-    }
+  const handleUpdateItem = async (id: string, data: Partial<Item>) => {
+    const { error } = await updateItem(id, data);
+    if (error) showNotification('error', error);
+    else { showNotification('success', 'Item updated'); setEditingItem(null); }
   };
 
   const handleDeleteItem = async (id: string, name: string) => {
-    if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
-      const { error } = await deleteItem(id);
-      if (error) {
-        showNotification('error', error);
-      } else {
-        showNotification('success', 'Item deleted successfully!');
-      }
-    }
+    if (!window.confirm(`Delete "${name}"?`)) return;
+    const { error } = await deleteItem(id);
+    if (error) showNotification('error', error);
+    else showNotification('success', 'Item deleted');
   };
 
-  const handleDeleteValueChange = async (id: string, itemName: string) => {
-    if (window.confirm(`Are you sure you want to delete the value change for "${itemName}"?`)) {
-      const { error } = await deleteValueChange(id);
-      if (error) {
-        showNotification('error', error);
-      } else {
-        showNotification('success', 'Value change deleted successfully!');
-      }
-    }
+  const handleDeleteChange = async (id: string, name: string) => {
+    if (!window.confirm(`Delete change for "${name}"?`)) return;
+    const { error } = await deleteValueChange(id);
+    if (error) showNotification('error', error);
+    else showNotification('success', 'Entry deleted');
   };
 
-  const renderItemIcon = (emoji: string, itemName: string) => {
-    if (!emoji || typeof emoji !== 'string') {
-      return <span className="text-xl sm:text-2xl">👹</span>;
-    }
-    
-    if (emoji.startsWith('/') || emoji.startsWith('./') || emoji.startsWith('http')) {
-      return (
-        <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
-          <img
-            src={getItemImageUrl(emoji)}
-            alt={itemName}
-            className="w-6 h-6 sm:w-8 sm:h-8 object-contain pixelated"
-            style={{ imageRendering: 'pixelated' }}
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              const fallback = target.nextElementSibling as HTMLElement;
-              if (fallback) fallback.style.display = 'block';
-            }}
-          />
-          <span className="text-xl sm:text-2xl hidden">👹</span>
-        </div>
-      );
-    }
-    return <span className="text-xl sm:text-2xl">{emoji}</span>;
-  };
+  const renderIcon = useCallback((emoji: string, name: string) => (
+    <ItemIcon emoji={emoji} name={name} />
+  ), []);
 
-  const getRateIcon = (rate: string) => {
-    switch (rate) {
-      case 'Rising':
-        return <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />;
-      case 'Falling':
-        return <TrendingDown className="w-3 h-3 sm:w-4 sm:h-4 text-red-400" />;
-      default:
-        return <Minus className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />;
-    }
-  };
-
-  const getChangeDescription = (change: any) => {
-    const changes = [];
-    
-    // Check value change
-    if (change.oldValue !== change.newValue) {
-      if (change.newValue > change.oldValue) {
-        changes.push(`📈 Value increased from 🔑${change.oldValue} to 🔑${change.newValue}`);
-      } else {
-        changes.push(`📉 Value decreased from 🔑${change.oldValue} to 🔑${change.newValue}`);
-      }
-    }
-    
-    // Check demand change
-    if (change.oldDemand !== change.newDemand) {
-      if (change.newDemand > change.oldDemand) {
-        changes.push(`📊 Demand increased from ${change.oldDemand}/10 to ${change.newDemand}/10`);
-      } else {
-        changes.push(`📊 Demand decreased from ${change.oldDemand}/10 to ${change.newDemand}/10`);
-      }
-    }
-    
-    // Check rate change
-    if (change.oldRateOfChange !== change.newRateOfChange) {
-      changes.push(`📈 Rate changed from ${change.oldRateOfChange} to ${change.newRateOfChange}`);
-    }
-    
-    return changes.length > 0 ? changes : ['➡️ Item properties updated'];
-  };
-
-  const ItemForm: React.FC<{
-    item?: Item;
-    onSubmit: (data: Omit<Item, 'id'>) => void;
-    onCancel: () => void;
-  }> = ({ item, onSubmit, onCancel }) => {
-    const [formData, setFormData] = useState<Omit<Item, 'id'>>({
-      name: item?.name || '',
-      value: item?.value || 0,
-      demand: item?.demand || 5,
-      rateOfChange: item?.rateOfChange || 'Stable',
-      prestige: item?.prestige || 0,
-      status: item?.status || 'Obtainable',
-      obtainedFrom: item?.obtainedFrom || '',
-      gemTax: item?.gemTax || null,
-      goldTax: item?.goldTax || null,
-      category: item?.category || '',
-      rarity: item?.rarity || null,
-      emoji: item?.emoji || '👹',
-    });
-    const [showImagePicker, setShowImagePicker] = useState(false);
-
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      onSubmit(formData);
-    };
-
-    const handleImageSelect = (filename: string) => {
-      setFormData({ ...formData, emoji: filename });
-      setShowImagePicker(false);
-    };
-
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-        {showImagePicker ? (
-          <div className="bg-gray-900 rounded-xl p-5 w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-gray-700 shadow-2xl">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-white">Choose Image from Storage</h3>
-              <button onClick={() => setShowImagePicker(false)} className="text-gray-400 hover:text-white p-1">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <ImageManager
-              selectionMode
-              selectedImage={formData.emoji}
-              onSelectImage={handleImageSelect}
-            />
-          </div>
-        ) : (
-          <div className="bg-gray-900 rounded-xl p-4 sm:p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-700 shadow-2xl">
-            <div className="flex justify-between items-center mb-4 sm:mb-6">
-              <h3 className="text-lg sm:text-xl font-semibold text-white">
-                {item ? 'Edit Item' : 'Create New Item'}
-              </h3>
-              <button
-                onClick={onCancel}
-                className="text-gray-400 hover:text-white transition-colors p-1"
-              >
-                <X className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Value *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={formData.value}
-                    onChange={(e) => setFormData({ ...formData, value: parseInt(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Demand (1-10) *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min="1"
-                    max="10"
-                    value={formData.demand}
-                    onChange={(e) => setFormData({ ...formData, demand: parseInt(e.target.value) || 5 })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Rate of Change *
-                  </label>
-                  <select
-                    value={formData.rateOfChange}
-                    onChange={(e) => setFormData({ ...formData, rateOfChange: e.target.value as Item['rateOfChange'] })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                  >
-                    <option value="Rising">Rising</option>
-                    <option value="Falling">Falling</option>
-                    <option value="Stable">Stable</option>
-                    <option value="Overpriced">Overpriced</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Prestige *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={formData.prestige}
-                    onChange={(e) => setFormData({ ...formData, prestige: parseInt(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Status *
-                  </label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value as Item['status'] })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                  >
-                    <option value="Obtainable">Obtainable</option>
-                    <option value="Unobtainable">Unobtainable</option>
-                    <option value="Limited">Limited</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Category *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Emoji / Image
-                  </label>
-                  <div className="flex space-x-2 items-center">
-                    <input
-                      type="text"
-                      value={formData.emoji}
-                      onChange={(e) => setFormData({ ...formData, emoji: e.target.value })}
-                      className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
-                      placeholder="🎯 or /image.png"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowImagePicker(true)}
-                      className="flex items-center space-x-1 px-3 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white rounded-lg text-sm transition-colors whitespace-nowrap"
-                    >
-                      <FolderOpen className="w-4 h-4" />
-                      <span className="hidden sm:inline">Browse</span>
-                    </button>
-                    <div className="w-10 h-10 bg-gray-800 border border-gray-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                      {renderItemIcon(formData.emoji, formData.name)}
-                    </div>
-                  </div>
-                  {formData.emoji && (formData.emoji.startsWith('/') || formData.emoji.startsWith('http')) && (
-                    <p className="text-xs text-gray-500 mt-1 font-mono truncate">{formData.emoji}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Gem Tax
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={formData.gemTax || ''}
-                    onChange={(e) => setFormData({ ...formData, gemTax: e.target.value ? parseInt(e.target.value) : null })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Gold Tax
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={formData.goldTax || ''}
-                    onChange={(e) => setFormData({ ...formData, goldTax: e.target.value ? parseInt(e.target.value) : null })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Rarity (%)
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="0.01"
-                    value={formData.rarity || ''}
-                    onChange={(e) => setFormData({ ...formData, rarity: e.target.value ? parseFloat(e.target.value) : null })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Obtained From *
-                </label>
-                <textarea
-                  required
-                  value={formData.obtainedFrom}
-                  onChange={(e) => setFormData({ ...formData, obtainedFrom: e.target.value })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                  rows={3}
-                />
-              </div>
-
-              <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
-                <button
-                  type="button"
-                  onClick={onCancel}
-                  className="px-4 sm:px-6 py-2 text-gray-300 hover:text-white transition-colors text-sm sm:text-base"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm sm:text-base"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{item ? 'Update' : 'Create'}</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-      </div>
-    );
-  };
+  const navItems: { id: View; label: string; icon: React.ReactNode; count?: number }[] = [
+    { id: 'items', label: 'Items', icon: <Package className="w-4 h-4" />, count: items.length },
+    { id: 'changes', label: 'Changes', icon: <History className="w-4 h-4" />, count: valueChanges.length },
+    { id: 'images', label: 'Images', icon: <ImageIcon className="w-4 h-4" /> },
+    { id: 'stock', label: 'Stock', icon: <LayoutGrid className="w-4 h-4" /> },
+    { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
+  ];
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen aotr-background flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading admin panel...</p>
+          <div className="w-10 h-10 rounded-full border-2 border-[#c4a04a]/30 border-t-[#c4a04a] animate-spin mx-auto mb-4" />
+          <p className="text-white/40 text-sm">Loading admin panel…</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black">
-      {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <span className="text-xl sm:text-2xl">⚔️</span>
-              <span className="text-lg sm:text-xl font-bold text-white">AOT:R Admin</span>
-            </div>
-            
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* Online Users Count */}
-              <div className="flex items-center space-x-2 bg-gray-800 px-2 sm:px-3 py-1 sm:py-2 rounded-lg">
-                <Users className="w-4 h-4 text-green-400" />
-                <span className="text-green-400 font-medium text-sm sm:text-base">
-                  {usersLoading ? '...' : onlineCount}
-                </span>
-                <span className="text-gray-400 text-xs sm:text-sm hidden sm:inline">online</span>
-              </div>
-              
-              <div className="hidden sm:block">
-  <span className="text-gray-400 text-sm">
-    {user?.user_metadata?.preferred_username ||
-      user?.user_metadata?.full_name ||
-      user?.user_metadata?.name ||
-      user?.email ||
-      "Signed in"}
-  </span>
-</div>
+    <div className="min-h-screen aotr-background text-white">
+      {/* ── top bar ── */}
+      <header className="sticky top-0 z-40 bg-[#090a0f]/80 backdrop-blur-xl border-b border-[#6f572c]/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+          {/* brand */}
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="text-lg">⚔️</span>
+            <span className="font-bold text-sm sm:text-base gold-letter whitespace-nowrap">AOT:R Admin</span>
+          </div>
 
-              
-              <button
-                onClick={handleSignOut}
-                className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1 sm:py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors text-sm sm:text-base"
-              >
-                <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign Out</span>
-              </button>
+          {/* right side */}
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-emerald-800/50 bg-emerald-900/20">
+              <Users className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-emerald-400 font-semibold text-sm">{onlineCount}</span>
+              <span className="text-white/30 text-xs hidden sm:inline">online</span>
             </div>
+
+            <span className="hidden md:block text-xs text-white/30 max-w-[140px] truncate">
+              {user?.user_metadata?.preferred_username ?? user?.email ?? 'Admin'}
+            </span>
+
+            <button
+              onClick={signOut}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-red-700/50 hover:bg-red-900/20 text-white/40 hover:text-red-400 transition-all text-xs font-medium"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Sign Out</span>
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Navigation Tabs */}
-      <div className="bg-gray-800 border-b border-gray-700 overflow-x-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-4 sm:space-x-8">
-            <button
-              onClick={() => setCurrentView('items')}
-              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap ${
-                currentView === 'items'
-                  ? 'border-blue-500 text-blue-400'
-                  : 'border-transparent text-gray-400 hover:text-gray-300'
-              }`}
-            >
-              Items ({items.length})
-            </button>
-            <button
-              onClick={() => setCurrentView('changes')}
-              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors flex items-center space-x-2 ${
-                currentView === 'changes'
-                  ? 'border-blue-500 text-blue-400'
-                  : 'border-transparent text-gray-400 hover:text-gray-300'
-              }`}
-            >
-              <History className="w-4 h-4" />
-              <span className="hidden sm:inline">Value Changes</span>
-              <span className="sm:hidden">Changes</span>
-            </button>
-            <button
-              onClick={() => setCurrentView('images')}
-              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors flex items-center space-x-2 whitespace-nowrap ${
-                currentView === 'images'
-                  ? 'border-blue-500 text-blue-400'
-                  : 'border-transparent text-gray-400 hover:text-gray-300'
-              }`}
-            >
-              <ImageIcon className="w-4 h-4" />
-              <span>Images</span>
-            </button>
-            <button
-              onClick={() => setCurrentView('settings')}
-              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap ${
-                currentView === 'settings'
-                  ? 'border-blue-500 text-blue-400'
-                  : 'border-transparent text-gray-400 hover:text-gray-300'
-              }`}
-            >
-              Settings
-            </button>
-            <button
-              onClick={() => setCurrentView('stock')}
-              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap ${
-                currentView === 'stock'
-                  ? 'border-yellow-500 text-yellow-400'
-                  : 'border-transparent text-gray-400 hover:text-gray-300'
-              }`}
-            >
-              Stock
-            </button>
+      {/* ── nav tabs ── */}
+      <nav className="sticky top-14 z-30 bg-[#090a0f]/80 backdrop-blur-xl border-b border-[#6f572c]/30 overflow-x-auto scrollbar-thin">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center gap-1">
+            {navItems.map((n) => {
+              const active = currentView === n.id;
+              return (
+                <button
+                  key={n.id}
+                  onClick={() => setCurrentView(n.id)}
+                  className={`relative flex items-center gap-2 px-3 sm:px-4 py-3.5 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors ${
+                    active ? 'text-[#c4a04a]' : 'text-white/40 hover:text-white/70'
+                  }`}
+                >
+                  {n.icon}
+                  <span>{n.label}</span>
+                  {n.count !== undefined && (
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? 'bg-[#4b3a1d] text-[#c4a04a]' : 'bg-white/[0.06] text-white/30'}`}>
+                      {n.count}
+                    </span>
+                  )}
+                  {active && (
+                    <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-t bg-[#c4a04a] shadow-[0_0_8px_rgba(196,160,74,0.6)]" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Notification */}
+      {/* ── notification toast ── */}
       {notification && (
-        <div className={`fixed top-20 right-4 z-50 p-3 sm:p-4 rounded-lg border flex items-center space-x-2 animate-fade-in max-w-sm ${
-          notification.type === 'success' 
-            ? 'bg-green-900 border-green-700 text-green-300' 
-            : 'bg-red-900 border-red-700 text-red-300'
+        <div className={`fixed top-16 right-4 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl border shadow-2xl animate-fade-in max-w-xs text-sm ${
+          notification.type === 'success'
+            ? 'bg-emerald-950/90 border-emerald-800/60 text-emerald-300'
+            : 'bg-red-950/90 border-red-800/60 text-red-300'
         }`}>
-          {notification.type === 'success' ? (
-            <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-          ) : (
-            <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-          )}
-          <span className="text-sm sm:text-base">{notification.message}</span>
+          {notification.type === 'success'
+            ? <CheckCircle className="w-4 h-4 flex-shrink-0" />
+            : <AlertCircle className="w-4 h-4 flex-shrink-0" />}
+          {notification.message}
         </div>
       )}
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        {currentView === 'stock' ? (
-          <StockRotationAdmin />
-        ) : currentView === 'images' ? (
-          <ImageManager />
-        ) : currentView === 'settings' ? (
+      {/* ── main content ── */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
 
-      
-          /* Settings View */
-          <div>
-            <div className="mb-6 sm:mb-8">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white">Site Settings</h1>
-              <p className="text-gray-400 mt-1 sm:mt-2 text-sm sm:text-base">Manage site-wide settings and maintenance mode</p>
+        {/* STOCK */}
+        {currentView === 'stock' && <StockRotationAdmin />}
+
+        {/* IMAGES */}
+        {currentView === 'images' && <ImageManager />}
+
+        {/* SETTINGS */}
+        {currentView === 'settings' && (
+          <div className="space-y-5 max-w-2xl">
+            <div>
+              <h1 className="text-xl font-bold text-white mb-1">Site Settings</h1>
+              <p className="text-white/40 text-sm">Manage site-wide configuration</p>
             </div>
 
-            {/* Maintenance Mode Setting */}
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-700 mb-6">
-              <div className="flex items-center justify-between">
+            {/* Maintenance */}
+            <div className="rounded-2xl border border-[#6f572c]/40 bg-white/[0.03] p-5">
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Maintenance Mode</h3>
-                  <p className="text-gray-400 text-sm">
-                    When enabled, shows a maintenance popup to all users except admins. 
-                    Users cannot interact with the site during maintenance.
+                  <div className="flex items-center gap-2 mb-1">
+                    <ShieldAlert className="w-4 h-4 text-[#c4a04a]" />
+                    <h3 className="font-semibold text-white text-sm">Maintenance Mode</h3>
+                  </div>
+                  <p className="text-white/40 text-xs leading-relaxed max-w-xs">
+                    Shows a maintenance popup to all non-admin users and blocks site interaction.
                   </p>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <span className={`text-sm font-medium ${maintenanceMode ? 'text-red-400' : 'text-green-400'}`}>
-                    {maintenanceMode ? 'Enabled' : 'Disabled'}
+                <div className="flex flex-col items-end gap-2 shrink-0">
+                  <span className={`text-xs font-semibold ${maintenanceMode ? 'text-red-400' : 'text-emerald-400'}`}>
+                    {maintenanceMode ? 'Active' : 'Off'}
                   </span>
                   <button
                     onClick={() => onMaintenanceModeChange(!maintenanceMode)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 ${
-                      maintenanceMode ? 'bg-red-600' : 'bg-green-600'
-                    }`}
+                    className={`relative h-6 w-11 rounded-full transition-colors focus:outline-none ${maintenanceMode ? 'bg-red-600' : 'bg-emerald-700'}`}
                   >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        maintenanceMode ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                    />
+                    <span className={`absolute top-1 left-1 h-4 w-4 rounded-full bg-white shadow transition-transform ${maintenanceMode ? 'translate-x-5' : 'translate-x-0'}`} />
                   </button>
                 </div>
               </div>
-              
               {maintenanceMode && (
-                <div className="mt-4 p-3 bg-red-900 bg-opacity-30 border border-red-700 rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <AlertCircle className="w-4 h-4 text-red-400" />
-                    <span className="text-red-300 text-sm font-medium">Maintenance Mode Active</span>
-                  </div>
-                  <p className="text-red-200 text-sm mt-1">
-                    All users (except admins) will see the maintenance popup and cannot access the site.
-                  </p>
+                <div className="mt-4 flex items-center gap-2 px-3 py-2.5 rounded-lg bg-red-900/20 border border-red-800/40 text-red-300 text-xs">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                  Maintenance active — public users are blocked.
                 </div>
               )}
             </div>
 
-            {/* Site Statistics */}
-            <div className="bg-gray-900 rounded-lg p-6 border border-gray-700">
-              <h3 className="text-lg font-semibold text-white mb-4">Site Statistics</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-gray-800 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-400 text-sm">Total Items</span>
-                    <span className="text-white font-bold text-lg">{items.length}</span>
-                  </div>
+            {/* Stats grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { label: 'Total Items', value: items.length, color: 'text-[#c4a04a]' },
+                { label: 'Value Changes', value: valueChanges.length, color: 'text-white' },
+                { label: 'Online Users', value: onlineCount, color: 'text-emerald-400' },
+                { label: 'Categories', value: categories.length, color: 'text-white' },
+              ].map((s) => (
+                <div key={s.label} className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4">
+                  <p className="text-white/40 text-xs mb-1">{s.label}</p>
+                  <p className={`text-xl font-bold ${s.color}`}>{s.value}</p>
                 </div>
-                <div className="bg-gray-800 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-400 text-sm">Value Changes</span>
-                    <span className="text-white font-bold text-lg">{valueChanges.length}</span>
-                  </div>
-                </div>
-                <div className="bg-gray-800 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-400 text-sm">Online Users</span>
-                    <span className="text-green-400 font-bold text-lg">{usersLoading ? '...' : onlineCount}</span>
-                  </div>
-                </div>
-                <div className="bg-gray-800 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-400 text-sm">Categories</span>
-                    <span className="text-white font-bold text-lg">{categories.length}</span>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-        ) : currentView === 'items' ? (
-          <>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 space-y-4 sm:space-y-0">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-white">Item Management</h1>
-                <p className="text-gray-400 mt-1 sm:mt-2 text-sm sm:text-base">Manage AOT:R item values and properties</p>
-              </div>
-              
-              <button
-                onClick={() => setShowCreateForm(true)}
-                className="flex items-center space-x-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base w-full sm:w-auto justify-center"
-              >
-                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>Add Item</span>
-              </button>
-            </div>
+        )}
 
-            {error && (
-              <div className="bg-red-900 bg-opacity-30 border border-red-700 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 flex items-center space-x-2">
-                <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 flex-shrink-0" />
-                <span className="text-red-300 text-sm sm:text-base">{error}</span>
-              </div>
-            )}
-
-            {/* Search and Filter Controls */}
-            <div className="bg-gray-900 rounded-lg p-4 sm:p-6 border border-gray-700 mb-6">
-              <div className="space-y-4">
-                {/* Search */}
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search items..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm sm:text-base"
-                  />
-                </div>
-
-                {/* Filters and Sort */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                  {/* Category Filter */}
-                  <div className="flex items-center space-x-2">
-                    <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-2 sm:px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 text-sm sm:text-base"
-                    >
-                      <option value="">All Categories</option>
-                      {categories.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Sort Field */}
-                  <select
-                    value={sortField}
-                    onChange={(e) => setSortField(e.target.value as any)}
-                    className="bg-gray-800 border border-gray-600 rounded-lg px-2 sm:px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 text-sm sm:text-base"
-                  >
-                    <option value="name">Sort by Name</option>
-                    <option value="value">Sort by Value</option>
-                    <option value="demand">Sort by Demand</option>
-                    <option value="prestige">Sort by Prestige</option>
-                    <option value="category">Sort by Category</option>
-                  </select>
-
-                  {/* Sort Order */}
-                  <button
-                    onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                    className="flex items-center justify-center space-x-2 bg-gray-800 border border-gray-600 rounded-lg px-2 sm:px-3 py-2 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 text-sm sm:text-base"
-                  >
-                    <ArrowUpDown className="w-4 h-4" />
-                    <span className="hidden sm:inline">{sortOrder === 'asc' ? 'Ascending' : 'Descending'}</span>
-                    <span className="sm:hidden">{sortOrder === 'asc' ? 'A-Z' : 'Z-A'}</span>
-                  </button>
-
-                  {/* Results Count */}
-                  <div className="flex items-center justify-center bg-gray-800 border border-gray-600 rounded-lg px-2 sm:px-3 py-2 text-gray-300 text-sm sm:text-base">
-                    <Eye className="w-4 h-4 mr-2" />
-                    <span>{filteredAndSortedItems.length} items</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Items Table - Mobile Responsive */}
-            <div className="bg-gray-900 rounded-lg border border-gray-700 overflow-hidden shadow-xl">
-              {/* Desktop Table */}
-              <div className="hidden lg:block overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-800">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                        Item
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                        Value
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                        Demand
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                        Rate
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                        Category
-                      </th>
-                      <th className="px-6 py-4 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-700">
-                    {filteredAndSortedItems.map((item) => (
-                      <tr key={item.id} className="hover:bg-gray-800 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center space-x-3">
-                            {renderItemIcon(item.emoji, item.name)}
-                            <div>
-                              <div className="text-sm font-medium text-white">{item.name}</div>
-                              <div className="text-sm text-gray-400">Prestige {item.prestige}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-blue-400 font-medium">🔑 {item.value}</span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-white">{item.demand}/10</span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center space-x-1">
-                            {getRateIcon(item.rateOfChange)}
-                            <span className="text-white text-sm">{item.rateOfChange}</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            item.status === 'Obtainable' ? 'bg-green-900 text-green-200' :
-                            item.status === 'Limited' ? 'bg-yellow-900 text-yellow-200' :
-                            'bg-red-900 text-red-200'
-                          }`}>
-                            {item.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                          {item.category}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div className="flex justify-end space-x-2">
-                            <button
-                              onClick={() => setEditingItem(item)}
-                              className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-900 hover:bg-opacity-30 rounded-lg transition-colors"
-                              title="Edit Item"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteItem(item.id, item.name)}
-                              className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900 hover:bg-opacity-30 rounded-lg transition-colors"
-                              title="Delete Item"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Mobile Cards */}
-              <div className="lg:hidden space-y-4 p-4">
-                {filteredAndSortedItems.map((item) => (
-                  <div key={item.id} className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        {renderItemIcon(item.emoji, item.name)}
-                        <div>
-                          <h3 className="text-white font-medium text-sm">{item.name}</h3>
-                          <p className="text-gray-400 text-xs">{item.category}</p>
-                        </div>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => setEditingItem(item)}
-                          className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-900 hover:bg-opacity-30 rounded-lg transition-colors"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteItem(item.id, item.name)}
-                          className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900 hover:bg-opacity-30 rounded-lg transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div>
-                        <span className="text-gray-400">Value:</span>
-                        <span className="text-blue-400 font-medium ml-2">🔑 {item.value}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400">Demand:</span>
-                        <span className="text-white ml-2">{item.demand}/10</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400">Rate:</span>
-                        <div className="flex items-center space-x-1 ml-2">
-                          {getRateIcon(item.rateOfChange)}
-                          <span className="text-white text-xs">{item.rateOfChange}</span>
-                        </div>
-                      </div>
-                      <div>
-                        <span className="text-gray-400">Status:</span>
-                        <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
-                          item.status === 'Obtainable' ? 'bg-green-900 text-green-200' :
-                          item.status === 'Limited' ? 'bg-yellow-900 text-yellow-200' :
-                          'bg-red-900 text-red-200'
-                        }`}>
-                          {item.status}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {filteredAndSortedItems.length === 0 && !loading && (
-              <div className="text-center py-12">
-                <div className="text-4xl sm:text-6xl mb-4">📦</div>
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-300 mb-2">No items found</h3>
-                <p className="text-gray-500 text-sm sm:text-base">
-                  {searchTerm || selectedCategory ? 'Try adjusting your search or filters' : 'Create your first item to get started'}
-                </p>
-              </div>
-            )}
-          </>
-        ) : currentView === 'changes' ? (
-          /* Value Changes View */
-          <div>
-            <div className="mb-6 sm:mb-8">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white">Value Changes History</h1>
-              <p className="text-gray-400 mt-1 sm:mt-2 text-sm sm:text-base">Track all item value, demand, and rate changes - Delete test entries</p>
+        {/* VALUE CHANGES */}
+        {currentView === 'changes' && (
+          <div className="space-y-5">
+            <div>
+              <h1 className="text-xl font-bold text-white mb-1">Value Changes</h1>
+              <p className="text-white/40 text-sm">History of all item value, demand, and rate updates</p>
             </div>
 
             {changesLoading ? (
-              <div className="text-center py-12">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-gray-400 text-sm sm:text-base">Loading changes...</p>
+              <div className="flex justify-center py-16">
+                <div className="w-8 h-8 rounded-full border-2 border-[#c4a04a]/30 border-t-[#c4a04a] animate-spin" />
               </div>
             ) : valueChanges.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-4xl sm:text-6xl mb-4">📊</div>
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-300 mb-2">No changes recorded yet</h3>
-                <p className="text-gray-500 text-sm sm:text-base">Value changes will appear here when items are updated</p>
+              <div className="text-center py-16 text-white/30">
+                <History className="w-10 h-10 mx-auto mb-3 opacity-40" />
+                <p>No changes recorded yet</p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {valueChanges.map((change) => {
-                  const changeDescriptions = getChangeDescription(change);
-                  
+              <div className="space-y-3">
+                {valueChanges.map((ch) => {
+                  const up = ch.newValue > ch.oldValue;
+                  const same = ch.newValue === ch.oldValue;
                   return (
-                    <div key={change.id} className="bg-gray-900 rounded-lg border border-gray-700 p-4 sm:p-6 hover:border-gray-600 transition-colors">
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between space-y-3 sm:space-y-0">
-                        <div className="flex items-center space-x-3 sm:space-x-4">
-                          {renderItemIcon(change.emoji, change.itemName)}
-                          <div>
-                            <h3 className="text-base sm:text-lg font-semibold text-white">{change.itemName}</h3>
-                            <p className="text-xs sm:text-sm text-gray-400">
-                              {new Date(change.changeDate).toLocaleDateString()} at {new Date(change.changeDate).toLocaleTimeString()}
-                            </p>
+                    <div key={ch.id} className="rounded-xl border border-white/[0.06] bg-white/[0.02] hover:border-[#6f572c]/50 transition-colors overflow-hidden">
+                      <div className="flex items-center justify-between gap-3 px-4 py-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <ItemIcon emoji={ch.emoji} name={ch.itemName} size="sm" />
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-white truncate">{ch.itemName}</p>
+                            <p className="text-xs text-white/30">{new Date(ch.changeDate).toLocaleString()}</p>
                           </div>
                         </div>
-                        
-                        <div className="flex items-center justify-between sm:justify-end space-x-2">
-                          <div className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
-                            change.changeType === 'increase' ? 'bg-green-900 text-green-200' :
-                            change.changeType === 'decrease' ? 'bg-red-900 text-red-200' :
-                            'bg-gray-700 text-gray-300'
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${
+                            same ? 'border-white/10 text-white/40'
+                            : up ? 'border-emerald-800/50 text-emerald-400 bg-emerald-900/20'
+                            : 'border-red-800/50 text-red-400 bg-red-900/20'
                           }`}>
-                            {change.changeType === 'increase' ? '📈 Increased' :
-                             change.changeType === 'decrease' ? '📉 Decreased' : '➡️ Updated'}
-                          </div>
-                          
+                            {same ? 'Updated' : up ? `+${ch.newValue - ch.oldValue}` : `${ch.newValue - ch.oldValue}`}
+                          </span>
                           <button
-                            onClick={() => handleDeleteValueChange(change.id, change.itemName)}
-                            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900 hover:bg-opacity-30 rounded-lg transition-colors"
-                            title="Delete Value Change"
+                            onClick={() => handleDeleteChange(ch.id, ch.itemName)}
+                            className="p-1.5 rounded-lg text-white/20 hover:text-red-400 hover:bg-red-900/20 transition-colors"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </div>
-                      
-                      {/* What Changed Section */}
-                      <div className="mt-4 bg-gray-800 rounded-lg p-3 sm:p-4">
-                        <p className="text-xs sm:text-sm text-gray-400 mb-2">What Changed:</p>
-                        <div className="space-y-1">
-                          {changeDescriptions.map((description, index) => (
-                            <p key={index} className="text-xs sm:text-sm text-white">{description}</p>
-                          ))}
-                        </div>
+                      <div className="px-4 pb-3 grid grid-cols-3 gap-2">
+                        {[
+                          { label: 'Value', old: `🔑 ${ch.oldValue}`, new: `🔑 ${ch.newValue}` },
+                          { label: 'Demand', old: `${ch.oldDemand}/10`, new: `${ch.newDemand}/10` },
+                          { label: 'Rate', old: ch.oldRateOfChange, new: ch.newRateOfChange },
+                        ].map((row) => (
+                          <div key={row.label} className="bg-white/[0.03] rounded-lg p-2.5">
+                            <p className="text-[10px] text-white/30 mb-1 uppercase tracking-wide">{row.label}</p>
+                            <p className="text-xs text-white/40 line-through">{row.old}</p>
+                            <p className="text-xs text-white font-medium">{row.new}</p>
+                          </div>
+                        ))}
                       </div>
-                      
-                      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                        <div className="bg-gray-800 rounded-lg p-3">
-                          <p className="text-xs sm:text-sm text-gray-400 mb-1">Value Change</p>
-                          <div className="flex items-center space-x-2 flex-wrap">
-                            <span className="text-blue-400 text-sm">🔑 {change.oldValue}</span>
-                            <span className="text-gray-400 text-sm">→</span>
-                            <span className="text-blue-400 font-medium text-sm">🔑 {change.newValue}</span>
-                            {change.oldValue !== change.newValue && (
-                              <span className={`text-xs ${change.newValue > change.oldValue ? 'text-green-400' : 'text-red-400'}`}>
-                                ({change.newValue > change.oldValue ? '+' : ''}{change.newValue - change.oldValue})
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        
-                        <div className="bg-gray-800 rounded-lg p-3">
-                          <p className="text-xs sm:text-sm text-gray-400 mb-1">Demand Change</p>
-                          <div className="flex items-center space-x-2 flex-wrap">
-                            <span className="text-white text-sm">{change.oldDemand}/10</span>
-                            <span className="text-gray-400 text-sm">→</span>
-                            <span className="text-white font-medium text-sm">{change.newDemand}/10</span>
-                            {change.oldDemand !== change.newDemand && (
-                              <span className={`text-xs ${change.newDemand > change.oldDemand ? 'text-green-400' : 'text-red-400'}`}>
-                                ({change.newDemand > change.oldDemand ? '+' : ''}{change.newDemand - change.oldDemand})
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        
-                        <div className="bg-gray-800 rounded-lg p-3 sm:col-span-2 lg:col-span-1">
-                          <p className="text-xs sm:text-sm text-gray-400 mb-1">Rate Change</p>
-                          <div className="flex items-center space-x-2 flex-wrap">
-                            <div className="flex items-center space-x-1">
-                              {getRateIcon(change.oldRateOfChange)}
-                              <span className="text-white text-xs sm:text-sm">{change.oldRateOfChange}</span>
-                            </div>
-                            <span className="text-gray-400 text-sm">→</span>
-                            <div className="flex items-center space-x-1">
-                              {getRateIcon(change.newRateOfChange)}
-                              <span className="text-white font-medium text-xs sm:text-sm">{change.newRateOfChange}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {change.percentageChange !== 0 && (
-                        <div className="mt-3 text-center">
-                          <span className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${
-                            (change.percentageChange || 0) > 0 ? 'bg-green-900 bg-opacity-30 text-green-400' : 'bg-red-900 bg-opacity-30 text-red-400'
-                          }`}>
-                            {(change.percentageChange || 0) > 0 ? '+' : ''}{(change.percentageChange || 0).toFixed(1)}% value change
-                          </span>
-                        </div>
-                      )}
                     </div>
                   );
                 })}
               </div>
             )}
           </div>
-        ) : null}
+        )}
+
+        {/* ITEMS */}
+        {currentView === 'items' && (
+          <div className="space-y-5">
+            {/* page header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h1 className="text-xl font-bold text-white mb-1">Item Management</h1>
+                <p className="text-white/40 text-sm">Manage AOT:R item values and properties</p>
+              </div>
+              <button
+                onClick={() => setShowCreateForm(true)}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#c4a04a] hover:bg-[#d4b05a] text-black font-semibold text-sm transition-colors shadow-[0_0_20px_rgba(196,160,74,0.2)] w-full sm:w-auto"
+              >
+                <Plus className="w-4 h-4" />
+                Add Item
+              </button>
+            </div>
+
+            {error && (
+              <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl border border-red-800/50 bg-red-950/40 text-red-300 text-sm">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                {error}
+              </div>
+            )}
+
+            {/* filters */}
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 space-y-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <input
+                  type="text"
+                  placeholder="Search items…"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 bg-white/[0.04] border border-white/[0.07] rounded-xl text-white text-sm placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-[#c4a04a]/50 transition-colors"
+                />
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
+                  <Filter className="w-3.5 h-3.5 text-white/30 shrink-0" />
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="flex-1 bg-white/[0.04] border border-white/[0.07] rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#c4a04a]/50"
+                  >
+                    <option value="">All Categories</option>
+                    {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <select
+                  value={sortField}
+                  onChange={(e) => setSortField(e.target.value as any)}
+                  className="bg-white/[0.04] border border-white/[0.07] rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#c4a04a]/50"
+                >
+                  <option value="name">Name</option>
+                  <option value="value">Value</option>
+                  <option value="demand">Demand</option>
+                  <option value="prestige">Prestige</option>
+                  <option value="category">Category</option>
+                </select>
+                <button
+                  onClick={() => setSortOrder((o) => (o === 'asc' ? 'desc' : 'asc'))}
+                  className="flex items-center justify-center gap-1.5 bg-white/[0.04] border border-white/[0.07] rounded-lg px-2.5 py-2 text-white/60 hover:text-white text-xs transition-colors"
+                >
+                  <ArrowUpDown className="w-3.5 h-3.5" />
+                  {sortOrder === 'asc' ? 'Asc' : 'Desc'}
+                </button>
+                <div className="flex items-center justify-center gap-1.5 bg-white/[0.04] border border-white/[0.07] rounded-lg px-2.5 py-2 text-white/30 text-xs">
+                  <Eye className="w-3.5 h-3.5" />
+                  {filteredItems.length}
+                </div>
+              </div>
+            </div>
+
+            {/* table — desktop */}
+            <div className="hidden lg:block rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/[0.06]">
+                    {['Item', 'Value', 'Demand', 'Rate', 'Status', 'Category', ''].map((h) => (
+                      <th key={h} className="px-5 py-3 text-left text-[10px] font-semibold text-white/30 uppercase tracking-wider last:text-right">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/[0.04]">
+                  {filteredItems.map((item) => (
+                    <tr key={item.id} className="hover:bg-white/[0.025] transition-colors group">
+                      <td className="px-5 py-3">
+                        <div className="flex items-center gap-3">
+                          <ItemIcon emoji={item.emoji} name={item.name} size="sm" />
+                          <div>
+                            <p className="font-medium text-white text-sm">{item.name}</p>
+                            <p className="text-[11px] text-white/30">Prestige {item.prestige}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-5 py-3">
+                        <GoldBadge>🔑 {item.value.toLocaleString()}</GoldBadge>
+                      </td>
+                      <td className="px-5 py-3 text-white/70">{item.demand}/10</td>
+                      <td className="px-5 py-3">
+                        <div className="flex items-center gap-1.5">
+                          <RateIcon rate={item.rateOfChange} />
+                          <span className="text-white/60 text-xs">{item.rateOfChange}</span>
+                        </div>
+                      </td>
+                      <td className="px-5 py-3"><StatusBadge status={item.status} /></td>
+                      <td className="px-5 py-3 text-white/40 text-xs">{item.category}</td>
+                      <td className="px-5 py-3 text-right">
+                        <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => setEditingItem(item)}
+                            className="p-1.5 rounded-lg text-white/30 hover:text-[#c4a04a] hover:bg-[#4b3a1d]/40 transition-colors"
+                          >
+                            <EditIcon className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteItem(item.id, item.name)}
+                            className="p-1.5 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-900/20 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* cards — mobile */}
+            <div className="lg:hidden space-y-2">
+              {filteredItems.map((item) => (
+                <div key={item.id} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5">
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <ItemIcon emoji={item.emoji} name={item.name} size="sm" />
+                      <div className="min-w-0">
+                        <p className="font-medium text-white text-sm truncate">{item.name}</p>
+                        <p className="text-[11px] text-white/30">{item.category}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-1 shrink-0">
+                      <button onClick={() => setEditingItem(item)} className="p-1.5 rounded-lg text-white/30 hover:text-[#c4a04a] hover:bg-[#4b3a1d]/40 transition-colors">
+                        <EditIcon className="w-3.5 h-3.5" />
+                      </button>
+                      <button onClick={() => handleDeleteItem(item.id, item.name)} className="p-1.5 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-900/20 transition-colors">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <GoldBadge>🔑 {item.value.toLocaleString()}</GoldBadge>
+                    <span className="text-xs text-white/40">{item.demand}/10</span>
+                    <div className="flex items-center gap-1">
+                      <RateIcon rate={item.rateOfChange} />
+                      <span className="text-xs text-white/40">{item.rateOfChange}</span>
+                    </div>
+                    <StatusBadge status={item.status} />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {filteredItems.length === 0 && (
+              <div className="text-center py-16 text-white/30">
+                <Package className="w-10 h-10 mx-auto mb-3 opacity-40" />
+                <p>{searchTerm || selectedCategory ? 'No items match your filters' : 'No items yet — create one above'}</p>
+              </div>
+            )}
+          </div>
+        )}
       </main>
 
-      {/* Forms */}
+      {/* ── forms ── */}
       {showCreateForm && (
-        <ItemForm
-          onSubmit={handleCreateItem}
-          onCancel={() => setShowCreateForm(false)}
-        />
+        <ItemForm onSubmit={handleCreateItem} onCancel={() => setShowCreateForm(false)} renderIcon={renderIcon} />
       )}
-
       {editingItem && (
-        <ItemForm
-          item={editingItem}
-          onSubmit={(data) => handleUpdateItem(editingItem.id, data)}
-          onCancel={() => setEditingItem(null)}
-        />
+        <ItemForm item={editingItem} onSubmit={(d) => handleUpdateItem(editingItem.id, d)} onCancel={() => setEditingItem(null)} renderIcon={renderIcon} />
       )}
-
     </div>
   );
 };
