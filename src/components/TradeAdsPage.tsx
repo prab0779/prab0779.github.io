@@ -194,85 +194,101 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       <div className="grid lg:grid-cols-2 gap-6 text-left">
         {filteredTradeAds.map((ad, index) => {
           const content = (
-            <CardWrapper>
-              <div className="p-6 space-y-4">
+  <CardWrapper>
+    <div className="p-4 sm:p-6 space-y-4">
 
-                <div className="flex items-center gap-2">
-                  <img
-                    src={ad.authorAvatar}
-                    className="w-8 h-8 rounded-full"
-                    alt={ad.authorName}
-                  />
-                  <div>
-                    <p className="text-white text-sm">{ad.authorName}</p>
-                    <p className="text-zinc-500 text-xs">
-                      {getRelativeTime(ad.createdAt)}
-                    </p>
-                  </div>
-                </div>
+      {/* USER */}
+      <div className="flex items-center gap-2">
+        <img
+          src={ad.authorAvatar}
+          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full"
+          alt={ad.authorName}
+        />
+        <div>
+          <p className="text-white text-sm">{ad.authorName}</p>
+          <p className="text-zinc-500 text-xs">
+            {getRelativeTime(ad.createdAt)}
+          </p>
+        </div>
+      </div>
 
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <GradientText variant="gold">Offering</GradientText>
-                    <span className="text-xs text-zinc-500">
-                      {ad.itemsOffering.length} items
-                    </span>
-                  </div>
+      {/* OFFERING */}
+      <div>
+        <div className="flex justify-between mb-2">
+          <GradientText variant="gold">Offering</GradientText>
+          <span className="text-xs text-zinc-500">
+            {ad.itemsOffering.length} items
+          </span>
+        </div>
 
-                  <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
-                    {ad.itemsOffering.map((i, idx) => (
-                      <div
-                        key={`${i.itemName}-${idx}`}
-                        className="relative min-w-[120px] bg-[#121212] p-3 rounded-xl flex flex-col items-center"
-                      >
-                        {renderItemIcon(i.emoji, i.itemName)}
+        <div
+          className={
+            isMobile
+              ? "grid grid-cols-2 gap-2"
+              : "flex gap-3 overflow-x-auto pb-2 scrollbar-thin"
+          }
+        >
+          {ad.itemsOffering.map((i, idx) => (
+            <div
+              key={`${i.itemName}-${idx}`}
+              className="relative bg-[#121212] p-2 sm:p-3 rounded-xl flex flex-col items-center"
+            >
+              {renderItemIcon(i.emoji, i.itemName)}
 
-                        <p className="text-xs text-zinc-200 truncate w-full text-center">
-                          {i.itemName}
-                        </p>
+              <p className="text-[11px] sm:text-xs text-zinc-200 truncate w-full text-center">
+                {i.itemName}
+              </p>
 
-                        {i.quantity > 1 && (
-                          <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1.5 py-0.5 rounded font-bold">
-                            x{i.quantity}
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              {i.quantity > 1 && (
+                <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1 rounded font-bold">
+                  x{i.quantity}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
 
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <GradientText variant="gold">Looking For</GradientText>
-                    <span className="text-xs text-zinc-500">
-                      {ad.itemsWanted.length} items
-                    </span>
-                  </div>
+      {/* LOOKING FOR */}
+      <div>
+        <div className="flex justify-between mb-2">
+          <GradientText variant="gold">Looking For</GradientText>
+          <span className="text-xs text-zinc-500">
+            {ad.itemsWanted.length} items
+          </span>
+        </div>
 
-                  <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
-                    {ad.itemsWanted.map((i, idx) => (
-                      <div
-                        key={`${i.itemName}-${idx}`}
-                        className="relative min-w-[120px] bg-[#121212] p-3 rounded-xl flex flex-col items-center"
-                      >
-                        {renderItemIcon(i.emoji, i.itemName)}
+        <div
+          className={
+            isMobile
+              ? "grid grid-cols-2 gap-2"
+              : "flex gap-3 overflow-x-auto pb-2 scrollbar-thin"
+          }
+        >
+          {ad.itemsWanted.map((i, idx) => (
+            <div
+              key={`${i.itemName}-${idx}`}
+              className="relative bg-[#121212] p-2 sm:p-3 rounded-xl flex flex-col items-center"
+            >
+              {renderItemIcon(i.emoji, i.itemName)}
 
-                        <p className="text-xs text-zinc-200 truncate w-full text-center">
-                          {i.itemName}
-                        </p>
+              <p className="text-[11px] sm:text-xs text-zinc-200 truncate w-full text-center">
+                {i.itemName}
+              </p>
 
-                        {i.quantity > 1 && (
-                          <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1.5 py-0.5 rounded font-bold">
-                            x{i.quantity}
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              {i.quantity > 1 && (
+                <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1 rounded font-bold">
+                  x{i.quantity}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
 
-              </div>
-            </CardWrapper>
+    </div>
+  </CardWrapper>
+);
           );
 
           return isMobile ? (
