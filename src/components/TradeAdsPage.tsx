@@ -191,7 +191,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6 text-left">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 text-left">
         {filteredTradeAds.map((ad, index) => {
           const content = (
   <CardWrapper>
