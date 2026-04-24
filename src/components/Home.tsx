@@ -300,7 +300,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
               label: "Safety",
               title: "value Changes",
               desc: "Check value changes logs and stay updated before you trade.",
-              cta: "View scam logs →"
+              cta: "View changes →"
             }].map((card, i) => {
               const Icon = card.icon;
               return (

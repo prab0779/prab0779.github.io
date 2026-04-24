@@ -22,9 +22,6 @@ const ValueChangesPage = lazy(() =>
 const TradeAdsPage = lazy(() =>
   import("./components/TradeAdsPage").then(m => ({ default: m.TradeAdsPage }))
 );
-const ScamLogsPage = lazy(() =>
-  import("./components/ScamLogsPage").then(m => ({ default: m.ScamLogsPage }))
-);
 const AdminPage = lazy(() =>
   import("./components/AdminPage").then(m => ({ default: m.AdminPage }))
 );
@@ -148,7 +145,6 @@ export const AppContent: React.FC = () => {
                   <Route path="/value-list" element={<ValueListPage items={items} />} />
                   <Route path="/value-changes" element={<ValueChangesPage />} />
                   <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
-                  <Route path="/scam-logs" element={<ScamLogsPage />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
 
                   <Route
