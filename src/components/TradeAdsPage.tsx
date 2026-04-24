@@ -213,6 +213,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
                 <div className="space-y-4">
 
+                  {/* OFFERING */}
                   <div className="bg-[#111] p-4 rounded-xl border border-white/5">
                     <div className="flex justify-between mb-3">
                       <GradientText variant="gold">Offering</GradientText>
@@ -221,7 +222,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                       </span>
                     </div>
 
-                    <div className="flex gap-3 overflow-x-auto pb-2">
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                       {ad.itemsOffering.map((i, idx) => (
                         <div
                           key={`${i.itemName}-${idx}`}
@@ -241,6 +242,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                     </div>
                   </div>
 
+                  {/* LOOKING FOR */}
                   <div className="bg-[#111] p-4 rounded-xl border border-white/5">
                     <div className="flex justify-between mb-3">
                       <GradientText variant="gold">Looking For</GradientText>
@@ -249,16 +251,21 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                       </span>
                     </div>
 
-                    <div className="flex gap-3 overflow-x-auto pb-2">
+                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                       {ad.itemsWanted.map((i, idx) => (
                         <div
                           key={`${i.itemName}-${idx}`}
-                          className="min-w-[120px] bg-[#121212] border border-white/10 rounded-xl p-3 flex flex-col items-center"
+                          className="relative min-w-[120px] bg-[#121212] border border-white/10 rounded-xl p-3 flex flex-col items-center"
                         >
                           {renderItemIcon(i.emoji, i.itemName)}
                           <p className="text-xs text-zinc-200 truncate w-full text-center">
                             {i.itemName}
                           </p>
+                          {i.quantity > 1 && (
+                            <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1 rounded">
+                              x{i.quantity}
+                            </span>
+                          )}
                         </div>
                       ))}
                     </div>
