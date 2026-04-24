@@ -1,13 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import { useContext } from "react";
 import { PresenceContext } from "../components/OnlinePresenceProvider";
-import { Plus, CreditCard as Edit, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye } from 'lucide-react';
+import { Plus, CreditCard as Edit, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, Image as ImageIcon, FolderOpen } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useItems } from '../hooks/useItems';
 import { useItemsContext } from '../contexts/ItemsContext';
 import { useValueChanges } from '../hooks/useValueChanges';
 import { useOnlineUsers } from '../hooks/useOnlineUsers';
 import { StockRotationAdmin } from "./StockRotationAdmin";
+import { ImageManager } from "./ImageManager";
 import { getItemImageUrl } from '../lib/supabase';
 
 import { Item } from '../types/Item';
@@ -25,7 +26,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const { onlineCount, loading: usersLoading } = useContext(PresenceContext);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [currentView, setCurrentView] = useState<'items' | 'changes' | 'settings' | 'stock'>('items');
+  const [currentView, setCurrentView] = useState<'items' | 'changes' | 'settings' | 'stock' | 'images'>('items');
 
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   
@@ -206,221 +207,253 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
       rarity: item?.rarity || null,
       emoji: item?.emoji || '👹',
     });
+    const [showImagePicker, setShowImagePicker] = useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       onSubmit(formData);
     };
 
+    const handleImageSelect = (filename: string) => {
+      setFormData({ ...formData, emoji: filename });
+      setShowImagePicker(false);
+    };
+
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-gray-900 rounded-lg p-4 sm:p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-700">
-          <div className="flex justify-between items-center mb-4 sm:mb-6">
-            <h3 className="text-lg sm:text-xl font-semibold text-white">
-              {item ? 'Edit Item' : 'Create New Item'}
-            </h3>
-            <button
-              onClick={onCancel}
-              className="text-gray-400 hover:text-white transition-colors p-1"
-            >
-              <X className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
+      <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+        {showImagePicker ? (
+          <div className="bg-gray-900 rounded-xl p-5 w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-gray-700 shadow-2xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-white">Choose Image from Storage</h3>
+              <button onClick={() => setShowImagePicker(false)} className="text-gray-400 hover:text-white p-1">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <ImageManager
+              selectionMode
+              selectedImage={formData.emoji}
+              onSelectImage={handleImageSelect}
+            />
           </div>
+        ) : (
+          <div className="bg-gray-900 rounded-xl p-4 sm:p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-700 shadow-2xl">
+            <div className="flex justify-between items-center mb-4 sm:mb-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-white">
+                {item ? 'Edit Item' : 'Create New Item'}
+              </h3>
+              <button
+                onClick={onCancel}
+                className="text-gray-400 hover:text-white transition-colors p-1"
+              >
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+            </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Value *
-                </label>
-                <input
-                  type="number"
-                  required
-                  min="0"
-                  value={formData.value}
-                  onChange={(e) => setFormData({ ...formData, value: parseInt(e.target.value) || 0 })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Demand (1-10) *
-                </label>
-                <input
-                  type="number"
-                  required
-                  min="1"
-                  max="10"
-                  value={formData.demand}
-                  onChange={(e) => setFormData({ ...formData, demand: parseInt(e.target.value) || 5 })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Rate of Change *
-                </label>
-                <select
-                  value={formData.rateOfChange}
-                  onChange={(e) => setFormData({ ...formData, rateOfChange: e.target.value as Item['rateOfChange'] })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                >
-                  <option value="Rising">Rising</option>
-                  <option value="Falling">Falling</option>
-                  <option value="Stable">Stable</option>
-                  <option value="Overpriced">Overpriced</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Prestige *
-                </label>
-                <input
-                  type="number"
-                  required
-                  min="0"
-                  value={formData.prestige}
-                  onChange={(e) => setFormData({ ...formData, prestige: parseInt(e.target.value) || 0 })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Status *
-                </label>
-                <select
-                  value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value as Item['status'] })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                >
-                  <option value="Obtainable">Obtainable</option>
-                  <option value="Unobtainable">Unobtainable</option>
-                  <option value="Limited">Limited</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Category *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Emoji/Image *
-                </label>
-                <div className="flex space-x-2">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Name *
+                  </label>
                   <input
                     type="text"
                     required
-                    value={formData.emoji}
-                    onChange={(e) => setFormData({ ...formData, emoji: e.target.value })}
-                    className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                    placeholder="🎯 or /image.png"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                   />
-                  <div className="w-10 h-10 bg-gray-800 border border-gray-600 rounded-lg flex items-center justify-center">
-                    {renderItemIcon(formData.emoji, formData.name)}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Value *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    value={formData.value}
+                    onChange={(e) => setFormData({ ...formData, value: parseInt(e.target.value) || 0 })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Demand (1-10) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="1"
+                    max="10"
+                    value={formData.demand}
+                    onChange={(e) => setFormData({ ...formData, demand: parseInt(e.target.value) || 5 })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Rate of Change *
+                  </label>
+                  <select
+                    value={formData.rateOfChange}
+                    onChange={(e) => setFormData({ ...formData, rateOfChange: e.target.value as Item['rateOfChange'] })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                  >
+                    <option value="Rising">Rising</option>
+                    <option value="Falling">Falling</option>
+                    <option value="Stable">Stable</option>
+                    <option value="Overpriced">Overpriced</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Prestige *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    value={formData.prestige}
+                    onChange={(e) => setFormData({ ...formData, prestige: parseInt(e.target.value) || 0 })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Status *
+                  </label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as Item['status'] })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                  >
+                    <option value="Obtainable">Obtainable</option>
+                    <option value="Unobtainable">Unobtainable</option>
+                    <option value="Limited">Limited</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Category *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Emoji / Image
+                  </label>
+                  <div className="flex space-x-2 items-center">
+                    <input
+                      type="text"
+                      value={formData.emoji}
+                      onChange={(e) => setFormData({ ...formData, emoji: e.target.value })}
+                      className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
+                      placeholder="🎯 or /image.png"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowImagePicker(true)}
+                      className="flex items-center space-x-1 px-3 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white rounded-lg text-sm transition-colors whitespace-nowrap"
+                    >
+                      <FolderOpen className="w-4 h-4" />
+                      <span className="hidden sm:inline">Browse</span>
+                    </button>
+                    <div className="w-10 h-10 bg-gray-800 border border-gray-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                      {renderItemIcon(formData.emoji, formData.name)}
+                    </div>
                   </div>
+                  {formData.emoji && (formData.emoji.startsWith('/') || formData.emoji.startsWith('http')) && (
+                    <p className="text-xs text-gray-500 mt-1 font-mono truncate">{formData.emoji}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Gem Tax
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.gemTax || ''}
+                    onChange={(e) => setFormData({ ...formData, gemTax: e.target.value ? parseInt(e.target.value) : null })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Gold Tax
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.goldTax || ''}
+                    onChange={(e) => setFormData({ ...formData, goldTax: e.target.value ? parseInt(e.target.value) : null })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Rarity (%)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    value={formData.rarity || ''}
+                    onChange={(e) => setFormData({ ...formData, rarity: e.target.value ? parseFloat(e.target.value) : null })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                  />
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Gem Tax
+                  Obtained From *
                 </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={formData.gemTax || ''}
-                  onChange={(e) => setFormData({ ...formData, gemTax: e.target.value ? parseInt(e.target.value) : null })}
+                <textarea
+                  required
+                  value={formData.obtainedFrom}
+                  onChange={(e) => setFormData({ ...formData, obtainedFrom: e.target.value })}
                   className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+                  rows={3}
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Gold Tax
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={formData.goldTax || ''}
-                  onChange={(e) => setFormData({ ...formData, goldTax: e.target.value ? parseInt(e.target.value) : null })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                />
+              <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="px-4 sm:px-6 py-2 text-gray-300 hover:text-white transition-colors text-sm sm:text-base"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm sm:text-base"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{item ? 'Update' : 'Create'}</span>
+                </button>
               </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Rarity (%)
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  step="0.01"
-                  value={formData.rarity || ''}
-                  onChange={(e) => setFormData({ ...formData, rarity: e.target.value ? parseFloat(e.target.value) : null })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Obtained From *
-              </label>
-              <textarea
-                required
-                value={formData.obtainedFrom}
-                onChange={(e) => setFormData({ ...formData, obtainedFrom: e.target.value })}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                rows={3}
-              />
-            </div>
-
-            <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="px-4 sm:px-6 py-2 text-gray-300 hover:text-white transition-colors text-sm sm:text-base"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="flex items-center justify-center space-x-2 px-4 sm:px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm sm:text-base"
-              >
-                <Save className="w-4 h-4" />
-                <span>{item ? 'Update' : 'Create'}</span>
-              </button>
-            </div>
-          </form>
-        </div>
+            </form>
+          </div>
+        )}
       </div>
     );
   };
@@ -507,6 +540,17 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
               <span className="sm:hidden">Changes</span>
             </button>
             <button
+              onClick={() => setCurrentView('images')}
+              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors flex items-center space-x-2 whitespace-nowrap ${
+                currentView === 'images'
+                  ? 'border-blue-500 text-blue-400'
+                  : 'border-transparent text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              <ImageIcon className="w-4 h-4" />
+              <span>Images</span>
+            </button>
+            <button
               onClick={() => setCurrentView('settings')}
               className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap ${
                 currentView === 'settings'
@@ -517,16 +561,15 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
               Settings
             </button>
             <button
-  onClick={() => setCurrentView('stock')}
-  className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap ${
-    currentView === 'stock'
-      ? 'border-yellow-500 text-yellow-400'
-      : 'border-transparent text-gray-400 hover:text-gray-300'
-  }`}
->
-  Stock
-</button>
-
+              onClick={() => setCurrentView('stock')}
+              className={`py-3 sm:py-4 px-2 border-b-2 font-medium text-sm sm:text-base transition-colors whitespace-nowrap ${
+                currentView === 'stock'
+                  ? 'border-yellow-500 text-yellow-400'
+                  : 'border-transparent text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              Stock
+            </button>
           </div>
         </div>
       </div>
@@ -550,8 +593,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {currentView === 'stock' ? (
-  <StockRotationAdmin />
-) : currentView === 'settings' ? (
+          <StockRotationAdmin />
+        ) : currentView === 'images' ? (
+          <ImageManager />
+        ) : currentView === 'settings' ? (
 
       
           /* Settings View */
