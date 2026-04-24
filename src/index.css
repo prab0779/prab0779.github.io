@@ -216,10 +216,6 @@
   border-radius: 6px;
 }
 
-/* ------------------------------------------ */
-/* VIDEO SLIDER — RIGHT ➜ LEFT INFINITE SCROLL */
-/* ------------------------------------------ */
-
 @keyframes slide-left {
   0% {
     transform: translateX(0);
@@ -251,7 +247,6 @@
   opacity: 0;
 }
 
-/* Premium AOTR Gradient Background */
 .aotr-background {
   background:
     radial-gradient(ellipse at center, rgba(240,213,138,0.05) 0%, transparent 70%),
@@ -260,7 +255,6 @@
   overflow: hidden;
 }
 
-/* Gold grid overlay */
 .aotr-background::before {
   content: "";
   position: absolute;
@@ -271,14 +265,12 @@
   pointer-events: none;
 }
 
-/* Hide number input spinners (Chrome, Edge, Safari) */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Hide number input spinners (Firefox) */
 input[type=number] {
   -moz-appearance: textfield;
   appearance: textfield;
@@ -308,12 +300,10 @@ input[type=number] {
   border-radius: 999px;
 }
 
-/* remove white bg behind it */
 .scrollbar-thin::-webkit-scrollbar-corner {
   background: transparent;
 }
 
-/* Firefox */
 .scrollbar-thin {
   scrollbar-width: thin;
   scrollbar-color: #a1a1aa transparent;
