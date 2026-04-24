@@ -19,37 +19,6 @@ const AVAILABLE_TAGS = [
   "Collection","Overpay","Underpay"
 ];
 
-const isMobile =
-  typeof window !== "undefined" &&
-  (navigator.maxTouchPoints > 0 ||
-    window.matchMedia("(max-width: 768px)").matches);
-
-const CardWrapper = ({ children }: { children: React.ReactNode }) => {
-  if (isMobile) {
-    return (
-      <div className="bg-[#0c0c0c] border border-white/5 rounded-xl">
-        {children}
-      </div>
-    );
-  }
-
-  return (
-    <BorderGlow
-      edgeSensitivity={30}
-      glowColor="40 80 80"
-      backgroundColor="#0c0c0c"
-      borderRadius={16}
-      glowRadius={30}
-      glowIntensity={1}
-      coneSpread={25}
-      animated={false}
-      colors={["#FFD700","#FFC94D","#FFB347"]}
-    >
-      {children}
-    </BorderGlow>
-  );
-};
-
 export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const { user, signInWithDiscord } = useAuth();
 
@@ -67,6 +36,21 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  // ✅ FIX mobile detection
+  useEffect(() => {
+    const check = () => {
+      setIsMobile(
+        navigator.maxTouchPoints > 0 ||
+        window.matchMedia("(max-width: 768px)").matches
+      );
+    };
+
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const lightweightItems = useMemo(
     () => items.map(i => ({ name: i.name, emoji: i.emoji, category: i.category, value: i.value })),
@@ -129,6 +113,32 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
     return `${Math.floor(diff / 1440)}d ago`;
   }, []);
 
+  const CardWrapper = ({ children }: { children: React.ReactNode }) => {
+    if (isMobile) {
+      return (
+        <div className="bg-[#0c0c0c] border border-white/5 rounded-xl">
+          {children}
+        </div>
+      );
+    }
+
+    return (
+      <BorderGlow
+        edgeSensitivity={30}
+        glowColor="40 80 80"
+        backgroundColor="#0c0c0c"
+        borderRadius={16}
+        glowRadius={30}
+        glowIntensity={1}
+        coneSpread={25}
+        animated={false}
+        colors={["#FFD700","#FFC94D","#FFB347"]}
+      >
+        {children}
+      </BorderGlow>
+    );
+  };
+
   if (loading) {
     return <div className="text-center py-12 text-zinc-400">Loading...</div>;
   }
@@ -157,6 +167,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         </button>
       </div>
 
+      {/* FILTER */}
       <div className="bg-[#0c0c0c] p-6 rounded-xl border border-white/5 flex gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-2 text-zinc-400 w-4 h-4" />
@@ -167,17 +178,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-
-        <select
-          value={selectedTag}
-          onChange={(e) => setSelectedTag(e.target.value)}
-          className="bg-[#111] border border-zinc-800 rounded px-3 text-white"
-        >
-          <option value="">All</option>
-          {AVAILABLE_TAGS.map((t) => (
-            <option key={t}>{t}</option>
-          ))}
-        </select>
 
         <div className="flex items-center px-3 bg-[#111] border border-zinc-800 rounded text-white">
           <Eye className="w-4 h-4 mr-1" />
@@ -192,10 +192,10 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       )}
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {filteredTradeAds.map((ad, index) => (
-          <AnimatedItem key={ad.id} index={index}>
+        {filteredTradeAds.map((ad, index) => {
+          const Content = (
             <CardWrapper>
-              <div className="p-6 rounded-xl space-y-4">
+              <div className="p-6 space-y-4">
 
                 <div className="flex items-center gap-2">
                   <img
@@ -211,87 +211,59 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                   </div>
                 </div>
 
-                <div className="space-y-4">
-
-                  {/* OFFERING */}
-                  <div className="bg-[#111] p-4 rounded-xl border border-white/5">
-                    <div className="flex justify-between mb-3">
-                      <GradientText variant="gold">Offering</GradientText>
-                      <span className="text-xs text-zinc-500">
-                        {ad.itemsOffering.length} item{ad.itemsOffering.length !== 1 && "s"}
-                      </span>
-                    </div>
-
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
-                      {ad.itemsOffering.map((i, idx) => (
-                        <div
-                          key={`${i.itemName}-${idx}`}
-                          className="relative min-w-[120px] bg-[#121212] border border-white/10 rounded-xl p-3 flex flex-col items-center"
-                        >
-                          {renderItemIcon(i.emoji, i.itemName)}
-                          <p className="text-xs text-zinc-200 truncate w-full text-center">
-                            {i.itemName}
-                          </p>
-                          {i.quantity > 1 && (
-                            <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1 rounded">
-                              x{i.quantity}
-                            </span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                {/* OFFERING */}
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <GradientText variant="gold">Offering</GradientText>
+                    <span className="text-xs text-zinc-500">
+                      {ad.itemsOffering.length} item{ad.itemsOffering.length !== 1 && "s"}
+                    </span>
                   </div>
 
-                  {/* LOOKING FOR */}
-                  <div className="bg-[#111] p-4 rounded-xl border border-white/5">
-                    <div className="flex justify-between mb-3">
-                      <GradientText variant="gold">Looking For</GradientText>
-                      <span className="text-xs text-zinc-500">
-                        {ad.itemsWanted.length} item{ad.itemsWanted.length !== 1 && "s"}
-                      </span>
-                    </div>
+                  <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
+                    {ad.itemsOffering.map((i, idx) => (
+                      <div key={`${i.itemName}-${idx}`} className="min-w-[120px] bg-[#121212] rounded-xl p-3 text-center">
+                        {renderItemIcon(i.emoji, i.itemName)}
+                        <p className="text-xs text-zinc-200 truncate">{i.itemName}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
-                      {ad.itemsWanted.map((i, idx) => (
-                        <div
-                          key={`${i.itemName}-${idx}`}
-                          className="relative min-w-[120px] bg-[#121212] border border-white/10 rounded-xl p-3 flex flex-col items-center"
-                        >
-                          {renderItemIcon(i.emoji, i.itemName)}
-                          <p className="text-xs text-zinc-200 truncate w-full text-center">
-                            {i.itemName}
-                          </p>
-                          {i.quantity > 1 && (
-                            <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1 rounded">
-                              x{i.quantity}
-                            </span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                {/* LOOKING FOR */}
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <GradientText variant="gold">Looking For</GradientText>
+                    <span className="text-xs text-zinc-500">
+                      {ad.itemsWanted.length} item{ad.itemsWanted.length !== 1 && "s"}
+                    </span>
                   </div>
 
-                  {ad.tags?.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {ad.tags.map((tag, idx) => (
-                        <span
-                          key={tag + idx}
-                          className="px-2 py-1 bg-yellow-700/20 text-yellow-400 text-xs rounded"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
+                  <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
+                    {ad.itemsWanted.map((i, idx) => (
+                      <div key={`${i.itemName}-${idx}`} className="min-w-[120px] bg-[#121212] rounded-xl p-3 text-center">
+                        {renderItemIcon(i.emoji, i.itemName)}
+                        <p className="text-xs text-zinc-200 truncate">{i.itemName}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
               </div>
             </CardWrapper>
-          </AnimatedItem>
-        ))}
+          );
+
+          return isMobile ? (
+            <div key={ad.id}>{Content}</div>
+          ) : (
+            <AnimatedItem key={ad.id} index={index}>
+              {Content}
+            </AnimatedItem>
+          );
+        })}
       </div>
 
+      {/* PAGINATION */}
       <div className="flex justify-center gap-2 pt-6">
         <button
           disabled={page === 1}
@@ -324,7 +296,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
           authorAvatar={user.user_metadata?.avatar_url || null}
         />
       )}
-
     </div>
   );
 };
