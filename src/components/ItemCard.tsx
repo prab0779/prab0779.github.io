@@ -13,13 +13,24 @@ interface ItemCardProps {
   index?: number;
 }
 
+const isMobile =
+  typeof window !== "undefined" &&
+  (navigator.maxTouchPoints > 0 ||
+    window.matchMedia("(max-width: 768px)").matches);
+
+const formatValue = (v: number) => {
+  if (v >= 1_000_000_000) return (v / 1_000_000_000).toFixed(2) + "B";
+  if (v >= 1_000_000) return (v / 1_000_000).toFixed(0) + "M";
+  return v.toLocaleString();
+};
+
 const ItemCardComponent = ({
   item,
   mode,
   vizardValue,
   index = 0,
 }: ItemCardProps) => {
-  const shouldAnimate = index < 12;
+  const shouldAnimate = !isMobile && index < 12;
 
   const getDemandVariant = (d: number): "red" | "yellow" | "green" =>
     d <= 3 ? "red" : d <= 6 ? "yellow" : "green";
@@ -50,14 +61,19 @@ const ItemCardComponent = ({
     : 0;
 
   const renderIcon = (emoji: string) => {
-    if (!emoji)
+    if (!emoji) {
       return (
         <div className="w-28 h-28 flex items-center justify-center">
           <span className="text-6xl">👹</span>
         </div>
       );
+    }
 
-    if (emoji.startsWith("/") || emoji.startsWith("./") || emoji.startsWith("http")) {
+    if (
+      emoji.startsWith("/") ||
+      emoji.startsWith("./") ||
+      emoji.startsWith("http")
+    ) {
       return (
         <div className="w-28 h-28 mx-auto">
           <img
@@ -111,30 +127,32 @@ const ItemCardComponent = ({
 
             {mode === "regular" ? (
               <span className="text-white font-bold">
-                <CountUp
-                  from={shouldAnimate ? 0 : keysValue}
-                  to={keysValue}
-                  duration={shouldAnimate ? 1.2 : 0}
-                  delay={shouldAnimate ? (index % 4) * 0.08 : 0}
-                  format={(v) => {
-                    if (v >= 1_000_000_000)
-                      return (v / 1_000_000_000).toFixed(2) + "B";
-                    if (v >= 1_000_000)
-                      return (v / 1_000_000).toFixed(0) + "M";
-                    return v.toLocaleString();
-                  }}
-                />
+                {isMobile ? (
+                  formatValue(keysValue)
+                ) : (
+                  <CountUp
+                    from={shouldAnimate ? 0 : keysValue}
+                    to={keysValue}
+                    duration={shouldAnimate ? 1.2 : 0}
+                    delay={shouldAnimate ? (index % 4) * 0.08 : 0}
+                    format={formatValue}
+                  />
+                )}
               </span>
             ) : (
               <span className="font-bold">
                 <GradientText variant="purple">
-                  <CountUp
-                    from={shouldAnimate ? 0 : vizardConverted}
-                    to={vizardConverted}
-                    duration={shouldAnimate ? 1.2 : 0}
-                    delay={shouldAnimate ? (index % 4) * 0.08 : 0}
-                    format={(v) => Number(v).toFixed(2)}
-                  />
+                  {isMobile ? (
+                    vizardConverted.toFixed(2)
+                  ) : (
+                    <CountUp
+                      from={shouldAnimate ? 0 : vizardConverted}
+                      to={vizardConverted}
+                      duration={shouldAnimate ? 1.2 : 0}
+                      delay={shouldAnimate ? (index % 4) * 0.08 : 0}
+                      format={(v) => Number(v).toFixed(2)}
+                    />
+                  )}
                 </GradientText>
               </span>
             )}
@@ -168,15 +186,17 @@ const ItemCardComponent = ({
             <span className="font-bold">
               {tax.value > 0 ? (
                 <GradientText variant={tax.variant}>
-                  <CountUp
-                    from={shouldAnimate ? 0 : tax.value}
-                    to={tax.value}
-                    duration={shouldAnimate ? 1 : 0}
-                    delay={
-                      shouldAnimate ? (index % 4) * 0.08 + 0.1 : 0
-                    }
-                    format={(v) => v.toLocaleString()}
-                  />
+                  {isMobile ? (
+                    tax.value.toLocaleString()
+                  ) : (
+                    <CountUp
+                      from={shouldAnimate ? 0 : tax.value}
+                      to={tax.value}
+                      duration={shouldAnimate ? 1 : 0}
+                      delay={shouldAnimate ? (index % 4) * 0.08 + 0.1 : 0}
+                      format={(v) => v.toLocaleString()}
+                    />
+                  )}
                 </GradientText>
               ) : (
                 <GradientText variant="silver">None</GradientText>
