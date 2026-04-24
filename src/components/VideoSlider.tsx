@@ -4,6 +4,7 @@ export const VideoSlider = () => {
   const videos = [
     "AMfUlsWhtNc",
     "fS2u_FNFt84",
+    "_HoItTdLc5k",
     "PXkMKWzhNZk",
     "8mz3dUJXhdc",
     "EEAh7q1NcA8",

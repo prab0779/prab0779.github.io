@@ -28,15 +28,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }
 
   if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center px-4">
-        <div className="max-w-md w-full space-y-4 text-center">
-          <p className="text-red-400 font-semibold text-lg">Access Denied</p>
-          <p className="text-gray-400 text-sm">Your account is not in the admin list.</p>
-          <p className="text-gray-600 text-xs font-mono break-all">User ID: {user.id}</p>
-        </div>
-      </div>
-    );
+    return <Navigate to="/trade-ads" replace />;
   }
 
   return <>{children}</>;
