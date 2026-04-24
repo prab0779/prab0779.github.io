@@ -226,7 +226,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
                   <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                     {ad.itemsOffering.map((i, idx) => (
-                      <div key={idx} className="min-w-[120px] bg-[#121212] p-3 rounded-xl text-center">
+                      <div key={idx} className="min-w-[120px] bg-[#121212] p-3 rounded-xl flex flex-col items-center">
                         {renderItemIcon(i.emoji, i.itemName)}
                         <p className="text-xs text-zinc-200 truncate">{i.itemName}</p>
                       </div>
@@ -245,7 +245,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
                   <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                     {ad.itemsWanted.map((i, idx) => (
-                      <div key={idx} className="min-w-[120px] bg-[#121212] p-3 rounded-xl text-center">
+                      <div key={idx} className="min-w-[120px] bg-[#121212] p-3 rounded-xl flex flex-col items-center">
                         {renderItemIcon(i.emoji, i.itemName)}
                         <p className="text-xs text-zinc-200 truncate">{i.itemName}</p>
                       </div>
