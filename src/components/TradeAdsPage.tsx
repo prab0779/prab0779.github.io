@@ -33,7 +33,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isMobile, setIsMobile] = useState(false);
 
-  // ✅ Mobile detection fix
   useEffect(() => {
     const check = () => {
       setIsMobile(
@@ -47,12 +46,13 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   }, []);
 
   const lightweightItems = useMemo(
-    () => items.map(i => ({
-      name: i.name,
-      emoji: i.emoji,
-      category: i.category,
-      value: i.value
-    })),
+    () =>
+      items.map(i => ({
+        name: i.name,
+        emoji: i.emoji,
+        category: i.category,
+        value: i.value
+      })),
     [items]
   );
 
@@ -68,7 +68,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   const filteredTradeAds = useMemo(() => {
     const q = debouncedSearch.toLowerCase();
 
-    return tradeAds.filter((ad) =>
+    return tradeAds.filter(ad =>
       !q ||
       ad.authorName.toLowerCase().includes(q) ||
       ad.itemsOffering.some(i => i.itemName.toLowerCase().includes(q)) ||
@@ -139,7 +139,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
   return (
     <div className="max-w-5xl mx-auto px-6 pt-32 pb-16 text-center">
 
-      {/* HEADER (same style as ValueList) */}
       <SplitText
         text="Trade Ads"
         tag="h1"
@@ -164,7 +163,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         />
       </div>
 
-      {/* ACTION BUTTON */}
       <div className="mt-6 mb-8">
         <button
           onClick={() =>
@@ -176,7 +174,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         </button>
       </div>
 
-      {/* SEARCH */}
       <div className="bg-[#0c0c0c] p-4 rounded-xl border border-white/5 flex gap-4 mb-10">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-2 text-zinc-400 w-4 h-4" />
@@ -194,7 +191,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         </div>
       </div>
 
-      {/* GRID */}
       <div className="grid lg:grid-cols-2 gap-6 text-left">
         {filteredTradeAds.map((ad, index) => {
           const content = (
@@ -215,7 +211,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                   </div>
                 </div>
 
-                {/* OFFERING */}
                 <div>
                   <div className="flex justify-between mb-2">
                     <GradientText variant="gold">Offering</GradientText>
@@ -226,15 +221,26 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
                   <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                     {ad.itemsOffering.map((i, idx) => (
-                      <div key={idx} className="min-w-[120px] bg-[#121212] p-3 rounded-xl flex flex-col items-center">
+                      <div
+                        key={`${i.itemName}-${idx}`}
+                        className="relative min-w-[120px] bg-[#121212] p-3 rounded-xl flex flex-col items-center"
+                      >
                         {renderItemIcon(i.emoji, i.itemName)}
-                        <p className="text-xs text-zinc-200 truncate w-full text-center">{i.itemName}</p>
+
+                        <p className="text-xs text-zinc-200 truncate w-full text-center">
+                          {i.itemName}
+                        </p>
+
+                        {i.quantity > 1 && (
+                          <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1.5 py-0.5 rounded font-bold">
+                            x{i.quantity}
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* LOOKING FOR */}
                 <div>
                   <div className="flex justify-between mb-2">
                     <GradientText variant="gold">Looking For</GradientText>
@@ -245,9 +251,21 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
                   <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
                     {ad.itemsWanted.map((i, idx) => (
-                      <div key={idx} className="min-w-[120px] bg-[#121212] p-3 rounded-xl flex flex-col items-center">
+                      <div
+                        key={`${i.itemName}-${idx}`}
+                        className="relative min-w-[120px] bg-[#121212] p-3 rounded-xl flex flex-col items-center"
+                      >
                         {renderItemIcon(i.emoji, i.itemName)}
-                        <p className="text-xs text-zinc-200 truncate w-full text-center">{i.itemName}</p>
+
+                        <p className="text-xs text-zinc-200 truncate w-full text-center">
+                          {i.itemName}
+                        </p>
+
+                        {i.quantity > 1 && (
+                          <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1.5 py-0.5 rounded font-bold">
+                            x{i.quantity}
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -267,7 +285,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         })}
       </div>
 
-      {/* PAGINATION */}
       <div className="flex justify-center gap-2 pt-10">
         <button
           disabled={page === 1}
@@ -293,14 +310,13 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
       {showCreateForm && user && (
         <CreateTradeAdModal
           items={lightweightItems}
-          tags={[]} // removed tags
+          tags={[]}
           onClose={() => setShowCreateForm(false)}
           onSubmit={createTradeAd}
           authorName={user.user_metadata?.name || "User"}
           authorAvatar={user.user_metadata?.avatar_url || null}
         />
       )}
-
     </div>
   );
 };
