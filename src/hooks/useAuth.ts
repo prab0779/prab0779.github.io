@@ -28,10 +28,10 @@ export const useAuth = () => {
   }, []);
 
   const signInWithDiscord = async () => {
-    await supabase.auth.signInWithOAuth({
+    return supabase.auth.signInWithOAuth({
       provider: "discord",
       options: {
-        scope: "identify",
+        scopes: "identify",
         redirectTo: `${window.location.origin}/`,
       },
     });

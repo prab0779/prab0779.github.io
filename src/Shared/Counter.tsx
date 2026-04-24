@@ -1,6 +1,5 @@
 import { MotionValue, motion, useSpring, useTransform } from 'motion/react';
-import type React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 type PlaceValue = number | '.';
 
@@ -10,27 +9,32 @@ interface NumberProps {
   height: number;
 }
 
-function Number({ mv, number, height }: NumberProps) {
+// Only render nearby digits instead of all 10
+const DIGIT_RANGE = [-2, -1, 0, 1, 2];
+
+const Number = React.memo(function Number({ mv, number, height }: NumberProps) {
   const y = useTransform(mv, latest => {
     const placeValue = latest % 10;
-    const offset = (10 + number - placeValue) % 10;
-    let memo = offset * height;
-    if (offset > 5) {
-      memo -= 10 * height;
-    }
-    return memo;
+    const diff = number - placeValue;
+    return diff * height;
   });
 
-  const baseStyle: React.CSSProperties = {
-    position: 'absolute',
-    inset: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  };
-
-  return <motion.span style={{ ...baseStyle, y }}>{number}</motion.span>;
-}
+  return (
+    <motion.span
+      style={{
+        position: 'absolute',
+        inset: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        y,
+        willChange: 'transform'
+      }}
+    >
+      {number}
+    </motion.span>
+  );
+});
 
 function normalizeNearInteger(num: number): number {
   const nearest = Math.round(num);
@@ -50,53 +54,71 @@ interface DigitProps {
   digitStyle?: React.CSSProperties;
 }
 
-function Digit({ place, value, height, digitStyle }: DigitProps) {
-  // Decimal point digit
+const Digit = React.memo(function Digit({
+  place,
+  value,
+  height,
+  digitStyle
+}: DigitProps) {
   if (place === '.') {
     return (
       <span
-        className="relative inline-flex items-center justify-center"
-        style={{ height, width: 'fit-content', ...digitStyle }}
+        style={{
+          height,
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
       >
         .
       </span>
     );
   }
 
-  // Numeric digit
   const valueRoundedToPlace = getValueRoundedToPlace(value, place);
-  const animatedValue = useSpring(valueRoundedToPlace);
+
+  const animatedValue = useSpring(valueRoundedToPlace, {
+    stiffness: 120,
+    damping: 20,
+    mass: 0.8
+  });
 
   useEffect(() => {
     animatedValue.set(valueRoundedToPlace);
-  }, [animatedValue, valueRoundedToPlace]);
+  }, [valueRoundedToPlace]);
 
-  const defaultStyle: React.CSSProperties = {
-    height,
-    position: 'relative',
-    width: '1ch',
-    fontVariantNumeric: 'tabular-nums'
-  };
+  const base = valueRoundedToPlace % 10;
 
   return (
-    <span className="relative inline-flex overflow-hidden" style={{ ...defaultStyle, ...digitStyle }}>
-      {Array.from({ length: 10 }, (_, i) => (
-        <Number key={i} mv={animatedValue} number={i} height={height} />
-      ))}
+    <span
+      style={{
+        height,
+        width: '1ch',
+        position: 'relative',
+        overflow: 'hidden',
+        fontVariantNumeric: 'tabular-nums',
+        ...digitStyle
+      }}
+    >
+      {DIGIT_RANGE.map(offset => {
+        const num = (base + offset + 10) % 10;
+        return (
+          <Number
+            key={offset}
+            mv={animatedValue}
+            number={num}
+            height={height}
+          />
+        );
+      })}
     </span>
   );
-}
+});
 
 interface CounterProps {
   value: number;
   fontSize?: number;
   padding?: number;
-  /**
-   * An array of place values that determines which digit positions
-   * should be displayed. For decimal places, use "." to represent
-   * the decimal point. Leave this prop empty to enable automatic
-   * detection based on the current value.
-   */
   places?: PlaceValue[];
   gap?: number;
   borderRadius?: number;
@@ -115,21 +137,10 @@ interface CounterProps {
 
 export default function Counter({
   value,
-  fontSize = 10,
+  fontSize,
   padding = 0,
-  places = [...value.toString()].map((ch, i, a) => {
-    if (ch === '.') {
-      return '.';
-    }
-
-    const dotIndex = a.indexOf('.');
-    const isInteger = dotIndex === -1;
-
-    const exponent = isInteger ? a.length - i - 1 : i < dotIndex ? dotIndex - i - 1 : -(i - dotIndex);
-
-    return 10 ** exponent;
-  }),
-  gap = 8,
+  places,
+  gap,
   borderRadius = 4,
   horizontalPadding = 8,
   textColor = '#e5e7eb',
@@ -137,13 +148,52 @@ export default function Counter({
   containerStyle,
   counterStyle,
   digitStyle,
-  gradientHeight = 16,
+  gradientHeight,
   gradientFrom = 'black',
   gradientTo = 'transparent',
   topGradientStyle,
   bottomGradientStyle
 }: CounterProps) {
-  const height = fontSize + padding;
+  // 📱 Mobile responsive sizing
+  const isMobile =
+    typeof window !== 'undefined' && window.innerWidth < 640;
+
+  const responsiveFontSize =
+    fontSize ??
+    (typeof window !== 'undefined'
+      ? Math.max(14, Math.min(22, window.innerWidth * 0.05))
+      : 16);
+
+  const responsiveGap =
+    gap ??
+    (typeof window !== 'undefined'
+      ? Math.max(4, window.innerWidth * 0.015)
+      : 6);
+
+  const responsiveGradientHeight =
+    gradientHeight ?? (isMobile ? 8 : 16);
+
+  const height = responsiveFontSize + padding;
+
+  // Auto-detect places
+  const computedPlaces = useMemo(() => {
+    if (places) return places;
+
+    return [...value.toString()].map((ch, i, arr) => {
+      if (ch === '.') return '.';
+
+      const dotIndex = arr.indexOf('.');
+      const isInteger = dotIndex === -1;
+
+      const exponent = isInteger
+        ? arr.length - i - 1
+        : i < dotIndex
+        ? dotIndex - i - 1
+        : -(i - dotIndex);
+
+      return 10 ** exponent;
+    });
+  }, [places, value]);
 
   const defaultContainerStyle: React.CSSProperties = {
     position: 'relative',
@@ -151,9 +201,9 @@ export default function Counter({
   };
 
   const defaultCounterStyle: React.CSSProperties = {
-    fontSize,
+    fontSize: responsiveFontSize,
     display: 'flex',
-    gap,
+    gap: responsiveGap,
     overflow: 'hidden',
     borderRadius,
     paddingLeft: horizontalPadding,
@@ -161,7 +211,7 @@ export default function Counter({
     lineHeight: 1,
     color: textColor,
     fontWeight,
-    direction: "ltr"
+    direction: 'ltr'
   };
 
   const gradientContainerStyle: React.CSSProperties = {
@@ -174,22 +224,29 @@ export default function Counter({
   };
 
   const defaultTopGradientStyle: React.CSSProperties = {
-    height: gradientHeight,
+    height: responsiveGradientHeight,
     background: `linear-gradient(to bottom, ${gradientFrom}, ${gradientTo})`
   };
 
   const defaultBottomGradientStyle: React.CSSProperties = {
-    height: gradientHeight,
+    height: responsiveGradientHeight,
     background: `linear-gradient(to top, ${gradientFrom}, ${gradientTo})`
   };
 
   return (
     <span style={{ ...defaultContainerStyle, ...containerStyle }}>
       <span style={{ ...defaultCounterStyle, ...counterStyle }}>
-        {places.map(place => (
-          <Digit key={place} place={place} value={value} height={height} digitStyle={digitStyle} />
+        {computedPlaces.map(place => (
+          <Digit
+            key={place}
+            place={place}
+            value={value}
+            height={height}
+            digitStyle={digitStyle}
+          />
         ))}
       </span>
+
       <span style={gradientContainerStyle}>
         <span style={topGradientStyle ?? defaultTopGradientStyle} />
         <span style={bottomGradientStyle ?? defaultBottomGradientStyle} />
