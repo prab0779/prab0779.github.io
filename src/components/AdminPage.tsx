@@ -1,11 +1,6 @@
 import React, { useState, useMemo, useCallback, useContext, memo } from 'react';
 import { PresenceContext } from '../components/OnlinePresenceProvider';
-import {
-  Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle,
-  History, TrendingUp, TrendingDown, Minus, Search, Filter,
-  ArrowUpDown, Users, Eye, ImageIcon, FolderOpen, LayoutGrid,
-  Settings, Package, CreditCard as EditIcon, ShieldAlert,
-} from 'lucide-react';
+import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, Image as ImageIcon, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useItems } from '../hooks/useItems';
 import { useItemsContext } from '../contexts/ItemsContext';
