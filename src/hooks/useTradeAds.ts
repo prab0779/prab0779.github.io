@@ -65,15 +65,17 @@ export const useTradeAds = () => {
 
       const userId = sessionData.session.user.id;
 
-      const { data: recentAd, error: recentError } = await supabase
+      const { data: recentAds, error: recentError } = await supabase
         .from("trade_ads")
         .select("created_at")
         .eq("user_id", userId)
         .eq("status", "active")
         .order("created_at", { ascending: false })
-        .maybeSingle();
+        .limit(1);
 
       if (recentError) throw recentError;
+
+      const recentAd = recentAds?.[0] ?? null;
 
       const COOLDOWN_MINUTES = 5;
       if (recentAd) {
