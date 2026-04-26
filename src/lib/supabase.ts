@@ -15,18 +15,9 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-const ITEM_IMAGES_BUCKET = 'Item Images';
-const imageUrlCache = new Map<string, string>();
-
 export function getItemImageUrl(emoji: string): string {
   if (!emoji) return '';
   if (emoji.startsWith('http')) return emoji;
-
-  const cached = imageUrlCache.get(emoji);
-  if (cached) return cached;
-
   const filename = emoji.replace(/^\.?\//, '');
-  const { data } = supabase.storage.from(ITEM_IMAGES_BUCKET).getPublicUrl(filename);
-  imageUrlCache.set(emoji, data.publicUrl);
-  return data.publicUrl;
+  return `/${filename}`;
 }
