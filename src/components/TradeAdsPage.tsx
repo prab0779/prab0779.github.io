@@ -155,7 +155,7 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
 
       <div className="mt-6 max-w-xl mx-auto min-h-[80px]">
         <BlurText
-          text={`Browse and post trade offers from players.\n\nFind upgrades, downgrades, and fair deals.`}
+          text={`Browse and post trade offers from players.\n\nFind upgrades, downgrades, and fair deals. ( New items added )`}
           delay={120}
           animateBy="words"
           direction="top"
