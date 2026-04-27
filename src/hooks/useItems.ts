@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabase";
 import { Item } from "../types/Item";
 
 const CACHE_KEY = "aotr_items_cache_v3";
-const CACHE_TTL = 60 * 60 * 1000; // 1 minute
+const CACHE_TTL = 1 * 60 * 1000; // 1 minute
 const BATCH_SIZE = 1000; // PostgREST default max
 
 const SELECT_COLS = `
