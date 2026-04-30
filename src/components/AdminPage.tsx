@@ -1,12 +1,11 @@
 import React, { useState, useMemo, useCallback, useContext, memo } from 'react';
 import { PresenceContext } from '../components/OnlinePresenceProvider';
-import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, Image as ImageIcon, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert } from 'lucide-react';
+import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useItems } from '../hooks/useItems';
 import { useItemsContext } from '../contexts/ItemsContext';
 import { useValueChanges } from '../hooks/useValueChanges';
 import { StockRotationAdmin } from './StockRotationAdmin';
-import { ImageManager } from './ImageManager';
 import { getItemImageUrl } from '../lib/supabase';
 import { Item } from '../types/Item';
 
@@ -15,7 +14,7 @@ interface AdminPageProps {
   onMaintenanceModeChange: (enabled: boolean) => void;
 }
 
-type View = 'items' | 'changes' | 'images' | 'settings' | 'stock';
+type View = 'items' | 'changes' | 'settings' | 'stock';
 
 // ─── tiny reusable primitives ───────────────────────────────────────────────
 
@@ -109,8 +108,6 @@ const ItemForm: React.FC<{
     rarity: item?.rarity ?? null,
     emoji: item?.emoji ?? '⚔️',
   });
-  const [showImagePicker, setShowImagePicker] = useState(false);
-
   const set = useCallback(<K extends keyof typeof formData>(key: K, val: (typeof formData)[K]) =>
     setFormData((p) => ({ ...p, [key]: val })), []);
 
@@ -118,19 +115,6 @@ const ItemForm: React.FC<{
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      {showImagePicker ? (
-        <div className="bg-[#0d0d10] rounded-2xl border border-[#6f572c]/60 shadow-[0_0_60px_rgba(196,160,74,0.08)] w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d10] z-10">
-            <span className="text-sm font-semibold text-white/80">Choose from Storage</span>
-            <button onClick={() => setShowImagePicker(false)} className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="p-5">
-            <ImageManager selectionMode selectedImage={formData.emoji} onSelectImage={(f) => { set('emoji', f); setShowImagePicker(false); }} />
-          </div>
-        </div>
-      ) : (
         <div className="bg-[#0d0d10] rounded-2xl border border-[#6f572c]/60 shadow-[0_0_60px_rgba(196,160,74,0.08)] w-full max-w-2xl max-h-[90vh] overflow-y-auto">
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d10] z-10">
@@ -191,7 +175,6 @@ const ItemForm: React.FC<{
                 <input type="number" min="0" value={formData.goldTax ?? ''} onChange={(e) => set('goldTax', e.target.value ? parseInt(e.target.value) : null)} className={inputCls} />
               </Field>
 
-              {/* Image / Emoji picker */}
               <Field label="Image / Emoji" span>
                 <div className="flex items-center gap-2">
                   <input
@@ -201,14 +184,6 @@ const ItemForm: React.FC<{
                     className={`${inputCls} flex-1 font-mono text-xs`}
                     placeholder="🎯 or /image.png"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowImagePicker(true)}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#6f572c]/60 bg-[#4b3a1d]/30 text-[#c4a04a] hover:bg-[#4b3a1d]/60 transition-colors text-xs font-medium whitespace-nowrap"
-                  >
-                    <FolderOpen className="w-3.5 h-3.5" />
-                    Browse
-                  </button>
                   <div className="w-9 h-9 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center flex-shrink-0">
                     {renderIcon(formData.emoji, formData.name)}
                   </div>
@@ -232,7 +207,6 @@ const ItemForm: React.FC<{
             </div>
           </form>
         </div>
-      )}
     </div>
   );
 };
@@ -309,7 +283,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const navItems: { id: View; label: string; icon: React.ReactNode; count?: number }[] = [
     { id: 'items', label: 'Items', icon: <Package className="w-4 h-4" />, count: items.length },
     { id: 'changes', label: 'Changes', icon: <History className="w-4 h-4" />, count: valueChanges.length },
-    { id: 'images', label: 'Images', icon: <ImageIcon className="w-4 h-4" /> },
     { id: 'stock', label: 'Stock', icon: <LayoutGrid className="w-4 h-4" /> },
     { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
   ];
@@ -409,9 +382,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
 
         {/* STOCK */}
         {currentView === 'stock' && <StockRotationAdmin />}
-
-        {/* IMAGES */}
-        {currentView === 'images' && <ImageManager />}
 
         {/* SETTINGS */}
         {currentView === 'settings' && (
