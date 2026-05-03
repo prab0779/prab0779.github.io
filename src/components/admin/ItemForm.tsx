@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { Save, X } from 'lucide-react';
+import { Save, X, FolderOpen } from 'lucide-react';
+import { ImageManager } from '../ImageManager';
 import { Item } from '../../types/Item';
 import { Field, ItemIcon, inputCls, selectCls } from './AdminShared';
 
@@ -24,6 +25,8 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
     rarity: item?.rarity ?? null,
     emoji: item?.emoji ?? '⚔️',
   });
+  const [showImagePicker, setShowImagePicker] = useState(false);
+
   const set = useCallback(
     <K extends keyof typeof formData>(key: K, val: (typeof formData)[K]) =>
       setFormData((p) => ({ ...p, [key]: val })),
@@ -37,6 +40,26 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      {showImagePicker ? (
+        <div className="bg-[#0d0d10] rounded-2xl border border-[#6f572c]/60 shadow-[0_0_60px_rgba(196,160,74,0.08)] w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d10] z-10">
+            <span className="text-sm font-semibold text-white/80">Choose from Storage</span>
+            <button
+              onClick={() => setShowImagePicker(false)}
+              className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="p-5">
+            <ImageManager
+              selectionMode
+              selectedImage={formData.emoji}
+              onSelectImage={(f) => { set('emoji', f); setShowImagePicker(false); }}
+            />
+          </div>
+        </div>
+      ) : (
         <div className="bg-[#0d0d10] rounded-2xl border border-[#6f572c]/60 shadow-[0_0_60px_rgba(196,160,74,0.08)] w-full max-w-2xl max-h-[90vh] overflow-y-auto">
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d10] z-10">
@@ -174,6 +197,14 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
                     className={`${inputCls} flex-1 font-mono text-xs`}
                     placeholder="🎯 or /image.png"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowImagePicker(true)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#6f572c]/60 bg-[#4b3a1d]/30 text-[#c4a04a] hover:bg-[#4b3a1d]/60 transition-colors text-xs font-medium whitespace-nowrap"
+                  >
+                    <FolderOpen className="w-3.5 h-3.5" />
+                    Browse
+                  </button>
                   <div className="w-9 h-9 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center flex-shrink-0">
                     <ItemIcon emoji={formData.emoji} name={formData.name} />
                   </div>
@@ -210,6 +241,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
             </div>
           </form>
         </div>
+      )}
     </div>
   );
 };
