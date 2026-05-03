@@ -86,7 +86,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           </div>
 
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_30%_40%,rgba(255,215,120,0.08),transparent_60%)]" />
-          <div className="pointer-events-none absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-[#090A0F]" />
+          <div className="pointer-events-none absolute bottom-0 left-0 w-full h-16 bg-gradient-to-b from-transparent to-[#090A0F]" />
 
           <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div className="text-center lg:text-left space-y-4">
