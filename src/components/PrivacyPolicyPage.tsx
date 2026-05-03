@@ -46,7 +46,7 @@ export const PrivacyPolicyPage: React.FC = () => {
         <p>We may collect the following types of information:</p>
         <ul className="list-disc list-inside space-y-1 ml-2">
           <li>
-            <strong className="text-gray-300">Account information</strong> — email address and password when you
+            <strong className="text-gray-300">Account information</strong> — email address when you
             register or log in.
           </li>
           <li>
@@ -72,7 +72,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           <li>Display trade advertisements you create.</li>
           <li>Authenticate your account securely.</li>
           <li>Improve the website experience through aggregate analytics.</li>
-          <li>Display relevant advertisements via Google AdSense.</li>
+        
         </ul>
         <p>We do not sell, rent, or trade your personal information to third parties.</p>
       </Section>
