@@ -28,6 +28,12 @@ const AdminPage = lazy(() =>
 const AuthCallback = lazy(() =>
   import("./routes/auth/callback").then(m => ({ default: m.default }))
 );
+const PrivacyPolicyPage = lazy(() =>
+  import("./components/PrivacyPolicyPage").then(m => ({ default: m.PrivacyPolicyPage }))
+);
+const TermsOfServicePage = lazy(() =>
+  import("./components/TermsOfServicePage").then(m => ({ default: m.TermsOfServicePage }))
+);
 
 /* Loading */
 const LoadingFallback = () => (
@@ -146,6 +152,8 @@ export const AppContent: React.FC = () => {
                   <Route path="/value-changes" element={<ValueChangesPage />} />
                   <Route path="/trade-ads" element={<TradeAdsPage items={items} />} />
                   <Route path="/auth/callback" element={<AuthCallback />} />
+                  <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                  <Route path="/terms" element={<TermsOfServicePage />} />
 
                   <Route
                     path="/admin"

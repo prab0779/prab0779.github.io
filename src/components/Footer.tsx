@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, Mail, Home, List, Calculator, History, Shield } from 'lucide-react';
+import { ExternalLink, Mail, Home, List, Calculator, History, Shield, ScrollText, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import GradientText from '../Shared/GradientText';
 
@@ -107,6 +107,18 @@ export const Footer: React.FC = () => {
                   <Mail className="w-4 h-4" />
                   <GradientText variant="silver">Contact Us</GradientText>
                 </a>
+              </li>
+              <li>
+                <Link to="/privacy" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition">
+                  <Lock className="w-4 h-4" />
+                  <GradientText variant="silver">Privacy Policy</GradientText>
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition">
+                  <ScrollText className="w-4 h-4" />
+                  <GradientText variant="silver">Terms of Service</GradientText>
+                </Link>
               </li>
             </ul>
           </div>
