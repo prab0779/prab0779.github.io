@@ -33,8 +33,8 @@ const ShapeGrid: React.FC<ShapeGridProps> = ({
     const dpr = window.devicePixelRatio || 1;
 
     const resizeCanvas = () => {
-      const width = canvas.offsetWidth;
-      const height = canvas.offsetHeight;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
 
       canvas.width = width * dpr;
       canvas.height = height * dpr;
