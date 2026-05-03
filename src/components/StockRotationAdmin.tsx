@@ -1,7 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "../lib/supabase";
+import { getItemImageUrl } from "../lib/supabase";
 import { useStockRotation, StockRotation } from "../hooks/useStockRotation";
 import { useItemsContext } from "../contexts/ItemsContext";
+
+const ItemIcon: React.FC<{ emoji: string; name: string }> = ({ emoji, name }) => {
+  const isImage = emoji.startsWith("/") || emoji.startsWith("./") || emoji.startsWith("http");
+  if (isImage) {
+    return <img src={getItemImageUrl(emoji)} alt={name} className="w-6 h-6 object-contain flex-shrink-0" />;
+  }
+  return <span className="text-lg leading-none flex-shrink-0">{emoji}</span>;
+};
 
 type SlotPickerProps = {
   label: string;
@@ -51,7 +60,7 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ label, value, items, onChange }
         <span className="flex items-center gap-2 truncate">
           {selected ? (
             <>
-              <span>{selected.emoji}</span>
+              <ItemIcon emoji={selected.emoji} name={selected.name} />
               <span className="truncate">{selected.name}</span>
             </>
           ) : (
@@ -94,7 +103,7 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ label, value, items, onChange }
                     it.id === value ? "bg-gray-900" : ""
                   }`}
                 >
-                  <span>{it.emoji}</span>
+                  <ItemIcon emoji={it.emoji} name={it.name} />
                   <span className="text-white truncate">{it.name}</span>
                 </button>
               ))
