@@ -73,7 +73,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
       <div className="relative z-10">
         <section className="relative overflow-hidden w-full pt-[200px] md:pt-[500px] pb-[140px] md:pb-[200px]">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-screen h-[150%] z-0 opacity-40 pointer-events-none mask-image-[linear-gradient(to_bottom,black,black,transparent)]">
+          <div className="absolute inset-0 left-1/2 -translate-x-1/2 w-screen h-full z-0 opacity-40 pointer-events-none mask-image-[linear-gradient(to_bottom,black,black,transparent)]">
             <ShapeGrid
               speed={0.5}
               squareSize={40}
