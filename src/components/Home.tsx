@@ -166,7 +166,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           </div>
 
           {stage >= 3 && (
-            <div className="relative z-10 w-full flex justify-center mt-[90px] md:mt-[150px]">
+            <div className="relative z-10 w-full flex justify-center mt-16 md:mt-24">
               <Dock items={DockItems} />
             </div>
           )}
