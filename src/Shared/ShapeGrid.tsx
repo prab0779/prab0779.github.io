@@ -23,7 +23,6 @@ const ShapeGrid: React.FC<ShapeGridProps> = ({
   const hoveredSquareRef = useRef<{ x: number; y: number } | null>(null);
   const trailCells = useRef<{ x: number; y: number }[]>([]);
   const cellOpacities = useRef<Map<string, number>>(new Map());
-  const gradientRef = useRef<CanvasGradient | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -44,17 +43,6 @@ const ShapeGrid: React.FC<ShapeGridProps> = ({
       canvas.style.height = height + 'px';
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      gradientRef.current = ctx.createRadialGradient(
-        width / 2,
-        height / 2,
-        0,
-        width / 2,
-        height / 2,
-        Math.sqrt(width ** 2 + height ** 2) / 2
-      );
-      gradientRef.current.addColorStop(0, 'rgba(0,0,0,0)');
-      gradientRef.current.addColorStop(1, '#060010');
     };
 
     resizeCanvas();
@@ -123,10 +111,14 @@ const ShapeGrid: React.FC<ShapeGridProps> = ({
         }
       }
 
-      if (gradientRef.current) {
-        ctx.fillStyle = gradientRef.current;
-        ctx.fillRect(0, 0, width, height);
-      }
+      // ✅ SOFT VERTICAL FADE (FIXED)
+      const gradient = ctx.createLinearGradient(0, 0, 0, height);
+      gradient.addColorStop(0, 'rgba(0,0,0,0)');
+      gradient.addColorStop(0.75, 'rgba(0,0,0,0)');
+      gradient.addColorStop(1, 'rgba(6,0,16,0.4)');
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
     };
 
     let lastTime = 0;
