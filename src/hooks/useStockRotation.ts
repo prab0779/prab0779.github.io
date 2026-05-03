@@ -6,6 +6,7 @@ export interface StockRotation {
   slot2_id: string | null;
   slot3_id: string | null;
   slot4_id: string | null;
+  expires_at: string | null;
 }
 
 const EMPTY: StockRotation = {
@@ -13,6 +14,7 @@ const EMPTY: StockRotation = {
   slot2_id: null,
   slot3_id: null,
   slot4_id: null,
+  expires_at: null,
 };
 
 export const useStockRotation = () => {
@@ -25,7 +27,7 @@ export const useStockRotation = () => {
 
     const { data, error } = await supabase
       .from("stock_rotation")
-      .select("slot1_id, slot2_id, slot3_id, slot4_id")
+      .select("slot1_id, slot2_id, slot3_id, slot4_id, expires_at")
       .eq("id", 1)
       .maybeSingle();
 
@@ -37,7 +39,6 @@ export const useStockRotation = () => {
     }
 
     if (!data) {
-      // row missing; keep empty (you can upsert later if you want)
       setRotation(EMPTY);
       setLoading(false);
       return;
@@ -48,25 +49,25 @@ export const useStockRotation = () => {
       slot2_id: data.slot2_id ?? null,
       slot3_id: data.slot3_id ?? null,
       slot4_id: data.slot4_id ?? null,
+      expires_at: data.expires_at ?? null,
     });
 
     setLoading(false);
   }, []);
 
-  const saveRotation = useCallback(async (updated: StockRotation) => {
+  const saveRotation = useCallback(async (updated: Omit<StockRotation, 'expires_at'>) => {
     setSaving(true);
 
-    // UPDATE row id=1 (you already have it)
+    const expires_at = new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString();
+
     const { data, error } = await supabase
       .from("stock_rotation")
-      .update(updated)
+      .update({ ...updated, expires_at })
       .eq("id", 1)
-      .select("slot1_id, slot2_id, slot3_id, slot4_id")
+      .select("slot1_id, slot2_id, slot3_id, slot4_id, expires_at")
       .single();
 
     setSaving(false);
-
-    console.log("saveRotation:", { data, error });
 
     if (error) {
       console.error("saveRotation error:", error);
@@ -79,13 +80,13 @@ export const useStockRotation = () => {
         slot2_id: data.slot2_id ?? null,
         slot3_id: data.slot3_id ?? null,
         slot4_id: data.slot4_id ?? null,
+        expires_at: data.expires_at ?? null,
       });
     }
 
     return { error: null };
   }, []);
 
-  // Initial load + realtime updates
   useEffect(() => {
     loadRotation();
 
@@ -94,19 +95,19 @@ export const useStockRotation = () => {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "stock_rotation", filter: "id=eq.1" },
-        () => {
-          loadRotation();
-        }
+        () => { loadRotation(); }
       )
       .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [loadRotation]);
+
+  const isExpired =
+    !rotation.expires_at || new Date(rotation.expires_at) <= new Date();
 
   return {
     rotation,
+    isExpired,
     loading,
     saving,
     saveRotation,

@@ -23,13 +23,9 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ label, value, items, onChange }
   const filtered = useMemo(() => {
     const t = term.trim().toLowerCase();
     if (!t) return items;
-    return items.filter((i) => {
-      const name = i.name.toLowerCase();
-      return name.includes(t);
-    });
+    return items.filter((i) => i.name.toLowerCase().includes(t));
   }, [items, term]);
 
-  // close on outside click
   useEffect(() => {
     const onDown = (e: MouseEvent) => {
       if (!containerRef.current) return;
@@ -39,7 +35,6 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ label, value, items, onChange }
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
 
-  // when opening, reset search
   useEffect(() => {
     if (open) setTerm("");
   }, [open]);
@@ -48,7 +43,6 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ label, value, items, onChange }
     <div ref={containerRef} className="bg-gray-900 p-4 rounded-lg border border-gray-700">
       <label className="block text-gray-300 text-sm mb-2">{label}</label>
 
-      {/* Trigger */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -67,7 +61,6 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ label, value, items, onChange }
         <span className="text-gray-400">{open ? "▲" : "▼"}</span>
       </button>
 
-      {/* Dropdown */}
       {open && (
         <div className="mt-2 bg-gray-950 border border-gray-800 rounded-lg overflow-hidden">
           <div className="p-2 border-b border-gray-800">
@@ -83,10 +76,7 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ label, value, items, onChange }
           <div className="max-h-64 overflow-y-auto">
             <button
               type="button"
-              onClick={() => {
-                onChange(null);
-                setOpen(false);
-              }}
+              onClick={() => { onChange(null); setOpen(false); }}
               className="w-full text-left px-3 py-2 hover:bg-gray-900 text-gray-300 border-b border-gray-900"
             >
               None
@@ -99,10 +89,7 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ label, value, items, onChange }
                 <button
                   key={it.id}
                   type="button"
-                  onClick={() => {
-                    onChange(it.id);
-                    setOpen(false);
-                  }}
+                  onClick={() => { onChange(it.id); setOpen(false); }}
                   className={`w-full text-left px-3 py-2 hover:bg-gray-900 flex items-center gap-2 ${
                     it.id === value ? "bg-gray-900" : ""
                   }`}
@@ -120,20 +107,18 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ label, value, items, onChange }
 };
 
 export const StockRotationAdmin: React.FC = () => {
-  const { rotation, loading, saving, saveRotation, reload } = useStockRotation();
+  const { rotation, isExpired, loading, saving, saveRotation, reload } = useStockRotation();
   const { items } = useItemsContext();
 
-  const [draft, setDraft] = useState<StockRotation>(rotation);
+  const [draft, setDraft] = useState<Omit<StockRotation, 'expires_at'>>(rotation);
   const [msg, setMsg] = useState<string | null>(null);
 
-  // Debug: confirm session
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       console.log("SESSION:", data.session);
     });
   }, []);
 
-  // Keep draft in sync when DB updates
   useEffect(() => {
     setDraft(rotation);
   }, [rotation]);
@@ -142,27 +127,33 @@ export const StockRotationAdmin: React.FC = () => {
     setDraft((prev) => ({
       ...prev,
       [`slot${index + 1}_id`]: value,
-    }) as StockRotation);
+    }) as Omit<StockRotation, 'expires_at'>);
   };
 
   const onSave = async () => {
     setMsg(null);
 
-    // Optional: prevent duplicates across slots
     const chosen = [draft.slot1_id, draft.slot2_id, draft.slot3_id, draft.slot4_id].filter(Boolean);
     const unique = new Set(chosen);
     if (unique.size !== chosen.length) {
-      setMsg("❌ You can't use the same item in multiple slots.");
+      setMsg("You can't use the same item in multiple slots.");
       return;
     }
 
     const { error } = await saveRotation(draft);
     if (error) {
-      setMsg(`❌ Save failed: ${error.message ?? String(error)}`);
+      setMsg(`Save failed: ${error.message ?? String(error)}`);
       return;
     }
-    setMsg("✅ Saved!");
+    setMsg("Saved! Stock will expire in 6 hours.");
     await reload();
+  };
+
+  const expiryLabel = () => {
+    if (!rotation.expires_at) return null;
+    const exp = new Date(rotation.expires_at);
+    if (exp <= new Date()) return "Expired — stock is showing as missing.";
+    return `Active until ${exp.toLocaleString()} (6h from last save)`;
   };
 
   if (loading) return <p className="text-gray-300">Loading stock rotation...</p>;
@@ -173,9 +164,19 @@ export const StockRotationAdmin: React.FC = () => {
         Stock Rotation
       </h1>
 
-      <p className="text-gray-400 mb-6">
-        Select the 4 cosmetic items shown in the Cosmetic Market.
+      <p className="text-gray-400 mb-2">
+        Select the 4 cosmetic items shown in the Cosmetic Market. Items automatically reset to missing after 6 hours.
       </p>
+
+      {expiryLabel() && (
+        <div className={`mb-4 px-4 py-2 rounded border text-sm ${
+          isExpired
+            ? "border-red-800/60 bg-red-900/20 text-red-400"
+            : "border-emerald-800/60 bg-emerald-900/20 text-emerald-400"
+        }`}>
+          {expiryLabel()}
+        </div>
+      )}
 
       {msg && (
         <div className="mb-4 px-4 py-3 rounded border border-gray-700 bg-gray-900 text-gray-200">
@@ -184,30 +185,10 @@ export const StockRotationAdmin: React.FC = () => {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <SlotPicker
-          label="Slot 1"
-          value={draft.slot1_id}
-          items={items}
-          onChange={(id) => updateSlot(0, id)}
-        />
-        <SlotPicker
-          label="Slot 2"
-          value={draft.slot2_id}
-          items={items}
-          onChange={(id) => updateSlot(1, id)}
-        />
-        <SlotPicker
-          label="Slot 3"
-          value={draft.slot3_id}
-          items={items}
-          onChange={(id) => updateSlot(2, id)}
-        />
-        <SlotPicker
-          label="Slot 4"
-          value={draft.slot4_id}
-          items={items}
-          onChange={(id) => updateSlot(3, id)}
-        />
+        <SlotPicker label="Slot 1" value={draft.slot1_id} items={items} onChange={(id) => updateSlot(0, id)} />
+        <SlotPicker label="Slot 2" value={draft.slot2_id} items={items} onChange={(id) => updateSlot(1, id)} />
+        <SlotPicker label="Slot 3" value={draft.slot3_id} items={items} onChange={(id) => updateSlot(2, id)} />
+        <SlotPicker label="Slot 4" value={draft.slot4_id} items={items} onChange={(id) => updateSlot(3, id)} />
       </div>
 
       <button
@@ -217,6 +198,10 @@ export const StockRotationAdmin: React.FC = () => {
       >
         {saving ? "Saving..." : "Save Changes"}
       </button>
+
+      <p className="mt-3 text-xs text-gray-500">
+        Saving sets a 6-hour expiry. When it expires, all slots automatically show as missing until you save again.
+      </p>
     </div>
   );
 };
