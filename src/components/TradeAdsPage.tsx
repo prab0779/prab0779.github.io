@@ -10,7 +10,6 @@ import { useTradeAds } from "../hooks/useTradeAds";
 import { useAuth } from "../hooks/useAuth";
 import { Item } from "../types/Item";
 import { getItemImageUrl } from "../lib/supabase";
-import { AdBanner } from "./AdBanner";
 
 interface TradeAdsPageProps {
   items: Item[];
@@ -192,11 +191,6 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         </div>
       </div>
 
-      {/* Ad between search bar and trade ad grid */}
-      <div className="flex justify-center mb-6">
-        <AdBanner slot="leaderboard" />
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 text-left">
         {filteredTradeAds.map((ad, index) => {
           const content = (
@@ -281,27 +275,13 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
             </CardWrapper>
           );
 
-          const card = isMobile ? (
+          return isMobile ? (
             <div key={ad.id}>{content}</div>
           ) : (
             <AnimatedItem key={ad.id} index={index}>
               {content}
             </AnimatedItem>
           );
-
-          // Inject a full-width ad banner after every 6th card
-          if ((index + 1) % 6 === 0) {
-            return (
-              <React.Fragment key={ad.id}>
-                {card}
-                <div className="col-span-1 lg:col-span-2 flex justify-center py-2">
-                  <AdBanner slot="leaderboard" />
-                </div>
-              </React.Fragment>
-            );
-          }
-
-          return card;
         })}
       </div>
 
