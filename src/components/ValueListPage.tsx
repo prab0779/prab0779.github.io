@@ -4,6 +4,7 @@ import { Item } from "../types/Item";
 import SplitText from "../Shared/SplitText";
 import BlurText from "../Shared/BlurText";
 import GradientText from "../Shared/GradientText";
+import { AdBanner } from "./AdBanner";
 
 interface ValueListPageProps {
   items: Item[];
@@ -93,6 +94,11 @@ Do not rely on value lists for exact pricing. Always negotiate trades yourself a
             Sets the default display mode for all items.
           </GradientText>
         </p>
+      </div>
+
+      {/* Ad above the item grid */}
+      <div className="flex justify-center mb-8">
+        <AdBanner slot="leaderboard" />
       </div>
 
       <ItemFlipGrid items={items} mode={viewMode} />

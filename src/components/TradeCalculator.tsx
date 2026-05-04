@@ -3,6 +3,7 @@ import { Plus, X, Search } from "lucide-react";
 import { Item, TradeItem, TradeCalculation } from "../types/Item";
 import GradientText from "../Shared/GradientText";
 import { getItemImageUrl } from "../lib/supabase";
+import { AdBanner } from "./AdBanner";
 
 interface TradeCalculatorProps {
   items: Item[];
@@ -435,6 +436,11 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
             />
           </div>
         </div>
+      </div>
+
+      {/* Ad below the trade board */}
+      <div className="flex justify-center mt-10">
+        <AdBanner slot="leaderboard" />
       </div>
 
       <ItemModal

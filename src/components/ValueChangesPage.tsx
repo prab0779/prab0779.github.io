@@ -5,6 +5,7 @@ import { AnimatedItem } from "../Shared/AnimatedList";
 import BorderGlow from "../Shared/BorderGlow";
 import GradientText from "../Shared/GradientText";
 import { getItemImageUrl } from "../lib/supabase";
+import { AdBanner } from "./AdBanner";
 
 export const ValueChangesPage: React.FC = () => {
   const { valueChanges, loading, error } = useValueChanges();
@@ -80,6 +81,11 @@ export const ValueChangesPage: React.FC = () => {
           <option value="increase">Increase</option>
           <option value="decrease">Decrease</option>
         </select>
+      </div>
+
+      {/* Ad between search/filter and the grid */}
+      <div className="flex justify-center">
+        <AdBanner slot="leaderboard" />
       </div>
 
       {filteredChanges.length === 0 ? (

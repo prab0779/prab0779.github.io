@@ -17,6 +17,7 @@ import GradientText from "../Shared/GradientText";
 import { FaDiscord, FaXTwitter } from "react-icons/fa6";
 import { SiRoblox } from "react-icons/si";
 import { LineChart, Sparkles, Calculator, Shield } from "lucide-react";
+import { AdBanner } from "./AdBanner";
 
 interface HomeProps {
   items: Item[];
@@ -217,6 +218,11 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
           <div className="h-px w-full bg-gradient-to-r from-transparent via-[var(--gold-soft)] to-transparent opacity-20 mb-10 md:mb-14" />
         </div>
 
+        {/* Ad slot between Popular Highlights and Stock Restocker */}
+        <div className="max-w-7xl mx-auto px-4 md:px-6 mb-10 md:mb-14 flex justify-center">
+          <AdBanner slot="leaderboard" />
+        </div>
+
         <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
             <div>
@@ -253,6 +259,11 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
             <StockRestocker />
           </div>
         </section>
+
+        {/* Ad slot between Stock Restocker and Features */}
+        <div className="max-w-7xl mx-auto px-4 md:px-6 mb-10 flex justify-center">
+          <AdBanner slot="rectangle" />
+        </div>
 
         <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-12">
           <SplitText
