@@ -1,43 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ItemFlipGrid } from "./ItemFlipGrid";
 import { Item } from "../types/Item";
 import SplitText from "../Shared/SplitText";
 import BlurText from "../Shared/BlurText";
 import GradientText from "../Shared/GradientText";
-
-declare global {
-  interface Window {
-    adsbygoogle: unknown[];
-  }
-}
-
-const AdUnit: React.FC = () => {
-  const adRef = useRef<HTMLModElement>(null);
-  const pushed = useRef(false);
-
-  useEffect(() => {
-    if (!pushed.current && adRef.current) {
-      pushed.current = true;
-      try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (_) {}
-    }
-  }, []);
-
-  return (
-    <div className="my-8 w-full flex justify-center">
-      <ins
-        ref={adRef}
-        className="adsbygoogle"
-        style={{ display: "block" }}
-        data-ad-format="fluid"
-        data-ad-layout-key="-ef+6k-30-ac+ty"
-        data-ad-client="ca-pub-5953527115992840"
-        data-ad-slot="5404515310"
-      />
-    </div>
-  );
-};
+import { DisplayAd } from "./DisplayAd";
 
 interface ValueListPageProps {
   items: Item[];
@@ -91,7 +58,7 @@ Do not rely on value lists for exact pricing. Always negotiate trades yourself a
         />
       </div>
 
-      <AdUnit />
+      <DisplayAd className="my-8" />
 
       <div className="mb-12 mt-10">
         <h3 className="font-semibold mb-3">
@@ -132,6 +99,8 @@ Do not rely on value lists for exact pricing. Always negotiate trades yourself a
       </div>
 
       <ItemFlipGrid items={items} mode={viewMode} />
+
+      <DisplayAd className="mt-12" />
     </div>
   );
 };

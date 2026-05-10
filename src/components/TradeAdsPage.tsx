@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { Search, Eye } from "lucide-react";
+import { DisplayAd } from "./DisplayAd";
 import { AnimatedItem } from "../Shared/AnimatedList";
 import BorderGlow from "../Shared/BorderGlow";
 import GradientText from "../Shared/GradientText";
@@ -191,6 +192,8 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         </div>
       </div>
 
+      <DisplayAd className="mb-8" />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 text-left">
         {filteredTradeAds.map((ad, index) => {
           const content = (
@@ -284,6 +287,8 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
           );
         })}
       </div>
+
+      <DisplayAd className="mt-10 mb-2" />
 
       <div className="flex justify-center gap-2 pt-10">
         <button
