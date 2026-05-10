@@ -58,8 +58,6 @@ Do not rely on value lists for exact pricing. Always negotiate trades yourself a
         />
       </div>
 
-      <DisplayAd className="my-8" />
-
       <div className="mb-12 mt-10">
         <h3 className="font-semibold mb-3">
           <GradientText variant="gold">
@@ -99,8 +97,6 @@ Do not rely on value lists for exact pricing. Always negotiate trades yourself a
       </div>
 
       <ItemFlipGrid items={items} mode={viewMode} />
-
-      <DisplayAd className="mt-12" />
     </div>
   );
 };

@@ -192,10 +192,12 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
         </div>
       </div>
 
-      <DisplayAd className="mb-8" />
+      {(() => {
+        const AD_EVERY = 6;
+        const sections: React.ReactNode[] = [];
+        let adKey = 0;
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 text-left">
-        {filteredTradeAds.map((ad, index) => {
+        const renderCard = (ad: typeof filteredTradeAds[0], index: number) => {
           const content = (
             <CardWrapper>
               <div className="p-4 sm:p-6 space-y-4">
@@ -229,11 +231,9 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                         className="relative bg-[#121212] p-2 sm:p-3 rounded-xl flex flex-col items-center min-w-[90px] snap-start"
                       >
                         {renderItemIcon(i.emoji, i.itemName)}
-
                         <p className="text-[11px] sm:text-xs text-zinc-200 truncate w-full text-center">
                           {i.itemName}
                         </p>
-
                         {i.quantity > 1 && (
                           <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1 rounded font-bold">
                             x{i.quantity}
@@ -259,11 +259,9 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
                         className="relative bg-[#121212] p-2 sm:p-3 rounded-xl flex flex-col items-center min-w-[90px] snap-start"
                       >
                         {renderItemIcon(i.emoji, i.itemName)}
-
                         <p className="text-[11px] sm:text-xs text-zinc-200 truncate w-full text-center">
                           {i.itemName}
                         </p>
-
                         {i.quantity > 1 && (
                           <span className="absolute top-1 left-1 text-[10px] bg-yellow-500 text-black px-1 rounded font-bold">
                             x{i.quantity}
@@ -285,10 +283,22 @@ export const TradeAdsPage: React.FC<TradeAdsPageProps> = ({ items }) => {
               {content}
             </AnimatedItem>
           );
-        })}
-      </div>
+        };
 
-      <DisplayAd className="mt-10 mb-2" />
+        for (let i = 0; i < filteredTradeAds.length; i += AD_EVERY) {
+          const batch = filteredTradeAds.slice(i, i + AD_EVERY);
+          sections.push(
+            <div key={`batch-${i}`} className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 text-left">
+              {batch.map((ad, batchIndex) => renderCard(ad, i + batchIndex))}
+            </div>
+          );
+          if (i + AD_EVERY < filteredTradeAds.length) {
+            sections.push(<DisplayAd key={`ad-${adKey++}`} className="my-6" />);
+          }
+        }
+
+        return sections;
+      })()}
 
       <div className="flex justify-center gap-2 pt-10">
         <button

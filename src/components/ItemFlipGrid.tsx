@@ -4,6 +4,9 @@ import { SearchAndFilter } from "./SearchAndFilter";
 import { Item } from "../types/Item";
 import { AnimatedItem } from "../Shared/AnimatedList";
 import { useFilteredItems } from "../hooks/useFilteredItems";
+import { DisplayAd } from "./DisplayAd";
+
+const AD_EVERY = 16;
 
 interface ItemFlipGridProps {
   items: Item[];
@@ -69,26 +72,46 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
         onSortOrderChange={setSortOrder}
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-16">
-        {visibleItems.map((item, index) => {
-          const shouldAnimate = index < 16;
+      {(() => {
+        const rows: React.ReactNode[] = [];
+        let adKey = 0;
 
-          return (
-            <AnimatedItem
-              key={item.id}
-              index={index}
-              delay={shouldAnimate ? (index % 4) * 0.08 : 0}
+        for (let i = 0; i < visibleItems.length; i += AD_EVERY) {
+          const batch = visibleItems.slice(i, i + AD_EVERY);
+
+          rows.push(
+            <div
+              key={`batch-${i}`}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-16"
             >
-              <ItemCard
-                item={item}
-                mode={mode}
-                vizardValue={vizardValue}
-                index={index}
-              />
-            </AnimatedItem>
+              {batch.map((item, batchIndex) => {
+                const index = i + batchIndex;
+                const shouldAnimate = index < 16;
+                return (
+                  <AnimatedItem
+                    key={item.id}
+                    index={index}
+                    delay={shouldAnimate ? (index % 4) * 0.08 : 0}
+                  >
+                    <ItemCard
+                      item={item}
+                      mode={mode}
+                      vizardValue={vizardValue}
+                      index={index}
+                    />
+                  </AnimatedItem>
+                );
+              })}
+            </div>
           );
-        })}
-      </div>
+
+          if (i + AD_EVERY < visibleItems.length) {
+            rows.push(<DisplayAd key={`ad-${adKey++}`} className="my-6" />);
+          }
+        }
+
+        return rows;
+      })()}
 
       {/* Sentinel — triggers next batch load */}
       <div ref={sentinelRef} className="h-1" />
