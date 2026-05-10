@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback, useContext, memo } from 'react';
 import { PresenceContext } from '../components/OnlinePresenceProvider';
-import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, Image as ImageIcon, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert } from 'lucide-react';
+import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useItems } from '../hooks/useItems';
 import { useItemsContext } from '../contexts/ItemsContext';
@@ -15,7 +15,7 @@ interface AdminPageProps {
   onMaintenanceModeChange: (enabled: boolean) => void;
 }
 
-type View = 'items' | 'changes' | 'images' | 'settings' | 'stock';
+type View = 'items' | 'changes' | 'settings' | 'stock';
 
 // ─── tiny reusable primitives ───────────────────────────────────────────────
 
@@ -309,7 +309,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const navItems: { id: View; label: string; icon: React.ReactNode; count?: number }[] = [
     { id: 'items', label: 'Items', icon: <Package className="w-4 h-4" />, count: items.length },
     { id: 'changes', label: 'Changes', icon: <History className="w-4 h-4" />, count: valueChanges.length },
-    { id: 'images', label: 'Images', icon: <ImageIcon className="w-4 h-4" /> },
     { id: 'stock', label: 'Stock', icon: <LayoutGrid className="w-4 h-4" /> },
     { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
   ];
@@ -409,9 +408,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
 
         {/* STOCK */}
         {currentView === 'stock' && <StockRotationAdmin />}
-
-        {/* IMAGES */}
-        {currentView === 'images' && <ImageManager />}
 
         {/* SETTINGS */}
         {currentView === 'settings' && (
