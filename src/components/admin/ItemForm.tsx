@@ -119,7 +119,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({
                   min="0"
                   step="any"
                   value={valueInput}
-                  onChange={(e) => setValueInput(e.target.value)}
+                  onChange={(e) => parseFloat(e.target.value)}
                   className={inputCls}
                   placeholder="0.00"
                 />
