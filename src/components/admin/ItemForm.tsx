@@ -113,17 +113,13 @@ export const ItemForm: React.FC<ItemFormProps> = ({
               {/* VALUE */}
               <Field label="Value (Viz)" required>
                 <input
-                  type="text"
+                  type="number"
+                  inputMode="decimal"
                   required
+                  min="0"
+                  step="0.01"
                   value={valueInput}
-                  onChange={(e) => {
-                    const val = e.target.value;
-
-                    // allow decimals only
-                    if (/^\d*\.?\d*$/.test(val)) {
-                      setValueInput(val);
-                    }
-                  }}
+                  onChange={(e) => setValueInput(e.target.value)}
                   className={inputCls}
                   placeholder="0.00"
                 />
