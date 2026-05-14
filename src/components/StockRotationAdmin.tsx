@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase";
 import { getItemImageUrl } from "../lib/supabase";
 import { useStockRotation, StockRotation } from "../hooks/useStockRotation";
 import { useItemsContext } from "../contexts/ItemsContext";
+import { Save, ChevronDown, ChevronUp, Search, AlertCircle, CheckCircle } from "lucide-react";
 
 const ItemIcon: React.FC<{ emoji: string; name: string }> = ({ emoji, name }) => {
   const isImage = emoji.startsWith("/") || emoji.startsWith("./") || emoji.startsWith("http");
@@ -49,62 +50,69 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ label, value, items, onChange }
   }, [open]);
 
   return (
-    <div ref={containerRef} className="bg-gray-900 p-4 rounded-lg border border-gray-700">
-      <label className="block text-gray-300 text-sm mb-2">{label}</label>
+    <div ref={containerRef} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+      <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">{label}</label>
 
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 text-white rounded-lg flex items-center justify-between hover:bg-gray-750"
+        className="w-full px-3 py-2.5 bg-white/[0.04] border border-white/[0.07] text-white rounded-lg flex items-center justify-between hover:border-[#6f572c]/50 transition-colors"
       >
         <span className="flex items-center gap-2 truncate">
           {selected ? (
             <>
               <ItemIcon emoji={selected.emoji} name={selected.name} />
-              <span className="truncate">{selected.name}</span>
+              <span className="truncate text-sm">{selected.name}</span>
             </>
           ) : (
-            <span className="text-gray-400">None</span>
+            <span className="text-white/30 text-sm">None selected</span>
           )}
         </span>
-        <span className="text-gray-400">{open ? "▲" : "▼"}</span>
+        {open ? (
+          <ChevronUp className="w-4 h-4 text-white/30" />
+        ) : (
+          <ChevronDown className="w-4 h-4 text-white/30" />
+        )}
       </button>
 
       {open && (
-        <div className="mt-2 bg-gray-950 border border-gray-800 rounded-lg overflow-hidden">
-          <div className="p-2 border-b border-gray-800">
-            <input
-              value={term}
-              onChange={(e) => setTerm(e.target.value)}
-              autoFocus
-              placeholder="Search item..."
-              className="w-full px-3 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg outline-none"
-            />
+        <div className="mt-2 bg-[#0a0a0f] border border-white/[0.08] rounded-xl overflow-hidden shadow-2xl">
+          <div className="p-2 border-b border-white/[0.06]">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30" />
+              <input
+                value={term}
+                onChange={(e) => setTerm(e.target.value)}
+                autoFocus
+                placeholder="Search item..."
+                className="w-full pl-9 pr-3 py-2 bg-white/[0.04] border border-white/[0.07] text-white text-sm rounded-lg placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-[#c4a04a]/50"
+              />
+            </div>
           </div>
 
           <div className="max-h-64 overflow-y-auto">
             <button
               type="button"
               onClick={() => { onChange(null); setOpen(false); }}
-              className="w-full text-left px-3 py-2 hover:bg-gray-900 text-gray-300 border-b border-gray-900"
+              className="w-full text-left px-3 py-2.5 hover:bg-white/[0.04] text-white/40 text-sm border-b border-white/[0.04] transition-colors"
             >
               None
             </button>
 
             {filtered.length === 0 ? (
-              <div className="px-3 py-3 text-gray-500">No results</div>
+              <div className="px-3 py-4 text-white/20 text-sm text-center">No results</div>
             ) : (
               filtered.map((it) => (
                 <button
                   key={it.id}
                   type="button"
                   onClick={() => { onChange(it.id); setOpen(false); }}
-                  className={`w-full text-left px-3 py-2 hover:bg-gray-900 flex items-center gap-2 ${
-                    it.id === value ? "bg-gray-900" : ""
+                  className={`w-full text-left px-3 py-2.5 hover:bg-white/[0.04] flex items-center gap-2 transition-colors ${
+                    it.id === value ? "bg-[#4b3a1d]/30 border-l-2 border-l-[#c4a04a]" : ""
                   }`}
                 >
                   <ItemIcon emoji={it.emoji} name={it.name} />
-                  <span className="text-white truncate">{it.name}</span>
+                  <span className="text-white text-sm truncate">{it.name}</span>
                 </button>
               ))
             )}
@@ -120,12 +128,10 @@ export const StockRotationAdmin: React.FC = () => {
   const { items } = useItemsContext();
 
   const [draft, setDraft] = useState<Omit<StockRotation, 'expires_at'>>(rotation);
-  const [msg, setMsg] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      console.log("SESSION:", data.session);
-    });
+    supabase.auth.getSession();
   }, []);
 
   useEffect(() => {
@@ -145,16 +151,16 @@ export const StockRotationAdmin: React.FC = () => {
     const chosen = [draft.slot1_id, draft.slot2_id, draft.slot3_id, draft.slot4_id].filter(Boolean);
     const unique = new Set(chosen);
     if (unique.size !== chosen.length) {
-      setMsg("You can't use the same item in multiple slots.");
+      setMsg({ type: 'error', text: "You can't use the same item in multiple slots." });
       return;
     }
 
     const { error } = await saveRotation(draft);
     if (error) {
-      setMsg(`Save failed: ${error.message ?? String(error)}`);
+      setMsg({ type: 'error', text: `Save failed: ${error.message ?? String(error)}` });
       return;
     }
-    setMsg("Saved! Stock will expire in 6 hours.");
+    setMsg({ type: 'success', text: "Saved! Stock will expire in 6 hours." });
     await reload();
   };
 
@@ -165,52 +171,65 @@ export const StockRotationAdmin: React.FC = () => {
     return `Active until ${exp.toLocaleString()} (6h from last save)`;
   };
 
-  if (loading) return <p className="text-gray-300">Loading stock rotation...</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center py-16">
+        <div className="w-8 h-8 rounded-full border-2 border-[#c4a04a]/30 border-t-[#c4a04a] animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-        Stock Rotation
-      </h1>
-
-      <p className="text-gray-400 mb-2">
-        Select the 4 cosmetic items shown in the Cosmetic Market. Items automatically reset to missing after 6 hours.
-      </p>
+    <div className="space-y-5 max-w-4xl">
+      <div>
+        <h1 className="text-xl font-bold text-white mb-1">Stock Rotation</h1>
+        <p className="text-white/40 text-sm">
+          Select the 4 cosmetic items shown in the Cosmetic Market. Items automatically reset to missing after 6 hours.
+        </p>
+      </div>
 
       {expiryLabel() && (
-        <div className={`mb-4 px-4 py-2 rounded border text-sm ${
+        <div className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border text-sm ${
           isExpired
-            ? "border-red-800/60 bg-red-900/20 text-red-400"
-            : "border-emerald-800/60 bg-emerald-900/20 text-emerald-400"
+            ? "border-red-800/50 bg-red-950/30 text-red-300"
+            : "border-emerald-800/50 bg-emerald-950/30 text-emerald-300"
         }`}>
+          {isExpired ? <AlertCircle className="w-4 h-4 flex-shrink-0" /> : <CheckCircle className="w-4 h-4 flex-shrink-0" />}
           {expiryLabel()}
         </div>
       )}
 
       {msg && (
-        <div className="mb-4 px-4 py-3 rounded border border-gray-700 bg-gray-900 text-gray-200">
-          {msg}
+        <div className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border text-sm ${
+          msg.type === 'success'
+            ? 'bg-emerald-950/30 border-emerald-800/50 text-emerald-300'
+            : 'bg-red-950/30 border-red-800/50 text-red-300'
+        }`}>
+          {msg.type === 'success' ? <CheckCircle className="w-4 h-4 flex-shrink-0" /> : <AlertCircle className="w-4 h-4 flex-shrink-0" />}
+          {msg.text}
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <SlotPicker label="Slot 1" value={draft.slot1_id} items={items} onChange={(id) => updateSlot(0, id)} />
         <SlotPicker label="Slot 2" value={draft.slot2_id} items={items} onChange={(id) => updateSlot(1, id)} />
         <SlotPicker label="Slot 3" value={draft.slot3_id} items={items} onChange={(id) => updateSlot(2, id)} />
         <SlotPicker label="Slot 4" value={draft.slot4_id} items={items} onChange={(id) => updateSlot(3, id)} />
       </div>
 
-      <button
-        onClick={onSave}
-        disabled={saving}
-        className="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 disabled:opacity-60 text-white rounded-lg font-medium"
-      >
-        {saving ? "Saving..." : "Save Changes"}
-      </button>
-
-      <p className="mt-3 text-xs text-gray-500">
-        Saving sets a 6-hour expiry. When it expires, all slots automatically show as missing until you save again.
-      </p>
+      <div className="flex items-center gap-4 pt-2">
+        <button
+          onClick={onSave}
+          disabled={saving}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#c4a04a] hover:bg-[#d4b05a] disabled:opacity-50 text-black font-semibold text-sm transition-colors shadow-[0_0_20px_rgba(196,160,74,0.2)]"
+        >
+          <Save className="w-4 h-4" />
+          {saving ? "Saving..." : "Save Changes"}
+        </button>
+        <p className="text-xs text-white/30">
+          Saving sets a 6-hour expiry. When it expires, all slots show as missing until you save again.
+        </p>
+      </div>
     </div>
   );
 };
