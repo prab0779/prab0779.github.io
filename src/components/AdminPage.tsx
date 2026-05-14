@@ -564,7 +564,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
         )}
 
         {/* SETTINGS */}
-        {currentView === 'settings' && (
+        {currentView === 'settings' && !isModerator && (
           <div className="space-y-5 max-w-2xl">
             <div>
               <h1 className="text-xl font-bold text-white mb-1">Site Settings</h1>
