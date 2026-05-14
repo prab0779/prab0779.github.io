@@ -22,7 +22,7 @@ export default function AuthCallback() {
       }
 
       // Force reload so session is definitely available
-      window.location.replace("/#/trade-ads");
+      window.location.replace("/trade-ads");
     };
 
     handleLogin();
