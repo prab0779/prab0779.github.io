@@ -10,10 +10,14 @@ interface ItemFormProps {
   onCancel: () => void;
 }
 
-export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) => {
-  const [formData, setFormData] = useState<Omit<Item, 'id'>>({
+export const ItemForm: React.FC<ItemFormProps> = ({
+  item,
+  onSubmit,
+  onCancel,
+}) => {
+  const [formData, setFormData] = useState<any>({
     name: item?.name ?? '',
-    value: item?.value ?? 0,
+    value: item?.value?.toString() ?? '',
     demand: item?.demand ?? 5,
     rateOfChange: item?.rateOfChange ?? 'Stable',
     prestige: item?.prestige ?? 0,
@@ -25,17 +29,22 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
     rarity: item?.rarity ?? null,
     emoji: item?.emoji ?? '⚔️',
   });
+
   const [showImagePicker, setShowImagePicker] = useState(false);
 
   const set = useCallback(
-    <K extends keyof typeof formData>(key: K, val: (typeof formData)[K]) =>
-      setFormData((p) => ({ ...p, [key]: val })),
+    (key: string, val: any) =>
+      setFormData((p: any) => ({ ...p, [key]: val })),
     [],
   );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+
+    onSubmit({
+      ...formData,
+      value: parseFloat(formData.value) || 0,
+    });
   };
 
   return (
@@ -43,7 +52,10 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
       {showImagePicker ? (
         <div className="bg-[#0d0d10] rounded-2xl border border-[#6f572c]/60 shadow-[0_0_60px_rgba(196,160,74,0.08)] w-full max-w-4xl max-h-[90vh] overflow-y-auto">
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d10] z-10">
-            <span className="text-sm font-semibold text-white/80">Choose from Storage</span>
+            <span className="text-sm font-semibold text-white/80">
+              Choose from Storage
+            </span>
+
             <button
               onClick={() => setShowImagePicker(false)}
               className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors"
@@ -51,11 +63,15 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
               <X className="w-4 h-4" />
             </button>
           </div>
+
           <div className="p-5">
             <ImageManager
               selectionMode
               selectedImage={formData.emoji}
-              onSelectImage={(f) => { set('emoji', f); setShowImagePicker(false); }}
+              onSelectImage={(f) => {
+                set('emoji', f);
+                setShowImagePicker(false);
+              }}
             />
           </div>
         </div>
@@ -63,7 +79,10 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
         <div className="bg-[#0d0d10] rounded-2xl border border-[#6f572c]/60 shadow-[0_0_60px_rgba(196,160,74,0.08)] w-full max-w-2xl max-h-[90vh] overflow-y-auto">
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d10] z-10">
-            <h3 className="text-base font-semibold text-white">{item ? 'Edit Item' : 'New Item'}</h3>
+            <h3 className="text-base font-semibold text-white">
+              {item ? 'Edit Item' : 'New Item'}
+            </h3>
+
             <button
               onClick={onCancel}
               className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors"
@@ -74,6 +93,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
 
           <form onSubmit={handleSubmit} className="p-5 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* NAME */}
               <Field label="Name" required span>
                 <input
                   type="text"
@@ -85,24 +105,26 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
                 />
               </Field>
 
+              {/* VALUE */}
               <Field label="Value (Viz)" required>
-  <input
-    type="text"
-    required
-    value={formData.value}
-    onChange={(e) => {
-      const value = e.target.value;
+                <input
+                  type="text"
+                  required
+                  value={formData.value}
+                  onChange={(e) => {
+                    const value = e.target.value;
 
-      // allow only numbers + decimals
-      if (/^\d*\.?\d*$/.test(value)) {
-        set('value', value as any);
-      }
-    }}
-    className={inputCls}
-    placeholder="0.00"
-  />
-</Field>
+                    // allow decimals only
+                    if (/^\d*\.?\d*$/.test(value)) {
+                      set('value', value);
+                    }
+                  }}
+                  className={inputCls}
+                  placeholder="0.00"
+                />
+              </Field>
 
+              {/* DEMAND */}
               <Field label="Demand (1–10)" required>
                 <input
                   type="number"
@@ -110,15 +132,23 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
                   min="1"
                   max="10"
                   value={formData.demand}
-                  onChange={(e) => set('demand', parseInt(e.target.value) || 5)}
+                  onChange={(e) =>
+                    set('demand', parseInt(e.target.value) || 5)
+                  }
                   className={inputCls}
                 />
               </Field>
 
+              {/* RATE */}
               <Field label="Rate of Change" required>
                 <select
                   value={formData.rateOfChange}
-                  onChange={(e) => set('rateOfChange', e.target.value as Item['rateOfChange'])}
+                  onChange={(e) =>
+                    set(
+                      'rateOfChange',
+                      e.target.value as Item['rateOfChange']
+                    )
+                  }
                   className={selectCls}
                 >
                   <option value="Rising">Rising</option>
@@ -128,21 +158,27 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
                 </select>
               </Field>
 
+              {/* PRESTIGE */}
               <Field label="Prestige" required>
                 <input
                   type="number"
                   required
                   min="0"
                   value={formData.prestige}
-                  onChange={(e) => set('prestige', parseInt(e.target.value) || 0)}
+                  onChange={(e) =>
+                    set('prestige', parseInt(e.target.value) || 0)
+                  }
                   className={inputCls}
                 />
               </Field>
 
+              {/* STATUS */}
               <Field label="Status" required>
                 <select
                   value={formData.status}
-                  onChange={(e) => set('status', e.target.value as Item['status'])}
+                  onChange={(e) =>
+                    set('status', e.target.value as Item['status'])
+                  }
                   className={selectCls}
                 >
                   <option value="Obtainable">Obtainable</option>
@@ -151,6 +187,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
                 </select>
               </Field>
 
+              {/* CATEGORY */}
               <Field label="Category" required>
                 <input
                   type="text"
@@ -162,6 +199,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
                 />
               </Field>
 
+              {/* RARITY */}
               <Field label="Rarity (%)">
                 <input
                   type="number"
@@ -169,32 +207,56 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
                   max="100"
                   step="0.01"
                   value={formData.rarity ?? ''}
-                  onChange={(e) => set('rarity', e.target.value ? parseFloat(e.target.value) : null)}
+                  onChange={(e) =>
+                    set(
+                      'rarity',
+                      e.target.value
+                        ? parseFloat(e.target.value)
+                        : null
+                    )
+                  }
                   className={inputCls}
                   placeholder="0.00"
                 />
               </Field>
 
+              {/* GEM TAX */}
               <Field label="Gem Tax">
                 <input
                   type="number"
                   min="0"
                   value={formData.gemTax ?? ''}
-                  onChange={(e) => set('gemTax', e.target.value ? parseInt(e.target.value) : null)}
+                  onChange={(e) =>
+                    set(
+                      'gemTax',
+                      e.target.value
+                        ? parseInt(e.target.value)
+                        : null
+                    )
+                  }
                   className={inputCls}
                 />
               </Field>
 
+              {/* GOLD TAX */}
               <Field label="Gold Tax">
                 <input
                   type="number"
                   min="0"
                   value={formData.goldTax ?? ''}
-                  onChange={(e) => set('goldTax', e.target.value ? parseInt(e.target.value) : null)}
+                  onChange={(e) =>
+                    set(
+                      'goldTax',
+                      e.target.value
+                        ? parseInt(e.target.value)
+                        : null
+                    )
+                  }
                   className={inputCls}
                 />
               </Field>
 
+              {/* IMAGE */}
               <Field label="Image / Emoji" span>
                 <div className="flex items-center gap-2">
                   <input
@@ -204,6 +266,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
                     className={`${inputCls} flex-1 font-mono text-xs`}
                     placeholder="🎯 or /image.png"
                   />
+
                   <button
                     type="button"
                     onClick={() => setShowImagePicker(true)}
@@ -212,17 +275,24 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
                     <FolderOpen className="w-3.5 h-3.5" />
                     Browse
                   </button>
+
                   <div className="w-9 h-9 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center flex-shrink-0">
-                    <ItemIcon emoji={formData.emoji} name={formData.name} />
+                    <ItemIcon
+                      emoji={formData.emoji}
+                      name={formData.name}
+                    />
                   </div>
                 </div>
               </Field>
 
+              {/* OBTAINED FROM */}
               <Field label="Obtained From" required span>
                 <textarea
                   required
                   value={formData.obtainedFrom}
-                  onChange={(e) => set('obtainedFrom', e.target.value)}
+                  onChange={(e) =>
+                    set('obtainedFrom', e.target.value)
+                  }
                   className={`${inputCls} resize-none`}
                   rows={2}
                   placeholder="Source description"
@@ -230,6 +300,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
               </Field>
             </div>
 
+            {/* BUTTONS */}
             <div className="flex justify-end gap-3 pt-2 border-t border-white/[0.06]">
               <button
                 type="button"
@@ -238,6 +309,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
               >
                 Cancel
               </button>
+
               <button
                 type="submit"
                 className="flex items-center gap-2 px-5 py-2 rounded-lg bg-[#c4a04a] hover:bg-[#d4b05a] text-black font-semibold text-sm transition-colors shadow-[0_0_20px_rgba(196,160,74,0.2)]"
