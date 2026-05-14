@@ -65,6 +65,16 @@ export const useTradeAds = () => {
 
       const userId = sessionData.session.user.id;
 
+      const { data: banRecord } = await supabase
+        .from("banned_trade_users")
+        .select("id")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (banRecord) {
+        return { data: null, error: "You are banned from posting trade ads." };
+      }
+
       const { data: recentAds, error: recentError } = await supabase
         .from("trade_ads")
         .select("created_at")
