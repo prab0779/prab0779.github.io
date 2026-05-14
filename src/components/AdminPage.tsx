@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useCallback, useContext, memo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useContext, memo } from 'react';
 import { PresenceContext } from '../components/OnlinePresenceProvider';
-import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert, Megaphone } from 'lucide-react';
+import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert, Megaphone, Copy, RefreshCw } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useAdminCheck, UserRole } from '../hooks/useAdminCheck';
 import { useItems } from '../hooks/useItems';
@@ -9,7 +9,7 @@ import { useValueChanges } from '../hooks/useValueChanges';
 import { StockRotationAdmin } from './StockRotationAdmin';
 import { TradeAdsView } from './admin/TradeAdsView';
 import { ImageManager } from './ImageManager';
-import { getItemImageUrl } from '../lib/supabase';
+import { supabase, getItemImageUrl } from '../lib/supabase';
 import { Item } from '../types/Item';
 
 interface AdminPageProps {
@@ -17,7 +17,7 @@ interface AdminPageProps {
   onMaintenanceModeChange: (enabled: boolean) => void;
 }
 
-type View = 'items' | 'changes' | 'settings' | 'stock' | 'trade-ads';
+type View = 'items' | 'changes' | 'settings' | 'stock' | 'trade-ads' | 'users';
 
 // ─── tiny reusable primitives ───────────────────────────────────────────────
 
@@ -260,6 +260,48 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const [sortField, setSortField] = useState<'name' | 'value' | 'demand' | 'prestige' | 'category'>('value');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
+  // Users state
+  const [authUsers, setAuthUsers] = useState<any[]>([]);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [usersSearch, setUsersSearch] = useState('');
+
+  const fetchUsers = useCallback(async () => {
+    setUsersLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/list-users`,
+        {
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const json = await res.json();
+      if (json.users) setAuthUsers(json.users);
+    } catch (err) {
+      console.error('Failed to fetch users', err);
+    } finally {
+      setUsersLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentView === 'users' && authUsers.length === 0) fetchUsers();
+  }, [currentView]);
+
+  const filteredUsers = useMemo(() => {
+    if (!usersSearch) return authUsers;
+    const q = usersSearch.toLowerCase();
+    return authUsers.filter(
+      (u) =>
+        u.email?.toLowerCase().includes(q) ||
+        u.displayName?.toLowerCase().includes(q) ||
+        u.id.toLowerCase().includes(q)
+    );
+  }, [authUsers, usersSearch]);
+
   const showNotification = useCallback((type: 'success' | 'error', message: string) => {
     setNotification({ type, message });
     setTimeout(() => setNotification(null), 3000);
@@ -315,7 +357,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
     { id: 'changes', label: 'Changes', icon: <History className="w-4 h-4" />, count: valueChanges.length },
     { id: 'trade-ads', label: 'Trade Ads', icon: <Megaphone className="w-4 h-4" /> },
     { id: 'stock', label: 'Stock', icon: <LayoutGrid className="w-4 h-4" /> },
-    ...(!isModerator ? [{ id: 'settings' as View, label: 'Settings', icon: <Settings className="w-4 h-4" /> }] : []),
+    ...(!isModerator ? [
+      { id: 'users' as View, label: 'Users', icon: <Users className="w-4 h-4" /> },
+      { id: 'settings' as View, label: 'Settings', icon: <Settings className="w-4 h-4" /> },
+    ] : []),
   ];
 
   if (loading) {
@@ -423,6 +468,100 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
 
         {/* STOCK */}
         {currentView === 'stock' && <StockRotationAdmin />}
+
+        {/* USERS */}
+        {currentView === 'users' && (
+          <div className="space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h1 className="text-xl font-bold text-white mb-1">Users</h1>
+                <p className="text-white/40 text-sm">All authenticated users and their IDs</p>
+              </div>
+              <button
+                onClick={fetchUsers}
+                disabled={usersLoading}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-white/10 hover:border-[#6f572c]/60 text-white/60 hover:text-[#c4a04a] font-medium text-sm transition-colors w-full sm:w-auto"
+              >
+                <RefreshCw className={`w-4 h-4 ${usersLoading ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+            </div>
+
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <input
+                  type="text"
+                  placeholder="Search by email, name, or ID..."
+                  value={usersSearch}
+                  onChange={(e) => setUsersSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 bg-white/[0.04] border border-white/[0.07] rounded-xl text-white text-sm placeholder-white/20 focus:outline-none focus:ring-1 focus:ring-[#c4a04a]/50 transition-colors"
+                />
+              </div>
+            </div>
+
+            {usersLoading ? (
+              <div className="flex justify-center py-16">
+                <div className="w-8 h-8 rounded-full border-2 border-[#c4a04a]/30 border-t-[#c4a04a] animate-spin" />
+              </div>
+            ) : filteredUsers.length === 0 ? (
+              <div className="text-center py-16 text-white/30">
+                <Users className="w-10 h-10 mx-auto mb-3 opacity-40" />
+                <p>{usersSearch ? 'No users match your search' : 'No users found'}</p>
+              </div>
+            ) : (
+              <>
+                <div className="text-xs text-white/30 px-1">{filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''}</div>
+                <div className="space-y-2">
+                  {filteredUsers.map((u) => (
+                    <div key={u.id} className="rounded-xl border border-white/[0.06] bg-white/[0.02] hover:border-[#6f572c]/40 transition-colors p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="text-sm font-medium text-white truncate">
+                              {u.displayName || u.email || 'Unknown'}
+                            </p>
+                            {u.role && (
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider border ${
+                                u.role === 'admin'
+                                  ? 'border-[#6f572c] bg-[#4b3a1d]/60 text-[#c4a04a]'
+                                  : 'border-sky-700/50 bg-sky-900/20 text-sky-400'
+                              }`}>
+                                {u.role}
+                              </span>
+                            )}
+                          </div>
+                          {u.email && u.displayName && (
+                            <p className="text-xs text-white/40 mb-1">{u.email}</p>
+                          )}
+                          <div className="flex items-center gap-1.5">
+                            <code className="text-[11px] text-white/30 font-mono break-all">{u.id}</code>
+                            <button
+                              onClick={() => { navigator.clipboard.writeText(u.id); showNotification('success', 'User ID copied'); }}
+                              className="p-1 rounded hover:bg-white/10 text-white/20 hover:text-white/60 transition-colors flex-shrink-0"
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-[10px] text-white/30">Joined</p>
+                          <p className="text-xs text-white/50">{u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}</p>
+                          {u.lastSignIn && (
+                            <>
+                              <p className="text-[10px] text-white/30 mt-1">Last sign in</p>
+                              <p className="text-xs text-white/50">{new Date(u.lastSignIn).toLocaleDateString()}</p>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         {/* SETTINGS */}
         {currentView === 'settings' && (
