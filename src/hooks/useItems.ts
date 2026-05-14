@@ -105,5 +105,63 @@ export const useItems = () => {
 
   useEffect(() => { load(); }, []);
 
-  return { items, loading, error, refresh };
+  const createItem = useCallback(async (data: Omit<Item, 'id'>) => {
+    const id = crypto.randomUUID();
+    const row = {
+      id,
+      name: data.name,
+      value: data.value,
+      demand: data.demand,
+      rate_of_change: data.rateOfChange,
+      prestige: data.prestige,
+      status: data.status,
+      obtained_from: data.obtainedFrom || 'Unknown',
+      gem_tax: data.gemTax ?? null,
+      gold_tax: data.goldTax ?? null,
+      category: data.category,
+      rarity: data.rarity ?? null,
+      emoji: data.emoji,
+    };
+
+    const { error: err } = await supabase.from("items").insert(row);
+    if (err) return { error: err.message };
+
+    localStorage.removeItem(CACHE_KEY);
+    setItems(prev => [{ ...data, id }, ...prev]);
+    return { error: null };
+  }, []);
+
+  const updateItem = useCallback(async (id: string, data: Partial<Item>) => {
+    const row: Record<string, any> = {};
+    if (data.name !== undefined) row.name = data.name;
+    if (data.value !== undefined) row.value = data.value;
+    if (data.demand !== undefined) row.demand = data.demand;
+    if (data.rateOfChange !== undefined) row.rate_of_change = data.rateOfChange;
+    if (data.prestige !== undefined) row.prestige = data.prestige;
+    if (data.status !== undefined) row.status = data.status;
+    if (data.obtainedFrom !== undefined) row.obtained_from = data.obtainedFrom;
+    if (data.gemTax !== undefined) row.gem_tax = data.gemTax;
+    if (data.goldTax !== undefined) row.gold_tax = data.goldTax;
+    if (data.category !== undefined) row.category = data.category;
+    if (data.rarity !== undefined) row.rarity = data.rarity;
+    if (data.emoji !== undefined) row.emoji = data.emoji;
+
+    const { error: err } = await supabase.from("items").update(row).eq("id", id);
+    if (err) return { error: err.message };
+
+    localStorage.removeItem(CACHE_KEY);
+    setItems(prev => prev.map(i => i.id === id ? { ...i, ...data } : i));
+    return { error: null };
+  }, []);
+
+  const deleteItem = useCallback(async (id: string) => {
+    const { error: err } = await supabase.from("items").delete().eq("id", id);
+    if (err) return { error: err.message };
+
+    localStorage.removeItem(CACHE_KEY);
+    setItems(prev => prev.filter(i => i.id !== id));
+    return { error: null };
+  }, []);
+
+  return { items, loading, error, refresh, createItem, updateItem, deleteItem };
 };

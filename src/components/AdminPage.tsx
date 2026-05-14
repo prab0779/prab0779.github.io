@@ -103,7 +103,7 @@ const ItemForm: React.FC<{
     rateOfChange: item?.rateOfChange ?? 'Stable',
     prestige: item?.prestige ?? 0,
     status: item?.status ?? 'Obtainable',
-    obtainedFrom: item?.obtainedFrom ?? '',
+    obtainedFrom: item?.obtainedFrom ?? 'Unknown',
     gemTax: item?.gemTax ?? null,
     goldTax: item?.goldTax ?? null,
     category: item?.category ?? '',
@@ -133,7 +133,6 @@ const ItemForm: React.FC<{
         </div>
       ) : (
         <div className="bg-[#0d0d10] rounded-2xl border border-[#6f572c]/60 shadow-[0_0_60px_rgba(196,160,74,0.08)] w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d10] z-10">
             <h3 className="text-base font-semibold text-white">{item ? 'Edit Item' : 'New Item'}</h3>
             <button onClick={onCancel} className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors">
@@ -151,7 +150,7 @@ const ItemForm: React.FC<{
                 <input type="number" required min="0" value={formData.value} onChange={(e) => set('value', parseInt(e.target.value) || 0)} className={inputCls} />
               </Field>
 
-              <Field label="Demand (1–10)" required>
+              <Field label="Demand (1-10)" required>
                 <input type="number" required min="1" max="10" value={formData.demand} onChange={(e) => set('demand', parseInt(e.target.value) || 5)} className={inputCls} />
               </Field>
 
@@ -180,10 +179,6 @@ const ItemForm: React.FC<{
                 <input type="text" required value={formData.category} onChange={(e) => set('category', e.target.value)} className={inputCls} placeholder="e.g. Swords" />
               </Field>
 
-              <Field label="Rarity (%)">
-                <input type="number" min="0" max="100" step="0.01" value={formData.rarity ?? ''} onChange={(e) => set('rarity', e.target.value ? parseFloat(e.target.value) : null)} className={inputCls} placeholder="0.00" />
-              </Field>
-
               <Field label="Gem Tax">
                 <input type="number" min="0" value={formData.gemTax ?? ''} onChange={(e) => set('gemTax', e.target.value ? parseInt(e.target.value) : null)} className={inputCls} />
               </Field>
@@ -192,7 +187,6 @@ const ItemForm: React.FC<{
                 <input type="number" min="0" value={formData.goldTax ?? ''} onChange={(e) => set('goldTax', e.target.value ? parseInt(e.target.value) : null)} className={inputCls} />
               </Field>
 
-              {/* Image / Emoji picker */}
               <Field label="Image / Emoji" span>
                 <div className="flex items-center gap-2">
                   <input
@@ -200,7 +194,7 @@ const ItemForm: React.FC<{
                     value={formData.emoji}
                     onChange={(e) => set('emoji', e.target.value)}
                     className={`${inputCls} flex-1 font-mono text-xs`}
-                    placeholder="🎯 or /image.png"
+                    placeholder="/image.png or emoji"
                   />
                   <button
                     type="button"
@@ -214,10 +208,6 @@ const ItemForm: React.FC<{
                     {renderIcon(formData.emoji, formData.name)}
                   </div>
                 </div>
-              </Field>
-
-              <Field label="Obtained From" required span>
-                <textarea required value={formData.obtainedFrom} onChange={(e) => set('obtainedFrom', e.target.value)} className={`${inputCls} resize-none`} rows={2} placeholder="Source description" />
               </Field>
             </div>
 
@@ -243,7 +233,7 @@ const ItemForm: React.FC<{
 export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMaintenanceModeChange }) => {
   const { user, signOut } = useAuth();
   const { items, loading, error } = useItemsContext();
-  const { createItem, updateItem, deleteItem } = useItems() as any;
+  const { createItem, updateItem, deleteItem } = useItems();
   const { valueChanges, loading: changesLoading, deleteValueChange } = useValueChanges();
   const { onlineCount } = useContext(PresenceContext);
 
