@@ -636,7 +636,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                         </div>
                       </td>
                       <td className="px-5 py-3"><StatusBadge status={item.status} /></td>
-                      <td className="px-5 py-3 text-white/40 text-xs">{item.category}</td>
+                      <td className="px-5 py-3 text-black/40 text-xs">{item.category}</td>
                       <td className="px-5 py-3 text-right">
                         <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
