@@ -333,8 +333,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           {/* brand */}
           <div className="flex items-center gap-3 min-w-0">
-            <span className="text-lg">⚔️</span>
-            <span className="font-bold text-sm sm:text-base gold-letter whitespace-nowrap">AOT:R Admin</span>
+            <span className="font-bold text-sm sm:text-base gold-letter whitespace-nowrap">Admin</span>
           </div>
 
           {/* right side */}
