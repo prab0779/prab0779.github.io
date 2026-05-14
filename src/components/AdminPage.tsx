@@ -148,8 +148,8 @@ const ItemForm: React.FC<{
                 <input type="text" required value={formData.name} onChange={(e) => set('name', e.target.value)} className={inputCls} placeholder="Item name" />
               </Field>
 
-              <Field label="Value" required>
-                <input type="number" required min="0" value={formData.value} onChange={(e) => set('value', parseInt(e.target.value) || 0)} className={inputCls} />
+              <Field label="Value (Viz)" required>
+                <input type="number" required min="0" step="any" value={formData.value} onChange={(e) => set('value', parseFloat(e.target.value) || 0)} className={inputCls} placeholder="0.00" />
               </Field>
 
               <Field label="Demand (1–10)" required>
