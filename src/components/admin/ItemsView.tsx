@@ -158,7 +158,7 @@ export const ItemsView: React.FC<ItemsViewProps> = ({ items, error, onCreate, on
                     </div>
                   </td>
                   <td className="px-5 py-3">
-                    <GoldBadge>🔑 {item.value.toLocaleString()}</GoldBadge>
+                    <GoldBadge>{item.value.toLocaleString()}</GoldBadge>
                   </td>
                   <td className="px-5 py-3 text-white/70">{item.demand}/10</td>
                   <td className="px-5 py-3">
@@ -224,7 +224,7 @@ export const ItemsView: React.FC<ItemsViewProps> = ({ items, error, onCreate, on
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 items-center">
-                <GoldBadge>🔑 {item.value.toLocaleString()}</GoldBadge>
+                <GoldBadge>{item.value.toLocaleString()}</GoldBadge>
                 <span className="text-xs text-white/40">{item.demand}/10</span>
                 <div className="flex items-center gap-1">
                   <RateIcon rate={item.rateOfChange} />
