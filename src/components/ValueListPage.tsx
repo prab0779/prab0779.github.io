@@ -40,24 +40,6 @@ export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
 
       <div className="h-0.5 w-20 bg-gradient-to-r from-[var(--gold-soft)] via-[var(--gold-bright)] to-transparent rounded-full mt-3 mx-auto" />
 
-      <div className="mt-6 max-w-xl mx-auto min-h-[140px]">
-        <BlurText
-          text={`Browse our complete AOT:R value list (${items.length} items).
-
-Notice: These values are UNOFFICIAL and currently OUTDATED.
-
-They are only shown to give a rough visual understanding of item worth.
-
-AOT:R trading is entirely player-driven and based on rarity, demand, and player needs.
-
-Do not rely on value lists for exact pricing. Always negotiate trades yourself and join our Discord for the latest insights.`}
-          delay={120}
-          animateBy="words"
-          direction="top"
-          className="text-lg text-gray-400"
-        />
-      </div>
-
       <div className="mb-12 mt-10">
         <h3 className="font-semibold mb-3">
           <GradientText variant="gold">
