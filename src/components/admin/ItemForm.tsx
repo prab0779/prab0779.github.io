@@ -90,7 +90,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({ item, onSubmit, onCancel }) 
                   type="number"
                   required
                   min="0"
-                  step="any"
+                  step="0.01"
                   value={formData.value}
                   onChange={(e) => set('value', parseFloat(e.target.value) || 0)}
                   className={inputCls}
