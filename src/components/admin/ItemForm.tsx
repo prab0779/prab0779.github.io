@@ -117,7 +117,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({
                   inputMode="decimal"
                   required
                   min="0"
-                  step="max"
+                  step="any"
                   value={valueInput}
                   onChange={(e) => setValueInput(e.target.value)}
                   className={inputCls}
