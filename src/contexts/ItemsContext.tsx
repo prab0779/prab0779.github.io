@@ -7,13 +7,21 @@ interface ItemsContextValue {
   loading: boolean;
   error: string | null;
   refresh: () => void;
+  createItem: (data: Omit<Item, 'id'>) => Promise<{ error: string | null }>;
+  updateItem: (id: string, data: Partial<Item>) => Promise<{ error: string | null }>;
+  deleteItem: (id: string) => Promise<{ error: string | null }>;
 }
+
+const noop = async () => ({ error: null });
 
 export const ItemsContext = createContext<ItemsContextValue>({
   items: [],
   loading: true,
   error: null,
   refresh: () => {},
+  createItem: noop,
+  updateItem: noop,
+  deleteItem: noop,
 });
 
 export const ItemsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
