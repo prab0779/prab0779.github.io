@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback, useContext, memo } from 'react';
 import { PresenceContext } from '../components/OnlinePresenceProvider';
 import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert, Megaphone } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useItems } from '../hooks/useItems';
 import { useItemsContext } from '../contexts/ItemsContext';
 import { useValueChanges } from '../hooks/useValueChanges';
 import { StockRotationAdmin } from './StockRotationAdmin';
@@ -102,7 +103,7 @@ const ItemForm: React.FC<{
     rateOfChange: item?.rateOfChange ?? 'Stable',
     prestige: item?.prestige ?? 0,
     status: item?.status ?? 'Obtainable',
-    obtainedFrom: item?.obtainedFrom ?? 'Unknown',
+    obtainedFrom: item?.obtainedFrom ?? '',
     gemTax: item?.gemTax ?? null,
     goldTax: item?.goldTax ?? null,
     category: item?.category ?? '',
@@ -132,6 +133,7 @@ const ItemForm: React.FC<{
         </div>
       ) : (
         <div className="bg-[#0d0d10] rounded-2xl border border-[#6f572c]/60 shadow-[0_0_60px_rgba(196,160,74,0.08)] w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] sticky top-0 bg-[#0d0d10] z-10">
             <h3 className="text-base font-semibold text-white">{item ? 'Edit Item' : 'New Item'}</h3>
             <button onClick={onCancel} className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors">
@@ -149,7 +151,7 @@ const ItemForm: React.FC<{
                 <input type="number" required min="0" value={formData.value} onChange={(e) => set('value', parseInt(e.target.value) || 0)} className={inputCls} />
               </Field>
 
-              <Field label="Demand (1-10)" required>
+              <Field label="Demand (1–10)" required>
                 <input type="number" required min="1" max="10" value={formData.demand} onChange={(e) => set('demand', parseInt(e.target.value) || 5)} className={inputCls} />
               </Field>
 
@@ -178,6 +180,10 @@ const ItemForm: React.FC<{
                 <input type="text" required value={formData.category} onChange={(e) => set('category', e.target.value)} className={inputCls} placeholder="e.g. Swords" />
               </Field>
 
+              <Field label="Rarity (%)">
+                <input type="number" min="0" max="100" step="0.01" value={formData.rarity ?? ''} onChange={(e) => set('rarity', e.target.value ? parseFloat(e.target.value) : null)} className={inputCls} placeholder="0.00" />
+              </Field>
+
               <Field label="Gem Tax">
                 <input type="number" min="0" value={formData.gemTax ?? ''} onChange={(e) => set('gemTax', e.target.value ? parseInt(e.target.value) : null)} className={inputCls} />
               </Field>
@@ -186,6 +192,7 @@ const ItemForm: React.FC<{
                 <input type="number" min="0" value={formData.goldTax ?? ''} onChange={(e) => set('goldTax', e.target.value ? parseInt(e.target.value) : null)} className={inputCls} />
               </Field>
 
+              {/* Image / Emoji picker */}
               <Field label="Image / Emoji" span>
                 <div className="flex items-center gap-2">
                   <input
@@ -193,7 +200,7 @@ const ItemForm: React.FC<{
                     value={formData.emoji}
                     onChange={(e) => set('emoji', e.target.value)}
                     className={`${inputCls} flex-1 font-mono text-xs`}
-                    placeholder="/image.png or emoji"
+                    placeholder="🎯 or /image.png"
                   />
                   <button
                     type="button"
@@ -207,6 +214,10 @@ const ItemForm: React.FC<{
                     {renderIcon(formData.emoji, formData.name)}
                   </div>
                 </div>
+              </Field>
+
+              <Field label="Obtained From" required span>
+                <textarea required value={formData.obtainedFrom} onChange={(e) => set('obtainedFrom', e.target.value)} className={`${inputCls} resize-none`} rows={2} placeholder="Source description" />
               </Field>
             </div>
 
@@ -231,7 +242,8 @@ const ItemForm: React.FC<{
 
 export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMaintenanceModeChange }) => {
   const { user, signOut } = useAuth();
-  const { items, loading, error, createItem, updateItem, deleteItem } = useItemsContext();
+  const { items, loading, error } = useItemsContext();
+  const { createItem, updateItem, deleteItem } = useItems() as any;
   const { valueChanges, loading: changesLoading, deleteValueChange } = useValueChanges();
   const { onlineCount } = useContext(PresenceContext);
 
@@ -321,7 +333,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           {/* brand */}
           <div className="flex items-center gap-3 min-w-0">
-            <span className="font-bold text-sm sm:text-base gold-letter whitespace-nowrap">Admin</span>
+            <span className="text-lg">⚔️</span>
+            <span className="font-bold text-sm sm:text-base gold-letter whitespace-nowrap">AOT:R Admin</span>
           </div>
 
           {/* right side */}
@@ -508,7 +521,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                       </div>
                       <div className="px-4 pb-3 grid grid-cols-3 gap-2">
                         {[
-                          { label: 'Value', old: `${ch.oldValue}`, new: `${ch.newValue}` },
+                          { label: 'Value', old: `🔑 ${ch.oldValue}`, new: `🔑 ${ch.newValue}` },
                           { label: 'Demand', old: `${ch.oldDemand}/10`, new: `${ch.newDemand}/10` },
                           { label: 'Rate', old: ch.oldRateOfChange, new: ch.newRateOfChange },
                         ].map((row) => (
@@ -570,7 +583,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="flex-1 bg-white/[0.04] border border-white/[0.07] rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#c4a04a]/50"
+                    className="flex-1 bg-black/[0.04] border border-white/[0.07] rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#c4a04a]/50"
                   >
                     <option value="">All Categories</option>
                     {categories.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -626,7 +639,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                         </div>
                       </td>
                       <td className="px-5 py-3">
-                        <GoldBadge>{item.value.toLocaleString()}</GoldBadge>
+                        <GoldBadge>🔑 {item.value.toLocaleString()}</GoldBadge>
                       </td>
                       <td className="px-5 py-3 text-white/70">{item.demand}/10</td>
                       <td className="px-5 py-3">
@@ -636,7 +649,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                         </div>
                       </td>
                       <td className="px-5 py-3"><StatusBadge status={item.status} /></td>
-                      <td className="px-5 py-3 text-black/40 text-xs">{item.category}</td>
+                      <td className="px-5 py-3 text-white/40 text-xs">{item.category}</td>
                       <td className="px-5 py-3 text-right">
                         <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
@@ -681,7 +694,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 items-center">
-                    <GoldBadge>{item.value.toLocaleString()}</GoldBadge>
+                    <GoldBadge>🔑 {item.value.toLocaleString()}</GoldBadge>
                     <span className="text-xs text-white/40">{item.demand}/10</span>
                     <div className="flex items-center gap-1">
                       <RateIcon rate={item.rateOfChange} />
