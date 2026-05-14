@@ -108,31 +108,28 @@ export const ItemForm: React.FC<ItemFormProps> = ({
                   placeholder="Item name"
                 />
               </Field>
-              
 
-             <Field label="Value (Viz)" required>
+              <Field label="Value (Viz)" required>
   <input
-    type="text"
+    type="number"
     required
-    value={valueInput}
-    onChange={(e) => {
-      const val = e.target.value;
-
-      if (/^\d*\.?\d*$/.test(val)) {
-        setValueInput(val);
-
-        set(
-          'value',
-          val === ''
-            ? 0
-            : parseFloat(val)
-        );
-      }
-    }}
+    min="0"
+    step="0.01"
+    value={formData.value ?? ''}
+    onChange={(e) =>
+      set(
+        'value',
+        e.target.value === ''
+          ? ''
+          : parseFloat(e.target.value)
+      )
+    }
     className={inputCls}
     placeholder="0.00"
   />
 </Field>
+
+
 
               {/* DEMAND */}
               <Field label="Demand (1–10)" required>
