@@ -113,7 +113,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({
               {/* VALUE */}
               <Field label="Value (Viz)" required>
                 <input
-                  type="number"
+                  type="text"
                   inputMode="decimal"
                   required
                   min="0"
