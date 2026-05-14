@@ -583,7 +583,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="flex-1 bg-black/[0.04] border border-white/[0.07] rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#c4a04a]/50"
+                    className="flex-1 bg-[#111318] border border-white/[0.07] rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#c4a04a]/50"
                   >
                     <option value="">All Categories</option>
                     {categories.map((c) => <option key={c} value={c}>{c}</option>)}
