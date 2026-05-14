@@ -533,7 +533,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                       </div>
                       <div className="px-4 pb-3 grid grid-cols-3 gap-2">
                         {[
-                          { label: 'Value', old: `🔑 ${ch.oldValue}`, new: `🔑 ${ch.newValue}` },
+                          { label: 'Value', old: `${ch.oldValue}`, new: `${ch.newValue}` },
                           { label: 'Demand', old: `${ch.oldDemand}/10`, new: `${ch.newDemand}/10` },
                           { label: 'Rate', old: ch.oldRateOfChange, new: ch.newRateOfChange },
                         ].map((row) => (
@@ -651,7 +651,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                         </div>
                       </td>
                       <td className="px-5 py-3">
-                        <GoldBadge>🔑 {item.value.toLocaleString()}</GoldBadge>
+                        <GoldBadge>{item.value.toLocaleString()}</GoldBadge>
                       </td>
                       <td className="px-5 py-3 text-white/70">{item.demand}/10</td>
                       <td className="px-5 py-3">
@@ -710,7 +710,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 items-center">
-                    <GoldBadge>🔑 {item.value.toLocaleString()}</GoldBadge>
+                    <GoldBadge>{item.value.toLocaleString()}</GoldBadge>
                     <span className="text-xs text-white/40">{item.demand}/10</span>
                     <div className="flex items-center gap-1">
                       <RateIcon rate={item.rateOfChange} />
