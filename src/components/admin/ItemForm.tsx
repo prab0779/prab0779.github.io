@@ -17,7 +17,6 @@ export const ItemForm: React.FC<ItemFormProps> = ({
 }) => {
   const [formData, setFormData] = useState<any>({
     name: item?.name ?? '',
-    value: item?.value?.toString() ?? '',
     demand: item?.demand ?? 5,
     rateOfChange: item?.rateOfChange ?? 'Stable',
     prestige: item?.prestige ?? 0,
@@ -29,6 +28,11 @@ export const ItemForm: React.FC<ItemFormProps> = ({
     rarity: item?.rarity ?? null,
     emoji: item?.emoji ?? '⚔️',
   });
+
+  // separate state for value input
+  const [valueInput, setValueInput] = useState(
+    item?.value?.toString() ?? ''
+  );
 
   const [showImagePicker, setShowImagePicker] = useState(false);
 
@@ -43,13 +47,9 @@ export const ItemForm: React.FC<ItemFormProps> = ({
 
     onSubmit({
       ...formData,
-      value: parseFloat(formData.value) || 0,
+      value: parseFloat(valueInput) || 0,
     });
   };
-
-  const [valueInput, setValueInput] = useState(
-  item?.value?.toString() ?? ''
-);
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -97,6 +97,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({
 
           <form onSubmit={handleSubmit} className="p-5 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
               {/* NAME */}
               <Field label="Name" required span>
                 <input
@@ -109,27 +110,24 @@ export const ItemForm: React.FC<ItemFormProps> = ({
                 />
               </Field>
 
+              {/* VALUE */}
               <Field label="Value (Viz)" required>
-  <input
-    type="number"
-    required
-    min="0"
-    step="0.01"
-    value={formData.value ?? ''}
-    onChange={(e) =>
-      set(
-        'value',
-        e.target.value === ''
-          ? ''
-          : parseFloat(e.target.value)
-      )
-    }
-    className={inputCls}
-    placeholder="0.00"
-  />
-</Field>
+                <input
+                  type="text"
+                  required
+                  value={valueInput}
+                  onChange={(e) => {
+                    const val = e.target.value;
 
-
+                    // allow decimals only
+                    if (/^\d*\.?\d*$/.test(val)) {
+                      setValueInput(val);
+                    }
+                  }}
+                  className={inputCls}
+                  placeholder="0.00"
+                />
+              </Field>
 
               {/* DEMAND */}
               <Field label="Demand (1–10)" required>
