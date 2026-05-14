@@ -42,7 +42,6 @@ export const MaintenancePopup: React.FC = () => {
           {/* Notice card */}
           <div className="rounded-xl border border-white/[0.06] bg-black/30 p-5 mb-6">
             <p className="text-sm text-white/70 leading-relaxed text-center">
-              This is an <span className="text-white font-medium">unofficial</span> AOT:R value list.
               We are currently performing updates. The site will be back shortly.
             </p>
           </div>
@@ -74,7 +73,7 @@ export const MaintenancePopup: React.FC = () => {
         {/* Footer */}
         <div className="px-8 py-4 border-t border-white/[0.06] text-center">
           <p className="text-xs text-white/25">
-            Unofficial AOT:R Value Hub
+            AOT:R Value Hub
           </p>
         </div>
       </div>
