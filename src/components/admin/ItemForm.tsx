@@ -47,7 +47,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({
 
     onSubmit({
       ...formData,
-      value: parseFloat(valueInput) || 0,
+      value: valueInput,
     });
   };
 
