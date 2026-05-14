@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback, useContext, memo } from 'react';
 import { PresenceContext } from '../components/OnlinePresenceProvider';
 import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert, Megaphone } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useAdminCheck, UserRole } from '../hooks/useAdminCheck';
 import { useItems } from '../hooks/useItems';
 import { useItemsContext } from '../contexts/ItemsContext';
 import { useValueChanges } from '../hooks/useValueChanges';
@@ -242,6 +243,8 @@ const ItemForm: React.FC<{
 
 export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMaintenanceModeChange }) => {
   const { user, signOut } = useAuth();
+  const { role } = useAdminCheck(user?.id);
+  const isModerator = role === 'moderator';
   const { items, loading, error } = useItemsContext();
   const { createItem, updateItem, deleteItem } = useItems() as any;
   const { valueChanges, loading: changesLoading, deleteValueChange } = useValueChanges();
@@ -312,7 +315,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
     { id: 'changes', label: 'Changes', icon: <History className="w-4 h-4" />, count: valueChanges.length },
     { id: 'trade-ads', label: 'Trade Ads', icon: <Megaphone className="w-4 h-4" /> },
     { id: 'stock', label: 'Stock', icon: <LayoutGrid className="w-4 h-4" /> },
-    { id: 'settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
+    ...(!isModerator ? [{ id: 'settings' as View, label: 'Settings', icon: <Settings className="w-4 h-4" /> }] : []),
   ];
 
   if (loading) {
@@ -347,6 +350,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
 
             <span className="hidden md:block text-xs text-white/30 max-w-[140px] truncate">
               {user?.user_metadata?.full_name ?? user?.user_metadata?.preferred_username ?? user?.user_metadata?.name ?? 'Admin'}
+            </span>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider border ${
+              isModerator
+                ? 'border-sky-700/50 bg-sky-900/20 text-sky-400'
+                : 'border-[#6f572c] bg-[#4b3a1d]/60 text-[#c4a04a]'
+            }`}>
+              {isModerator ? 'Mod' : 'Admin'}
             </span>
 
             <button
@@ -511,12 +521,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                           }`}>
                             {same ? 'Updated' : up ? `+${ch.newValue - ch.oldValue}` : `${ch.newValue - ch.oldValue}`}
                           </span>
-                          <button
-                            onClick={() => handleDeleteChange(ch.id, ch.itemName)}
-                            className="p-1.5 rounded-lg text-white/20 hover:text-red-400 hover:bg-red-900/20 transition-colors"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          {!isModerator && (
+                            <button
+                              onClick={() => handleDeleteChange(ch.id, ch.itemName)}
+                              className="p-1.5 rounded-lg text-white/20 hover:text-red-400 hover:bg-red-900/20 transition-colors"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </div>
                       </div>
                       <div className="px-4 pb-3 grid grid-cols-3 gap-2">
@@ -658,12 +670,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                           >
                             <EditIcon className="w-3.5 h-3.5" />
                           </button>
-                          <button
-                            onClick={() => handleDeleteItem(item.id, item.name)}
-                            className="p-1.5 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-900/20 transition-colors"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          {!isModerator && (
+                            <button
+                              onClick={() => handleDeleteItem(item.id, item.name)}
+                              className="p-1.5 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-900/20 transition-colors"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -688,9 +702,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                       <button onClick={() => setEditingItem(item)} className="p-1.5 rounded-lg text-white/30 hover:text-[#c4a04a] hover:bg-[#4b3a1d]/40 transition-colors">
                         <EditIcon className="w-3.5 h-3.5" />
                       </button>
-                      <button onClick={() => handleDeleteItem(item.id, item.name)} className="p-1.5 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-900/20 transition-colors">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      {!isModerator && (
+                        <button onClick={() => handleDeleteItem(item.id, item.name)} className="p-1.5 rounded-lg text-white/30 hover:text-red-400 hover:bg-red-900/20 transition-colors">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 items-center">
