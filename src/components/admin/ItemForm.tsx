@@ -47,6 +47,10 @@ export const ItemForm: React.FC<ItemFormProps> = ({
     });
   };
 
+  const [valueInput, setValueInput] = useState(
+  item?.value?.toString() ?? ''
+);
+
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       {showImagePicker ? (
@@ -104,6 +108,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({
                   placeholder="Item name"
                 />
               </Field>
+              
 
               {/* VALUE */}
               <Field label="Value (Viz)" required>
