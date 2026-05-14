@@ -269,27 +269,37 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
     setUsersLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        showNotification('error', 'No active session');
+        setUsersLoading(false);
+        return;
+      }
       const res = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/list-users`,
         {
           headers: {
-            Authorization: `Bearer ${session?.access_token}`,
+            Authorization: `Bearer ${session.access_token}`,
+            apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
             'Content-Type': 'application/json',
           },
         }
       );
       const json = await res.json();
-      if (json.users) setAuthUsers(json.users);
+      if (json.users) {
+        setAuthUsers(json.users);
+      } else if (json.error) {
+        showNotification('error', json.error);
+      }
     } catch (err) {
-      console.error('Failed to fetch users', err);
+      showNotification('error', 'Failed to fetch users');
     } finally {
       setUsersLoading(false);
     }
-  }, []);
+  }, [showNotification]);
 
   useEffect(() => {
     if (currentView === 'users' && authUsers.length === 0) fetchUsers();
-  }, [currentView]);
+  }, [currentView, fetchUsers]);
 
   const filteredUsers = useMemo(() => {
     if (!usersSearch) return authUsers;
