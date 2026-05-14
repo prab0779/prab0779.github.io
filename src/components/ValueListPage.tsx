@@ -11,15 +11,15 @@ interface ValueListPageProps {
 }
 
 export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
-  const [viewMode, setViewMode] = useState<"regular" | "permanent">(() => {
-    return (localStorage.getItem("viewMode") as "regular" | "permanent") || "regular";
+  const [viewMode, setViewMode] = useState<"viz" | "scroll">(() => {
+    return (localStorage.getItem("viewMode") as "viz" | "scroll") || "viz";
   });
 
   useEffect(() => {
     localStorage.setItem("viewMode", viewMode);
   }, [viewMode]);
 
-  const handleViewMode = useCallback((mode: "regular" | "permanent") => {
+  const handleViewMode = useCallback((mode: "viz" | "scroll") => {
     setViewMode(mode);
   }, []);
 
@@ -61,37 +61,37 @@ Do not rely on value lists for exact pricing. Always negotiate trades yourself a
       <div className="mb-12 mt-10">
         <h3 className="font-semibold mb-3">
           <GradientText variant="gold">
-            Default View Mode
+            Display Mode
           </GradientText>
         </h3>
 
         <div className="inline-flex bg-gray-900 border border-gray-700 rounded-lg overflow-hidden">
           <button
-            onClick={() => handleViewMode("regular")}
+            onClick={() => handleViewMode("viz")}
             className={`px-6 py-2 font-medium transition-all duration-200 ${
-              viewMode === "regular"
-                ? "bg-purple-600 text-white"
+              viewMode === "viz"
+                ? "bg-[#c4a04a] text-black"
                 : "text-gray-300 hover:bg-gray-800"
             }`}
           >
-            Keys
+            Viz
           </button>
 
           <button
-            onClick={() => handleViewMode("permanent")}
+            onClick={() => handleViewMode("scroll")}
             className={`px-6 py-2 font-medium transition-all duration-200 ${
-              viewMode === "permanent"
-                ? "bg-purple-600 text-white"
+              viewMode === "scroll"
+                ? "bg-[#c4a04a] text-black"
                 : "text-gray-300 hover:bg-gray-800"
             }`}
           >
-            Vizard
+            Scroll
           </button>
         </div>
 
         <p className="text-sm mt-2">
           <GradientText variant="silver">
-            Sets the default display mode for all items.
+            1 Viz = 300 Scrolls
           </GradientText>
         </p>
       </div>

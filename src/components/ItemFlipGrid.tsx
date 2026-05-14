@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ItemCard } from "./ItemCard";
 import { SearchAndFilter } from "./SearchAndFilter";
 import { Item } from "../types/Item";
@@ -10,7 +10,7 @@ const AD_EVERY = 16;
 
 interface ItemFlipGridProps {
   items: Item[];
-  mode: "regular" | "permanent";
+  mode: "viz" | "scroll";
 }
 
 const BATCH_SIZE = 20;
@@ -29,10 +29,6 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
     sortOrder,
   });
 
-  const vizardValue = useMemo(() => {
-    const vizard = items.find((i) => i.name.toLowerCase() === "vizard mask");
-    return vizard?.value ?? 0;
-  }, [items]);
 
   // Reset visible count when filters change
   useEffect(() => {
@@ -96,7 +92,6 @@ export const ItemFlipGrid: React.FC<ItemFlipGridProps> = ({ items, mode }) => {
                     <ItemCard
                       item={item}
                       mode={mode}
-                      vizardValue={vizardValue}
                       index={index}
                     />
                   </AnimatedItem>

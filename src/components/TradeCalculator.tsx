@@ -197,7 +197,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
                     <div className="text-xs text-zinc-400">{it.category}</div>
                   </div>
                   <div className="font-semibold" style={{ color: "var(--gold-bright)" }}>
-                    {it.value}
+                    {it.value} Viz
                   </div>
                 </button>
               ))}
@@ -329,7 +329,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
           style={{ border: "1px solid rgba(255,255,255,0.07)" }}
         >
           <div className="flex items-center justify-between text-sm">
-            <GradientText variant="gold" className="font-semibold">Value:</GradientText>
+            <GradientText variant="gold" className="font-semibold">Viz Value:</GradientText>
             <span className="text-white font-semibold">{value.toLocaleString()}</span>
           </div>
 
@@ -391,7 +391,7 @@ export const TradeCalculator: React.FC<TradeCalculatorProps> = ({ items }) => {
         >
           <div className="flex items-center justify-between gap-4 mb-4">
             <div className="flex items-center gap-3">
-              <span className="text-zinc-300 font-medium">Value Difference:</span>
+              <span className="text-zinc-300 font-medium">Viz Difference:</span>
               <span
                 className="px-3 py-1 rounded-lg font-semibold text-sm"
                 style={{

@@ -8,8 +8,7 @@ import GradientText from "../Shared/GradientText";
 
 interface ItemCardProps {
   item: Item;
-  mode: "regular" | "permanent";
-  vizardValue: number;
+  mode: "viz" | "scroll";
   index?: number;
 }
 
@@ -50,10 +49,11 @@ const CardWrapper = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+const SCROLL_RATE = 300;
+
 const ItemCardComponent = ({
   item,
   mode,
-  vizardValue,
   index = 0,
 }: ItemCardProps) => {
   const shouldAnimate = !isMobile;
@@ -80,11 +80,8 @@ const ItemCardComponent = ({
       ? { label: "Gold Tax", value: item.goldTax, variant: "yellow" as const }
       : { label: "Tax", value: 0, variant: "silver" as const };
 
-  const keysValue = item.value;
-
-  const vizardConverted = vizardValue
-    ? Math.round((item.value / vizardValue) * 100) / 100
-    : 0;
+  const vizValue = item.value;
+  const scrollValue = item.value * SCROLL_RATE;
 
   const renderIcon = (emoji: string) => {
     if (!emoji) {
@@ -138,40 +135,24 @@ const ItemCardComponent = ({
         <div className="bg-black/40 rounded-xl p-4 space-y-3 border border-gray-800">
           <div className="flex justify-between text-sm">
             <span className="font-medium">
-              <GradientText variant="silver">Value</GradientText>
+              <GradientText variant="silver">
+                {mode === "viz" ? "Viz" : "Scrolls"}
+              </GradientText>
             </span>
 
-            {mode === "regular" ? (
-              <span className="text-white font-bold">
-                {shouldAnimate ? (
-                  <CountUp
-                    from={0}
-                    to={keysValue}
-                    duration={1.2}
-                    delay={(index % 4) * 0.08}
-                    format={formatValue}
-                  />
-                ) : (
-                  formatValue(keysValue)
-                )}
-              </span>
-            ) : (
-              <span className="font-bold">
-                <GradientText variant="purple">
-                  {shouldAnimate ? (
-                    <CountUp
-                      from={0}
-                      to={vizardConverted}
-                      duration={1.2}
-                      delay={(index % 4) * 0.08}
-                      format={(v) => Number(v).toFixed(2)}
-                    />
-                  ) : (
-                    vizardConverted.toFixed(2)
-                  )}
-                </GradientText>
-              </span>
-            )}
+            <span className="text-white font-bold">
+              {shouldAnimate ? (
+                <CountUp
+                  from={0}
+                  to={mode === "viz" ? vizValue : scrollValue}
+                  duration={1.2}
+                  delay={(index % 4) * 0.08}
+                  format={formatValue}
+                />
+              ) : (
+                formatValue(mode === "viz" ? vizValue : scrollValue)
+              )}
+            </span>
           </div>
 
           <div className="flex justify-between text-sm">
@@ -240,8 +221,7 @@ export const ItemCard = React.memo(
       prev.item.value === next.item.value &&
       prev.item.rateOfChange === next.item.rateOfChange &&
       prev.item.demand === next.item.demand &&
-      prev.mode === next.mode &&
-      prev.vizardValue === next.vizardValue
+      prev.mode === next.mode
     );
   }
 );
