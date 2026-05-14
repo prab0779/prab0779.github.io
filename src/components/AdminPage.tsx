@@ -269,11 +269,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
     setUsersLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) {
-        showNotification('error', 'No active session');
-        setUsersLoading(false);
-        return;
-      }
+      if (!session?.access_token) return;
       const res = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/list-users`,
         {
@@ -284,22 +280,24 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
           },
         }
       );
-      const json = await res.json();
-      if (json.users) {
-        setAuthUsers(json.users);
-      } else if (json.error) {
-        showNotification('error', json.error);
+      if (!res.ok) return;
+      const text = await res.text();
+      try {
+        const json = JSON.parse(text);
+        if (Array.isArray(json.users)) setAuthUsers(json.users);
+      } catch {
+        // non-JSON response
       }
-    } catch (err) {
-      showNotification('error', 'Failed to fetch users');
+    } catch {
+      // network error
     } finally {
       setUsersLoading(false);
     }
-  }, [showNotification]);
+  }, []);
 
   useEffect(() => {
     if (currentView === 'users' && authUsers.length === 0) fetchUsers();
-  }, [currentView, fetchUsers]);
+  }, [currentView]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const filteredUsers = useMemo(() => {
     if (!usersSearch) return authUsers;
