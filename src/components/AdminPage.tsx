@@ -346,7 +346,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
             </div>
 
             <span className="hidden md:block text-xs text-white/30 max-w-[140px] truncate">
-              {user?.user_metadata?.preferred_username ?? user?.email ?? 'Admin'}
+              {user?.user_metadata?.full_name ?? user?.user_metadata?.preferred_username ?? user?.user_metadata?.name ?? 'Admin'}
             </span>
 
             <button
