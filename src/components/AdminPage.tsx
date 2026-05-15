@@ -3,7 +3,6 @@ import { PresenceContext } from '../components/OnlinePresenceProvider';
 import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert, Megaphone, Copy, RefreshCw } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useAdminCheck, UserRole } from '../hooks/useAdminCheck';
-import { useItems } from '../hooks/useItems';
 import { useItemsContext } from '../contexts/ItemsContext';
 import { useValueChanges } from '../hooks/useValueChanges';
 import { StockRotationAdmin } from './StockRotationAdmin';
@@ -245,8 +244,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const { user, signOut } = useAuth();
   const { role } = useAdminCheck(user?.id);
   const isModerator = role === 'moderator';
-  const { items, loading, error } = useItemsContext();
-  const { createItem, updateItem, deleteItem } = useItems() as any;
+  const { items, loading, error, createItem, updateItem, deleteItem } = useItemsContext();
   const { valueChanges, loading: changesLoading, deleteValueChange } = useValueChanges();
   const { onlineCount } = useContext(PresenceContext);
 

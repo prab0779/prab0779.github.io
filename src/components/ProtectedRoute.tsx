@@ -1,7 +1,7 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useAdminCheck } from '../hooks/useAdminCheck';
-import { LoginForm } from './LoginForm';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -22,20 +22,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  if (!user) {
-    return <LoginForm />;
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center px-4">
-        <div className="max-w-md w-full space-y-4 text-center">
-          <p className="text-red-400 font-semibold text-lg">Access Denied</p>
-          <p className="text-gray-400 text-sm">Your account does not have admin or moderator access.</p>
-          <p className="text-gray-600 text-xs font-mono break-all">User ID: {user.id}</p>
-        </div>
-      </div>
-    );
+  if (!user || !isAdmin) {
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
