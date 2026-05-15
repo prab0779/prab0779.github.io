@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LogIn, AlertCircle } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/AuthContext';
 
 export const LoginForm: React.FC = () => {
   const { signInWithDiscord } = useAuth();
