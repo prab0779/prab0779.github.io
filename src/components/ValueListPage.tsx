@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { ItemFlipGrid } from "./ItemFlipGrid";
 import { Item } from "../types/Item";
 import SplitText from "../Shared/SplitText";
@@ -11,13 +11,8 @@ interface ValueListPageProps {
 }
 
 export const ValueListPage: React.FC<ValueListPageProps> = ({ items }) => {
-  const [viewMode, setViewMode] = useState<"viz" | "scroll">(() => {
-    return (localStorage.getItem("viewMode") as "viz" | "scroll") || "viz";
-  });
+  const [viewMode, setViewMode] = useState<"viz" | "scroll">("viz");
 
-  useEffect(() => {
-    localStorage.setItem("viewMode", viewMode);
-  }, [viewMode]);
 
   const handleViewMode = useCallback((mode: "viz" | "scroll") => {
     setViewMode(mode);
