@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Menu, X, LogOut, ChevronDown } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import GradientText from "../Shared/GradientText";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../contexts/AuthContext";
 
 const DiscordIcon = ({ size = 18 }: { size?: number }) => (
   <svg
