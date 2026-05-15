@@ -2,6 +2,16 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../lib/supabase";
 import { TradeAd, CreateTradeAdData } from "../types/TradeAd";
 
+function sanitizeText(input: string, maxLength = 100): string {
+  return input
+    .replace(/[<>]/g, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+    .replace(/data:/gi, '')
+    .trim()
+    .slice(0, maxLength);
+}
+
 export const useTradeAds = () => {
   const [tradeAds, setTradeAds] = useState<TradeAd[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,6 +75,18 @@ export const useTradeAds = () => {
 
       const userId = sessionData.session.user.id;
 
+      // Server-side rate limit check (1 ad per 5 minutes = 300 seconds)
+      const { data: allowed, error: rlError } = await supabase.rpc(
+        'check_rate_limit',
+        { action_name: 'trade_ad_create', max_requests: 1, window_seconds: 300 }
+      );
+
+      if (rlError) {
+        console.warn('Rate limit check failed:', rlError.message);
+      } else if (allowed === false) {
+        return { data: null, error: "You're posting too fast. Please wait a few minutes." };
+      }
+
       const { data: banRecord } = await supabase
         .from("banned_trade_users")
         .select("id")
@@ -75,32 +97,6 @@ export const useTradeAds = () => {
         return { data: null, error: "You are banned from posting trade ads." };
       }
 
-      const { data: recentAds, error: recentError } = await supabase
-        .from("trade_ads")
-        .select("created_at")
-        .eq("user_id", userId)
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(1);
-
-      if (recentError) throw recentError;
-
-      const recentAd = recentAds?.[0] ?? null;
-
-      const COOLDOWN_MINUTES = 5;
-      if (recentAd) {
-        const diffMs = Date.now() - new Date(recentAd.created_at).getTime();
-        const diffMinutes = Math.floor(diffMs / 60000);
-        if (diffMinutes < COOLDOWN_MINUTES) {
-          const waitMinutes = COOLDOWN_MINUTES - diffMinutes;
-          const waitSeconds = Math.ceil((60000 - (diffMs % 60000)) / 1000);
-          return {
-            data: null,
-            error: `You're on a cooldown. Try again in ${waitMinutes}m ${waitSeconds}s.`,
-          };
-        }
-      }
-
       const expiresAt = new Date(
         Date.now() + 3 * 24 * 60 * 60 * 1000
       ).toISOString();
@@ -109,13 +105,16 @@ export const useTradeAds = () => {
   .from("trade_ads")
   .insert([
     {
-      user_id: userId, // ✅ ADD THIS LINE
-      items_wanted: adData.itemsWanted,
-      items_offering: adData.itemsOffering,
-      tags: adData.tags,
-      author_name: adData.authorName.endsWith("#0") ? adData.authorName.slice(0, -2) : adData.authorName,
-      author_avatar: adData.authorAvatar,
-      contact_info: adData.contactInfo,
+      user_id: userId,
+      items_wanted: adData.itemsWanted.slice(0, 20),
+      items_offering: adData.itemsOffering.slice(0, 20),
+      tags: adData.tags.slice(0, 10),
+      author_name: sanitizeText(
+        adData.authorName.endsWith("#0") ? adData.authorName.slice(0, -2) : adData.authorName,
+        50
+      ),
+      author_avatar: adData.authorAvatar?.startsWith('https://') ? adData.authorAvatar : null,
+      contact_info: sanitizeText(adData.contactInfo || '', 200),
       status: "active",
       expires_at: expiresAt,
     },

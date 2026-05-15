@@ -28,11 +28,16 @@ export const useAuth = () => {
   }, []);
 
   const signInWithDiscord = async () => {
+    const origin = window.location.origin;
+    // Validate origin matches our known domain to prevent open redirect
+    const allowedOrigins = [origin];
+    const redirectTo = allowedOrigins.includes(origin) ? `${origin}/` : '/';
+
     return supabase.auth.signInWithOAuth({
       provider: "discord",
       options: {
         scopes: "identify",
-        redirectTo: `${window.location.origin}/`,
+        redirectTo,
       },
     });
   };
