@@ -12,7 +12,7 @@ export const AuthProvider = ({
   const auth = useAuthHook();
 
   const { role, loading: roleLoading } = useAdminCheck(
-    auth.loading ? undefined : auth.user?.id
+    auth.loading ? undefined : (auth.user?.id ?? null)
   );
 
   return (

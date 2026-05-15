@@ -3,22 +3,21 @@ import { supabase } from "../lib/supabase";
 
 export type UserRole = 'admin' | 'moderator' | null;
 
-export const useAdminCheck = (userId: string | undefined) => {
+export const useAdminCheck = (userId: string | null | undefined) => {
   const [role, setRole] = useState<UserRole>(null);
-  const [loading, setLoading] = useState(true); // stay true until resolved
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Don't resolve yet if auth hasn't given us a userId
-    if (userId === undefined) return; // <-- key change
+    if (userId === undefined) return;
 
+    if (!userId) {
+      setRole(null);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
     const checkAdmin = async () => {
-      if (!userId) {
-        setRole(null);
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
       const { data } = await supabase
         .from("admin_users")
         .select("role")
