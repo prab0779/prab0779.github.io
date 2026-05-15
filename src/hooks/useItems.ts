@@ -15,7 +15,7 @@ function transform(data: any[]): Item[] {
   return (data || []).map(row => ({
     id: row.id,
     name: row.name,
-    value: row.value,
+    value: Number(row.value) || 0,
     demand: row.demand,
     rateOfChange: row.rate_of_change,
     prestige: row.prestige,

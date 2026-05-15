@@ -18,9 +18,10 @@ const isMobile =
     window.matchMedia("(max-width: 768px)").matches);
 
 const formatValue = (v: number) => {
-  if (v >= 1_000_000_000) return (v / 1_000_000_000).toFixed(2) + "B";
-  if (v >= 1_000_000) return (v / 1_000_000).toFixed(0) + "M";
-  return v.toLocaleString();
+  const n = Number(v) || 0;
+  if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(2) + "B";
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(0) + "M";
+  return n.toLocaleString();
 };
 
 const CardWrapper = ({ children }: { children: React.ReactNode }) => {

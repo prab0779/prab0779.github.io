@@ -54,7 +54,7 @@ export const ItemForm: React.FC<ItemFormProps> = ({
 
     onSubmit({
       ...formData,
-      value: valueInput,
+      value: Number(valueInput) || 0,
     });
   };
 
