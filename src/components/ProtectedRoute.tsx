@@ -7,10 +7,14 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
+console.log("AUTH USER ID:", user?.id);
+console.log("IS ADMIN:", isAdmin);
+console.log("AUTH LOADING:", authLoading);
+console.log("ADMIN LOADING:", adminLoading);
+
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: adminLoading } = useAdminCheck(user?.id);
-  console.log("AUTH USER ID:", user?.id);
 
   if (authLoading || adminLoading) {
     return (
