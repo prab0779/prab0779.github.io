@@ -25,9 +25,6 @@ const TradeAdsPage = lazy(() =>
 const AdminPage = lazy(() =>
   import("./components/AdminPage").then(m => ({ default: m.AdminPage }))
 );
-const AuthCallback = lazy(() =>
-  import("./routes/auth/callback").then(m => ({ default: m.default }))
-);
 const PrivacyPolicyPage = lazy(() =>
   import("./components/PrivacyPolicyPage").then(m => ({ default: m.PrivacyPolicyPage }))
 );
