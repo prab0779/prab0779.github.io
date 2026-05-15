@@ -353,8 +353,10 @@
   <body style="background:#000;margin:0">
     <div id="root"></div>
     <script>
+      // Clickjacking protection (GitHub Pages cannot set X-Frame-Options headers)
+      if (window.top !== window.self) { window.top.location = window.self.location; }
+
       // GitHub Pages SPA redirect handler
-      // Restore the URL from the 404.html redirect
       (function() {
         var redirect = sessionStorage.redirect;
         delete sessionStorage.redirect;
