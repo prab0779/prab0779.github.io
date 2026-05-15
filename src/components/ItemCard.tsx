@@ -136,24 +136,37 @@ const ItemCardComponent = ({
           {renderIcon(item.emoji)}
         </div>
 
-        <div className="bg-black/40 rounded-xl p-4 space-y-3 border border-gray-800">
-          <div className="flex justify-between items-center text-sm">
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={(e) => { e.stopPropagation(); setLocalMode(activeMode === "viz" ? "scroll" : "viz"); }}
-                className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-white/[0.05] border border-white/[0.08] hover:border-[#c4a04a]/40 transition-colors"
-              >
-                <span className={`text-[10px] font-semibold px-1 py-px rounded ${activeMode === "viz" ? "text-[#c4a04a]" : "text-white/30"}`}>V</span>
-                <span className="text-white/20 text-[10px]">/</span>
-                <span className={`text-[10px] font-semibold px-1 py-px rounded ${activeMode === "scroll" ? "text-[#c4a04a]" : "text-white/30"}`}>S</span>
-              </button>
-              <span className="font-medium">
-                <GradientText variant="silver">
-                  {activeMode === "viz" ? "Viz" : "Scrolls"}
-                </GradientText>
-              </span>
-            </div>
+        {/* Per-card mode toggle */}
+        <div className="flex items-center justify-center gap-1 mb-3">
+          <button
+            onClick={(e) => { e.stopPropagation(); setLocalMode("viz"); }}
+            className={`px-3 py-1 rounded-l-lg text-xs font-semibold transition-colors border ${
+              activeMode === "viz"
+                ? "bg-[#c4a04a]/20 text-[#c4a04a] border-[#6f572c]/60"
+                : "bg-white/[0.03] text-white/30 border-white/[0.08] hover:text-white/50"
+            }`}
+          >
+            Viz
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); setLocalMode("scroll"); }}
+            className={`px-3 py-1 rounded-r-lg text-xs font-semibold transition-colors border ${
+              activeMode === "scroll"
+                ? "bg-[#c4a04a]/20 text-[#c4a04a] border-[#6f572c]/60"
+                : "bg-white/[0.03] text-white/30 border-white/[0.08] hover:text-white/50"
+            }`}
+          >
+            Scroll
+          </button>
+        </div>
 
+        <div className="bg-black/40 rounded-xl p-4 space-y-3 border border-gray-800">
+          <div className="flex justify-between text-sm">
+            <span className="font-medium">
+              <GradientText variant="silver">
+                {activeMode === "viz" ? "Viz" : "Scrolls"}
+              </GradientText>
+            </span>
             <span className="text-white font-bold">
               {formatValue(activeMode === "viz" ? vizValue : scrollValue)}
             </span>
