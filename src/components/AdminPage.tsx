@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useContext, memo } from 'react';
 import { PresenceContext } from '../components/OnlinePresenceProvider';
 import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert, Megaphone, Copy, RefreshCw } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
-import { useAdminCheck, UserRole } from '../hooks/useAdminCheck';
+import { useAuth } from '../contexts/AuthContext';
 import { useItemsContext } from '../contexts/ItemsContext';
 import { useValueChanges } from '../hooks/useValueChanges';
 import { StockRotationAdmin } from './StockRotationAdmin';
