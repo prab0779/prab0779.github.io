@@ -41,10 +41,6 @@ export const LoginForm: React.FC = () => {
           <LogIn className="w-5 h-5" />
           <span>Login With Discord</span>
         </button>
-
-        <p className="text-center text-sm text-gray-500">
-          Only authorized Discord accounts can access admin
-        </p>
       </div>
     </div>
   );
