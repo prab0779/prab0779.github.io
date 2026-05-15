@@ -240,8 +240,7 @@ const ItemForm: React.FC<{
 // ─── main admin page ──────────────────────────────────────────────────────────
 
 export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMaintenanceModeChange }) => {
-  const { user, signOut } = useAuth();
-  const { role } = useAdminCheck(user?.id);
+  const { user, signOut, role } = useAuth();
   const isModerator = role === 'moderator';
   const { items, loading, error, createItem, updateItem, deleteItem } = useItemsContext();
   const { valueChanges, loading: changesLoading, deleteValueChange } = useValueChanges();
