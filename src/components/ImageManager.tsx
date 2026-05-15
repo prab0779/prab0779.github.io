@@ -1,13 +1,17 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Upload, Trash2, RefreshCw, Search, Image as ImageIcon, AlertCircle, CheckCircle, CreditCard as Edit2, X, Copy } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { Upload, Trash2, RefreshCw, Search, Image as ImageIcon, AlertCircle, CheckCircle, CreditCard as Edit2, X, Copy, FolderOpen } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { publicImages } from '../data/publicImages';
 
 const BUCKET = 'Item Images';
+
+type ImageSource = 'all' | 'public' | 'storage';
 
 interface StorageFile {
   name: string;
   publicUrl: string;
   size?: number;
+  source: 'public' | 'storage';
 }
 
 interface ImageManagerProps {
@@ -17,15 +21,24 @@ interface ImageManagerProps {
 }
 
 export const ImageManager: React.FC<ImageManagerProps> = ({ onSelectImage, selectionMode = false, selectedImage }) => {
-  const [files, setFiles] = useState<StorageFile[]>([]);
+  const [storageFiles, setStorageFiles] = useState<StorageFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sourceFilter, setSourceFilter] = useState<ImageSource>('all');
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [renamingFile, setRenamingFile] = useState<StorageFile | null>(null);
   const [newName, setNewName] = useState('');
   const [deletingFile, setDeletingFile] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const localFiles: StorageFile[] = useMemo(() =>
+    publicImages.map((name) => ({
+      name,
+      publicUrl: `/${name}`,
+      source: 'public' as const,
+    })),
+  []);
 
   const showNotification = (type: 'success' | 'error', message: string) => {
     setNotification({ type, message });
@@ -44,17 +57,23 @@ export const ImageManager: React.FC<ImageManagerProps> = ({ onSelectImage, selec
         .filter((f) => f.name !== '.emptyFolderPlaceholder')
         .map((f) => {
           const { data: u } = supabase.storage.from(BUCKET).getPublicUrl(f.name);
-          return { name: f.name, publicUrl: u.publicUrl, size: f.metadata?.size };
+          return { name: f.name, publicUrl: u.publicUrl, size: f.metadata?.size, source: 'storage' as const };
         });
-      setFiles(mapped);
+      setStorageFiles(mapped);
     } catch (err: any) {
-      showNotification('error', `Failed to load images: ${err.message}`);
+      showNotification('error', `Failed to load storage images: ${err.message}`);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => { loadFiles(); }, [loadFiles]);
+
+  const files = useMemo(() => {
+    if (sourceFilter === 'public') return localFiles;
+    if (sourceFilter === 'storage') return storageFiles;
+    return [...localFiles, ...storageFiles];
+  }, [sourceFilter, localFiles, storageFiles]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files;
@@ -176,10 +195,30 @@ export const ImageManager: React.FC<ImageManagerProps> = ({ onSelectImage, selec
       {/* Header */}
       {!selectionMode && (
         <div className="mb-5">
-          <h1 className="text-xl font-bold text-white mb-1">Image Storage</h1>
-          <p className="text-white/40 text-sm">Upload, rename, and manage item images</p>
+          <h1 className="text-xl font-bold text-white mb-1">Image Manager</h1>
+          <p className="text-white/40 text-sm">Browse public images and manage uploaded storage images</p>
         </div>
       )}
+
+      {/* Source tabs */}
+      <div className="flex items-center gap-1 mb-4 p-1 bg-white/[0.03] border border-white/[0.06] rounded-xl w-fit">
+        {([['all', 'All'], ['public', 'Public'], ['storage', 'Storage']] as [ImageSource, string][]).map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => setSourceFilter(key)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              sourceFilter === key
+                ? 'bg-[#c4a04a]/20 text-[#c4a04a] border border-[#6f572c]/60'
+                : 'text-white/40 hover:text-white/70 border border-transparent'
+            }`}
+          >
+            {label}
+            <span className="ml-1.5 text-[10px] opacity-60">
+              {key === 'all' ? localFiles.length + storageFiles.length : key === 'public' ? localFiles.length : storageFiles.length}
+            </span>
+          </button>
+        ))}
+      </div>
 
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-2 mb-4">
@@ -210,8 +249,8 @@ export const ImageManager: React.FC<ImageManagerProps> = ({ onSelectImage, selec
 
       {/* stat row */}
       <div className="flex items-center gap-3 mb-4 text-xs text-white/30">
-        <span className="flex items-center gap-1"><ImageIcon className="w-3.5 h-3.5" />{files.length} images</span>
-        {searchTerm && <span>{filteredFiles.length} matching</span>}
+        <span className="flex items-center gap-1"><ImageIcon className="w-3.5 h-3.5" />{filteredFiles.length} images</span>
+        {searchTerm && <span>matching "{searchTerm}"</span>}
       </div>
 
       {/* Grid */}
@@ -230,7 +269,7 @@ export const ImageManager: React.FC<ImageManagerProps> = ({ onSelectImage, selec
             const isSelected = selectedImage === `/${file.name}` || selectedImage === file.name;
             return (
               <div
-                key={file.name}
+                key={`${file.source}-${file.name}`}
                 onClick={selectionMode ? () => onSelectImage?.(`/${file.name}`) : undefined}
                 className={`group relative rounded-xl border overflow-hidden transition-all duration-150 ${
                   selectionMode
@@ -251,12 +290,17 @@ export const ImageManager: React.FC<ImageManagerProps> = ({ onSelectImage, selec
                       <CheckCircle className="w-6 h-6 text-[#c4a04a]" />
                     </div>
                   )}
+                  {file.source === 'public' && (
+                    <span className="absolute top-1 left-1 px-1 py-0.5 rounded text-[8px] font-bold bg-emerald-900/80 text-emerald-300 border border-emerald-700/50">
+                      LOCAL
+                    </span>
+                  )}
                 </div>
                 <div className="px-1.5 py-1 bg-black/20">
                   <p className="text-[10px] text-white/40 truncate font-mono" title={file.name}>{file.name}</p>
                 </div>
 
-                {/* Actions — non-selection mode */}
+                {/* Actions */}
                 {!selectionMode && (
                   <div className="absolute top-1 right-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
@@ -266,23 +310,27 @@ export const ImageManager: React.FC<ImageManagerProps> = ({ onSelectImage, selec
                     >
                       <Copy className="w-2.5 h-2.5" />
                     </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); startRename(file); }}
-                      className="p-1 rounded bg-black/70 text-[#c4a04a]/70 hover:text-[#c4a04a] transition-colors"
-                      title="Rename"
-                    >
-                      <Edit2 className="w-2.5 h-2.5" />
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); if (window.confirm(`Delete "${file.name}"?`)) handleDelete(file); }}
-                      disabled={deletingFile === file.name}
-                      className="p-1 rounded bg-black/70 text-red-500/70 hover:text-red-400 transition-colors disabled:opacity-40"
-                      title="Delete"
-                    >
-                      {deletingFile === file.name
-                        ? <RefreshCw className="w-2.5 h-2.5 animate-spin" />
-                        : <Trash2 className="w-2.5 h-2.5" />}
-                    </button>
+                    {file.source === 'storage' && (
+                      <>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); startRename(file); }}
+                          className="p-1 rounded bg-black/70 text-[#c4a04a]/70 hover:text-[#c4a04a] transition-colors"
+                          title="Rename"
+                        >
+                          <Edit2 className="w-2.5 h-2.5" />
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); if (window.confirm(`Delete "${file.name}"?`)) handleDelete(file); }}
+                          disabled={deletingFile === file.name}
+                          className="p-1 rounded bg-black/70 text-red-500/70 hover:text-red-400 transition-colors disabled:opacity-40"
+                          title="Delete"
+                        >
+                          {deletingFile === file.name
+                            ? <RefreshCw className="w-2.5 h-2.5 animate-spin" />
+                            : <Trash2 className="w-2.5 h-2.5" />}
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
