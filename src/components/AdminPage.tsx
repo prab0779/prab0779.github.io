@@ -260,6 +260,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const [authUsers, setAuthUsers] = useState<any[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [usersSearch, setUsersSearch] = useState('');
+  const [usersPage, setUsersPage] = useState(1);
+  const usersPerPage = 50;
 
   const fetchUsers = useCallback(async () => {
     setUsersLoading(true);
@@ -305,6 +307,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
         u.id.toLowerCase().includes(q)
     );
   }, [authUsers, usersSearch]);
+
+  const totalUsersPages = Math.max(1, Math.ceil(filteredUsers.length / usersPerPage));
+  const paginatedUsers = useMemo(() => {
+    const start = (usersPage - 1) * usersPerPage;
+    return filteredUsers.slice(start, start + usersPerPage);
+  }, [filteredUsers, usersPage]);
+
+  useEffect(() => { setUsersPage(1); }, [usersSearch]);
 
   const showNotification = useCallback((type: 'success' | 'error', message: string) => {
     setNotification({ type, message });
@@ -515,9 +525,16 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
               </div>
             ) : (
               <>
-                <div className="text-xs text-white/30 px-1">{filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''}</div>
+                <div className="flex items-center justify-between px-1">
+                  <div className="text-xs text-white/30">
+                    {filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''} — showing {(usersPage - 1) * usersPerPage + 1}–{Math.min(usersPage * usersPerPage, filteredUsers.length)}
+                  </div>
+                  <div className="text-xs text-white/30">
+                    Page {usersPage} of {totalUsersPages}
+                  </div>
+                </div>
                 <div className="space-y-2">
-                  {filteredUsers.map((u) => (
+                  {paginatedUsers.map((u) => (
                     <div key={u.id} className="rounded-xl border border-white/[0.06] bg-white/[0.02] hover:border-[#6f572c]/40 transition-colors p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
@@ -562,6 +579,65 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
                     </div>
                   ))}
                 </div>
+
+                {/* Pagination controls */}
+                {totalUsersPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 pt-4">
+                    <button
+                      onClick={() => setUsersPage(1)}
+                      disabled={usersPage === 1}
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] text-white/50 hover:text-white hover:border-[#6f572c]/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    >
+                      First
+                    </button>
+                    <button
+                      onClick={() => setUsersPage((p) => Math.max(1, p - 1))}
+                      disabled={usersPage === 1}
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] text-white/50 hover:text-white hover:border-[#6f572c]/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Prev
+                    </button>
+                    {Array.from({ length: Math.min(5, totalUsersPages) }, (_, i) => {
+                      let pageNum: number;
+                      if (totalUsersPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (usersPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (usersPage >= totalUsersPages - 2) {
+                        pageNum = totalUsersPages - 4 + i;
+                      } else {
+                        pageNum = usersPage - 2 + i;
+                      }
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setUsersPage(pageNum)}
+                          className={`w-8 h-8 rounded-lg text-xs font-semibold transition-colors ${
+                            pageNum === usersPage
+                              ? 'bg-[#c4a04a]/20 border border-[#6f572c]/60 text-[#c4a04a]'
+                              : 'border border-white/[0.08] bg-white/[0.03] text-white/50 hover:text-white hover:border-[#6f572c]/50'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+                    <button
+                      onClick={() => setUsersPage((p) => Math.min(totalUsersPages, p + 1))}
+                      disabled={usersPage === totalUsersPages}
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] text-white/50 hover:text-white hover:border-[#6f572c]/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Next
+                    </button>
+                    <button
+                      onClick={() => setUsersPage(totalUsersPages)}
+                      disabled={usersPage === totalUsersPages}
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] text-white/50 hover:text-white hover:border-[#6f572c]/50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Last
+                    </button>
+                  </div>
+                )}
               </>
             )}
           </div>

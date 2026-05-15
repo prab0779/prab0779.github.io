@@ -54,16 +54,28 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    // Fetch all users
-    const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers({
-      perPage: 1000,
-    });
+    // Fetch ALL users by paginating through all pages
+    const allUsers: any[] = [];
+    let page = 1;
+    const perPage = 1000;
 
-    if (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+    while (true) {
+      const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers({
+        page,
+        perPage,
       });
+
+      if (error) {
+        return new Response(JSON.stringify({ error: error.message }), {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      if (!users || users.length === 0) break;
+      allUsers.push(...users);
+      if (users.length < perPage) break;
+      page++;
     }
 
     // Also fetch admin_users to include role info
@@ -75,7 +87,7 @@ Deno.serve(async (req: Request) => {
       (adminUsers || []).map((a: any) => [a.user_id, a.role])
     );
 
-    const mapped = (users || []).map((u: any) => ({
+    const mapped = allUsers.map((u: any) => ({
       id: u.id,
       email: u.email,
       displayName:
@@ -88,7 +100,7 @@ Deno.serve(async (req: Request) => {
       role: adminMap.get(u.id) || null,
     }));
 
-    return new Response(JSON.stringify({ users: mapped }), {
+    return new Response(JSON.stringify({ users: mapped, total: mapped.length }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
