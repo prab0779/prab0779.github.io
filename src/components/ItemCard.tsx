@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Item } from "../types/Item";
 import { getItemImageUrl } from "../lib/supabase";
-import CountUp from "../Shared/CountUp";
 import BorderGlow from "../Shared/BorderGlow";
 import GradientText from "../Shared/GradientText";
 
@@ -57,7 +56,11 @@ const ItemCardComponent = ({
   mode,
   index = 0,
 }: ItemCardProps) => {
+  const [localMode, setLocalMode] = useState<"viz" | "scroll" | null>(null);
+  const activeMode = localMode ?? mode;
   const shouldAnimate = !isMobile;
+
+  useEffect(() => { setLocalMode(null); }, [mode]);
 
   const getDemandVariant = (d: number): "red" | "yellow" | "green" =>
     d <= 3 ? "red" : d <= 6 ? "yellow" : "green";
@@ -134,25 +137,25 @@ const ItemCardComponent = ({
         </div>
 
         <div className="bg-black/40 rounded-xl p-4 space-y-3 border border-gray-800">
-          <div className="flex justify-between text-sm">
-            <span className="font-medium">
-              <GradientText variant="silver">
-                {mode === "viz" ? "Viz" : "Scrolls"}
-              </GradientText>
-            </span>
+          <div className="flex justify-between items-center text-sm">
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={(e) => { e.stopPropagation(); setLocalMode(activeMode === "viz" ? "scroll" : "viz"); }}
+                className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-white/[0.05] border border-white/[0.08] hover:border-[#c4a04a]/40 transition-colors"
+              >
+                <span className={`text-[10px] font-semibold px-1 py-px rounded ${activeMode === "viz" ? "text-[#c4a04a]" : "text-white/30"}`}>V</span>
+                <span className="text-white/20 text-[10px]">/</span>
+                <span className={`text-[10px] font-semibold px-1 py-px rounded ${activeMode === "scroll" ? "text-[#c4a04a]" : "text-white/30"}`}>S</span>
+              </button>
+              <span className="font-medium">
+                <GradientText variant="silver">
+                  {activeMode === "viz" ? "Viz" : "Scrolls"}
+                </GradientText>
+              </span>
+            </div>
 
             <span className="text-white font-bold">
-              {shouldAnimate ? (
-                <CountUp
-                  from={0}
-                  to={mode === "viz" ? vizValue : scrollValue}
-                  duration={1.2}
-                  delay={(index % 4) * 0.08}
-                  format={formatValue}
-                />
-              ) : (
-                formatValue(mode === "viz" ? vizValue : scrollValue)
-              )}
+              {formatValue(activeMode === "viz" ? vizValue : scrollValue)}
             </span>
           </div>
 
@@ -184,17 +187,7 @@ const ItemCardComponent = ({
             <span className="font-bold">
               {tax.value > 0 ? (
                 <GradientText variant={tax.variant}>
-                  {shouldAnimate ? (
-                    <CountUp
-                      from={0}
-                      to={tax.value}
-                      duration={1}
-                      delay={(index % 4) * 0.08 + 0.1}
-                      format={(v) => v.toLocaleString()}
-                    />
-                  ) : (
-                    tax.value.toLocaleString()
-                  )}
+                  {tax.value.toLocaleString()}
                 </GradientText>
               ) : (
                 <GradientText variant="silver">None</GradientText>
