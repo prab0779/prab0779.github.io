@@ -1,3 +1,8 @@
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+
+export type UserRole = 'admin' | 'moderator' | null;
+
 export const useAdminCheck = (userId: string | undefined) => {
   const [role, setRole] = useState<UserRole>(null);
   const [loading, setLoading] = useState(true); // stay true until resolved
