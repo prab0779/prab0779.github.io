@@ -1,50 +1,38 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 
 export type UserRole = 'admin' | 'moderator' | null;
 
 export const useAdminCheck = (userId: string | undefined) => {
-  const [isAdmin, setIsAdmin] = useState(false);
   const [role, setRole] = useState<UserRole>(null);
   const [loading, setLoading] = useState(true);
-  const checkedId = useRef<string | undefined>(undefined);
 
   useEffect(() => {
-    if (!userId) {
-      checkedId.current = undefined;
-      setIsAdmin(false);
-      setRole(null);
-      setLoading(false);
-      return;
-    }
-
-    if (checkedId.current === userId) return;
-
-    setLoading(true);
     const checkAdmin = async () => {
-      console.log("Checking admin for user:", userId);
-      const { data, error } = await supabase
-        .from("admin_users")
-        .select("user_id, role")
-        .eq("user_id", userId)
-        .maybeSingle();
-      console.log("Admin query result:", { data, error });
-
-      if (error) {
-        console.error(error);
-        setIsAdmin(false);
+      if (!userId) {
         setRole(null);
-      } else {
-        setIsAdmin(!!data);
-        setRole(data?.role ?? null);
+        setLoading(false);
+        return;
       }
 
-      checkedId.current = userId;
+      setLoading(true);
+
+      const { data } = await supabase
+        .from("admin_users")
+        .select("role")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      setRole(data?.role ?? null);
       setLoading(false);
     };
 
     checkAdmin();
   }, [userId]);
 
-  return { isAdmin, role, loading };
+  return {
+    role,
+    isAdmin: !!role,
+    loading,
+  };
 };
