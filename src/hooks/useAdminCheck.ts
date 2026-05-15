@@ -22,11 +22,13 @@ export const useAdminCheck = (userId: string | undefined) => {
 
     setLoading(true);
     const checkAdmin = async () => {
+      console.log("Checking admin for user:", userId);
       const { data, error } = await supabase
         .from("admin_users")
         .select("user_id, role")
         .eq("user_id", userId)
         .maybeSingle();
+      console.log("Admin query result:", { data, error });
 
       if (error) {
         console.error(error);
