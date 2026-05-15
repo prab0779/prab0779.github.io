@@ -1,8 +1,32 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "../lib/supabase";
 import { ValueChange } from "../types/Item";
 
 const PAGE_SIZE = 50;
+const CACHE_KEY = "aotr_value_changes_cache";
+const CACHE_TTL = 2 * 60 * 1000; // 2 minutes
+
+function getCachedChanges(): ValueChange[] | null {
+  try {
+    const raw = sessionStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { data, timestamp } = JSON.parse(raw);
+    if (Date.now() - timestamp > CACHE_TTL) {
+      sessionStorage.removeItem(CACHE_KEY);
+      return null;
+    }
+    return data;
+  } catch {
+    sessionStorage.removeItem(CACHE_KEY);
+    return null;
+  }
+}
+
+function setCachedChanges(changes: ValueChange[]) {
+  try {
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: changes, timestamp: Date.now() }));
+  } catch {}
+}
 
 export const useValueChanges = () => {
   const [valueChanges, setValueChanges] = useState<ValueChange[]>([]);
@@ -12,6 +36,7 @@ export const useValueChanges = () => {
 
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const initialFetchDone = useRef(false);
 
   const fetchPage = useCallback(async (pageToFetch: number, append = false) => {
     try {
@@ -59,9 +84,12 @@ export const useValueChanges = () => {
         percentageChange: row.percentage_change,
       }));
 
-      setValueChanges((prev) =>
-        append ? [...prev, ...transformed] : transformed
-      );
+      const updated = append
+        ? [...valueChanges, ...transformed]
+        : transformed;
+
+      setValueChanges(updated);
+      if (pageToFetch === 0 && !append) setCachedChanges(transformed);
 
       setHasMore(transformed.length === PAGE_SIZE);
       setPage(pageToFetch);
@@ -76,7 +104,7 @@ export const useValueChanges = () => {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, []);
+  }, [valueChanges]);
 
   const loadMore = useCallback(() => {
     if (!hasMore || loadingMore) return;
@@ -84,6 +112,7 @@ export const useValueChanges = () => {
   }, [page, hasMore, loadingMore, fetchPage]);
 
   const refresh = useCallback(async () => {
+    sessionStorage.removeItem(CACHE_KEY);
     await fetchPage(0);
   }, [fetchPage]);
 
@@ -100,6 +129,7 @@ export const useValueChanges = () => {
 
       if (error) throw error;
 
+      sessionStorage.removeItem(CACHE_KEY);
       return { error: null };
     } catch (err) {
       setValueChanges(previous);
@@ -114,8 +144,18 @@ export const useValueChanges = () => {
   };
 
   useEffect(() => {
+    if (initialFetchDone.current) return;
+    initialFetchDone.current = true;
+
+    const cached = getCachedChanges();
+    if (cached) {
+      setValueChanges(cached);
+      setHasMore(cached.length === PAGE_SIZE);
+      setLoading(false);
+      return;
+    }
     fetchPage(0);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     valueChanges,

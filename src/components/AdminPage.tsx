@@ -256,20 +256,29 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   const [sortField, setSortField] = useState<'name' | 'value' | 'demand' | 'prestige' | 'category'>('value');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
-  // Users state
+  // Users state — server-side pagination
   const [authUsers, setAuthUsers] = useState<any[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [usersSearch, setUsersSearch] = useState('');
+  const [debouncedUsersSearch, setDebouncedUsersSearch] = useState('');
   const [usersPage, setUsersPage] = useState(1);
+  const [usersTotal, setUsersTotal] = useState(0);
   const usersPerPage = 50;
 
-  const fetchUsers = useCallback(async () => {
+  useEffect(() => {
+    const t = setTimeout(() => { setDebouncedUsersSearch(usersSearch); setUsersPage(1); }, 400);
+    return () => clearTimeout(t);
+  }, [usersSearch]);
+
+  const fetchUsers = useCallback(async (page = 1, search = '') => {
     setUsersLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return;
+      const params = new URLSearchParams({ page: String(page), per_page: String(usersPerPage) });
+      if (search) params.set('search', search);
       const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/list-users`,
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/list-users?${params}`,
         {
           headers: {
             Authorization: `Bearer ${session.access_token}`,
@@ -279,12 +288,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
         }
       );
       if (!res.ok) return;
-      const text = await res.text();
-      try {
-        const json = JSON.parse(text);
-        if (Array.isArray(json.users)) setAuthUsers(json.users);
-      } catch {
-        // non-JSON response
+      const json = await res.json();
+      if (Array.isArray(json.users)) {
+        setAuthUsers(json.users);
+        setUsersTotal(json.total ?? json.users.length);
       }
     } catch {
       // network error
@@ -294,27 +301,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
   }, []);
 
   useEffect(() => {
-    if (currentView === 'users' && authUsers.length === 0) fetchUsers();
-  }, [currentView]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (currentView === 'users') fetchUsers(usersPage, debouncedUsersSearch);
+  }, [currentView, usersPage, debouncedUsersSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const filteredUsers = useMemo(() => {
-    if (!usersSearch) return authUsers;
-    const q = usersSearch.toLowerCase();
-    return authUsers.filter(
-      (u) =>
-        u.email?.toLowerCase().includes(q) ||
-        u.displayName?.toLowerCase().includes(q) ||
-        u.id.toLowerCase().includes(q)
-    );
-  }, [authUsers, usersSearch]);
-
-  const totalUsersPages = Math.max(1, Math.ceil(filteredUsers.length / usersPerPage));
-  const paginatedUsers = useMemo(() => {
-    const start = (usersPage - 1) * usersPerPage;
-    return filteredUsers.slice(start, start + usersPerPage);
-  }, [filteredUsers, usersPage]);
-
-  useEffect(() => { setUsersPage(1); }, [usersSearch]);
+  const totalUsersPages = Math.max(1, Math.ceil(usersTotal / usersPerPage));
 
   const showNotification = useCallback((type: 'success' | 'error', message: string) => {
     setNotification({ type, message });
@@ -518,7 +508,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
               <div className="flex justify-center py-16">
                 <div className="w-8 h-8 rounded-full border-2 border-[#c4a04a]/30 border-t-[#c4a04a] animate-spin" />
               </div>
-            ) : filteredUsers.length === 0 ? (
+            ) : authUsers.length === 0 ? (
               <div className="text-center py-16 text-white/30">
                 <Users className="w-10 h-10 mx-auto mb-3 opacity-40" />
                 <p>{usersSearch ? 'No users match your search' : 'No users found'}</p>
@@ -527,14 +517,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
               <>
                 <div className="flex items-center justify-between px-1">
                   <div className="text-xs text-white/30">
-                    {filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''} — showing {(usersPage - 1) * usersPerPage + 1}–{Math.min(usersPage * usersPerPage, filteredUsers.length)}
+                    {usersTotal} user{usersTotal !== 1 ? 's' : ''} — showing {(usersPage - 1) * usersPerPage + 1}–{Math.min(usersPage * usersPerPage, usersTotal)}
                   </div>
                   <div className="text-xs text-white/30">
                     Page {usersPage} of {totalUsersPages}
                   </div>
                 </div>
                 <div className="space-y-2">
-                  {paginatedUsers.map((u) => (
+                  {authUsers.map((u) => (
                     <div key={u.id} className="rounded-xl border border-white/[0.06] bg-white/[0.02] hover:border-[#6f572c]/40 transition-colors p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
