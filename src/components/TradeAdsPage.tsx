@@ -8,7 +8,7 @@ import SplitText from "../Shared/SplitText";
 import BlurText from "../Shared/BlurText";
 import { CreateTradeAdModal } from "./CreateTradeAd";
 import { useTradeAds } from "../hooks/useTradeAds";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../contexts/AuthContext";
 import { Item } from "../types/Item";
 import { getItemImageUrl } from "../lib/supabase";
 
