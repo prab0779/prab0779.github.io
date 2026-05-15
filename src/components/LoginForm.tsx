@@ -18,8 +18,7 @@ export const LoginForm: React.FC = () => {
         {/* Logo */}
         <div className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <span className="text-4xl">⚔️</span>
-            <span className="text-2xl font-bold text-white">Admin Access</span>
+            <span className="text-2xl font-bold text-white">Login</span>
           </div>
           <h2 className="text-lg text-gray-400">
             Sign in via Discord
