@@ -1,15 +1,18 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { useAdminCheck } from '../hooks/useAdminCheck';
+import { useAuth } from '../contexts/AuthContext';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user, loading: authLoading } = useAuth();
-  const { role, loading: adminLoading } = useAdminCheck(user?.id);
+  const {
+    user,
+    role,
+    loading: authLoading,
+    roleLoading: adminLoading,
+  } = useAuth();
 
   if (authLoading || adminLoading) {
     return (
