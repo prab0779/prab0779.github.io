@@ -183,4 +183,5 @@ const AnimatedList: React.FC<AnimatedListProps> = ({
     </div>
   );
 };
+export { AnimatedItem };
 export default AnimatedItem;
