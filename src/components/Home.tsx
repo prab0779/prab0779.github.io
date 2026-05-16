@@ -69,7 +69,7 @@ export const Home: React.FC<HomeProps> = ({ items }) => {
 
   return (
     <div className="relative">
-      <div className="absolute inset-0 bg-[url('/gridd.svg')] opacity-10 mix-blend-soft-light pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10 mix-blend-soft-light pointer-events-none" />
 
       <div className="relative z-10">
         <section className="relative overflow-hidden w-full pt-[200px] md:pt-[500px] pb-[140px] md:pb-[200px]">
