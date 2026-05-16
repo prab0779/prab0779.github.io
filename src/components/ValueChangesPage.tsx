@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Search } from "lucide-react";
 import { useValueChanges } from "../hooks/useValueChanges";
-import { AnimatedItem } from "../Shared/AnimatedList";
+import AnimatedItem from "../Shared/AnimatedList";
 import BorderGlow from "../Shared/BorderGlow";
 import GradientText from "../Shared/GradientText";
 import { getItemImageUrl } from "../lib/supabase";
