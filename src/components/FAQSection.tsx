@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { AnimatedItem } from "../Shared/AnimatedList";
+import AnimatedItem from "../Shared/AnimatedList";
 import TextType from "../Shared/TextType";
 import GradientText from "../Shared/GradientText";
 
