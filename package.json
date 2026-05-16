@@ -7,12 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-    "deploy:github": "npm run build && gh-pages -d dist"
+    "preview": "vite preview"
   },
-  "homepage": "https://prab0779.github.io/aotr",
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@supabase/supabase-js": "^2.39.0",
