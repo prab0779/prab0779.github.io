@@ -259,7 +259,6 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url('/grid.svg');
   opacity: 0.12;
   mix-blend-mode: soft-light;
   pointer-events: none;
