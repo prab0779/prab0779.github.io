@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ItemCard } from "./ItemCard";
 import { SearchAndFilter } from "./SearchAndFilter";
 import { Item } from "../types/Item";
-import { AnimatedItem } from "../Shared/AnimatedList";
+import AnimatedItem from "../Shared/AnimatedList";
 import { useFilteredItems } from "../hooks/useFilteredItems";
 import { DisplayAd } from "./DisplayAd";
 
