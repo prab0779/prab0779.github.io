@@ -4,16 +4,15 @@ import { copyFileSync } from 'fs';
 import { resolve } from 'path';
 
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [
     react(),
     {
-      name: 'copy-htaccess',
+      name: 'copy-spa-fallbacks',
       writeBundle() {
-        copyFileSync(
-          resolve(__dirname, 'public/.htaccess'),
-          resolve(__dirname, 'dist/.htaccess')
-        );
+        const dist = resolve(__dirname, 'dist');
+        copyFileSync(resolve(__dirname, 'public/.htaccess'), resolve(dist, '.htaccess'));
+        copyFileSync(resolve(dist, 'index.html'), resolve(dist, '404.html'));
       },
     },
   ],
