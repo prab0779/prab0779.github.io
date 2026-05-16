@@ -9,7 +9,7 @@ interface AnimatedItemProps {
   onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
-export const AnimatedItem: React.FC<AnimatedItemProps> = ({ children, delay = 0, index, onMouseEnter, onClick }) => {
+const AnimatedItem: React.FC<AnimatedItemProps> = ({ children, delay = 0, index, onMouseEnter, onClick }) => {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { amount: 0.5, once: true });
   return (
@@ -183,5 +183,5 @@ const AnimatedList: React.FC<AnimatedListProps> = ({
     </div>
   );
 };
-
+export { AnimatedItem };
 export default AnimatedList;
