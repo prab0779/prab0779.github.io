@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { Search, Eye } from "lucide-react";
 import { DisplayAd } from "./DisplayAd";
-import { AnimatedItem } from "../Shared/AnimatedList";
+import AnimatedItem from "../Shared/AnimatedList";
 import BorderGlow from "../Shared/BorderGlow";
 import GradientText from "../Shared/GradientText";
 import SplitText from "../Shared/SplitText";
