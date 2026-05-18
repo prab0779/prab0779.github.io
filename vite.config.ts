@@ -1,12 +1,33 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { copyFileSync } from 'fs';
+import { copyFileSync, readdirSync } from 'fs';
 import { resolve } from 'path';
+
+function publicImagesPlugin() {
+  const virtualId = 'virtual:public-images';
+  const resolvedId = '\0' + virtualId;
+
+  return {
+    name: 'public-images',
+    resolveId(id: string) {
+      if (id === virtualId) return resolvedId;
+    },
+    load(id: string) {
+      if (id !== resolvedId) return;
+      const publicDir = resolve(__dirname, 'public');
+      const files = readdirSync(publicDir).filter((f) =>
+        /\.(png|webp|jpg|jpeg|gif|svg)$/i.test(f)
+      );
+      return `export default ${JSON.stringify(files)};`;
+    },
+  };
+}
 
 export default defineConfig({
   base: '/',
   plugins: [
     react(),
+    publicImagesPlugin(),
     {
       name: 'copy-spa-fallbacks',
       writeBundle() {
