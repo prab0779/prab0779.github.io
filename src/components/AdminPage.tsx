@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo, useCallback, useContext, memo } from 'react';
 import { PresenceContext } from '../components/OnlinePresenceProvider';
-import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert, Megaphone, Copy, RefreshCw } from 'lucide-react';
+import { Plus, Trash2, Save, X, LogOut, AlertCircle, CheckCircle, History, TrendingUp, TrendingDown, Minus, Search, Filter, ArrowUpDown, Users, Eye, FolderOpen, LayoutGrid, Settings, Package, CreditCard as EditIcon, ShieldAlert, Megaphone, Copy, RefreshCw, HardDrive } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useItemsContext } from '../contexts/ItemsContext';
 import { useValueChanges } from '../hooks/useValueChanges';
 import { StockRotationAdmin } from './StockRotationAdmin';
 import { TradeAdsView } from './admin/TradeAdsView';
 import { ImageManager } from './ImageManager';
+import { PublicFilesView } from './admin/PublicFilesView';
 import { supabase, getItemImageUrl } from '../lib/supabase';
 import { Item } from '../types/Item';
 
@@ -15,7 +16,7 @@ interface AdminPageProps {
   onMaintenanceModeChange: (enabled: boolean) => void;
 }
 
-type View = 'items' | 'changes' | 'settings' | 'stock' | 'trade-ads' | 'users';
+type View = 'items' | 'changes' | 'settings' | 'stock' | 'trade-ads' | 'users' | 'files';
 
 // ─── tiny reusable primitives ───────────────────────────────────────────────
 
@@ -362,6 +363,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
     { id: 'trade-ads', label: 'Trade Ads', icon: <Megaphone className="w-4 h-4" /> },
     { id: 'stock', label: 'Stock', icon: <LayoutGrid className="w-4 h-4" /> },
     ...(!isModerator ? [
+      { id: 'files' as View, label: 'Files', icon: <HardDrive className="w-4 h-4" /> },
       { id: 'users' as View, label: 'Users', icon: <Users className="w-4 h-4" /> },
       { id: 'settings' as View, label: 'Settings', icon: <Settings className="w-4 h-4" /> },
     ] : []),
@@ -472,6 +474,9 @@ export const AdminPage: React.FC<AdminPageProps> = ({ maintenanceMode, onMainten
 
         {/* STOCK */}
         {currentView === 'stock' && <StockRotationAdmin />}
+
+        {/* FILES */}
+        {currentView === 'files' && <PublicFilesView />}
 
         {/* USERS */}
         {currentView === 'users' && (
