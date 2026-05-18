@@ -5,6 +5,7 @@ import { Footer } from "./components/Footer";
 import { MaintenancePopup } from "./components/MaintenancePopup";
 import { Home } from "./components/Home";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { SideAds } from "./components/SideAds";
 import { ItemsProvider, useItemsContext } from "./contexts/ItemsContext";
 import ClickSpark from "./Shared/ClickSpark";
 import { OnlinePresenceProvider } from "./components/OnlinePresenceProvider";
@@ -131,6 +132,7 @@ export const AppContent: React.FC = () => {
   };
 
   const isAdminPage = location.pathname === "/admin";
+  const showSideAds = ['/', '/value-list', '/calculator', '/value-changes', '/trade-ads'].includes(location.pathname);
 
   return (
     <div className="min-h-screen flex flex-col relative aotr-background">
@@ -138,6 +140,7 @@ export const AppContent: React.FC = () => {
 
         {!isAdminPage && <Header />}
         {maintenanceMode && !isAdminPage && <MaintenancePopup />}
+        {showSideAds && <SideAds />}
 
         <main className="flex-1">
           <div className="w-full">
