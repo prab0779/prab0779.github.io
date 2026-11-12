@@ -22,15 +22,15 @@ export interface CarouselProps {
 const DEFAULT_ITEMS = [
   {
     id: 1,
-    image: "/hero.png"
+    image: "/ZORO_AOT_TRADING.png"
   },
   {
     id: 2,
-    image: "/hero.png"
+    image: "/ZORO_AOT_TRADING.png"
   },
   {
     id: 3,
-    image: "/hero.png"
+    image: "/ZORO_AOT_TRADING.png"
   }
 ];
 
