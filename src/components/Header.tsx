@@ -79,7 +79,7 @@ export const Header: React.FC = () => {
       >
         <div className="flex items-center justify-between px-5 py-5">
           <Link to="/" className="flex items-center">
-            <img src="/customdiscordlogo.png" className="h-8" />
+            <img src="/TradingCorpsLogo.png" className="h-8" />
           </Link>
 
           <nav className="hidden md:flex items-center gap-7">
