@@ -9,6 +9,7 @@ import { SideAds } from "./components/SideAds";
 import { ItemsProvider, useItemsContext } from "./contexts/ItemsContext";
 import ClickSpark from "./Shared/ClickSpark";
 import { OnlinePresenceProvider } from "./components/OnlinePresenceProvider";
+import GoogleAnalytics from "./components/GoogleAnalytics";
 
 /* Lazy-loaded pages */
 const TradeCalculator = lazy(() =>
@@ -139,6 +140,7 @@ export const AppContent: React.FC = () => {
       <div className="relative z-10 flex flex-col min-h-screen">
 
         {!isAdminPage && <Header />}
+        {!isAdminPage && <GoogleAnalytics />}
         {maintenanceMode && !isAdminPage && <MaintenancePopup />}
         {showSideAds && <SideAds />}
 
