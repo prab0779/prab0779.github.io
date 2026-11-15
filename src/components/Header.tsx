@@ -28,7 +28,6 @@ export const Header: React.FC = () => {
     { name: "Home", path: "/" },
     { name: "Value List", path: "/value-list" },
     { name: "Trade Calculator", path: "/calculator" },
-    { name: "Value Changes", path: "/value-changes" },
     { name: "Trade Ads", path: "/trade-ads" },
   ];
 
