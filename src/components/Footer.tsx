@@ -56,13 +56,6 @@ export const Footer: React.FC = () => {
                   <GradientText variant="silver">Calculator</GradientText>
                 </Link>
               </li>
-
-              <li>
-                <Link to="/value-changes" className="flex items-center gap-2 text-gray-300 hover:text-[var(--gold-bright)] transition">
-                  <History className="w-4 h-4" />
-                  <GradientText variant="silver">Value Changes</GradientText>
-                </Link>
-              </li>
             </ul>
           </div>
 
